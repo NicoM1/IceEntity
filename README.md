@@ -4,6 +4,7 @@ IceEntity
 A simple framework for managing gameobjects and components in haxeflixel
 
 Usage:
+
   call ```add(GameObjectManager.getInstance());``` in the create function of your playstate.
   
   use ```GameObjectManager.getInstance().AddGameObject();``` to add objects or groups to the manager.
