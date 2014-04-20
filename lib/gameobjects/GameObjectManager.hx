@@ -7,14 +7,17 @@ import flixel.tile.FlxTilemap;
 
 class GameObjectManager extends FlxGroup
 {
+	///a singleton instance of this class
 	static var instance : GameObjectManager;
 	
 	///Int corresponds to GID of gameobject, for faster access
 	private var gameObjects : Map<Int, GameObject>;
 	private var groups : Map<String, FlxGroup>; 
 	
+	///simple var for storing a single map
 	static public var map(default, null) : FlxTilemap;
 	
+	///highest current GID of any gameobject, used for autoasigning GIDs
 	public var highestGID(default, default) : Int = 0;
 	
 	private function new()
@@ -24,6 +27,7 @@ class GameObjectManager extends FlxGroup
 		groups = new Map<String, FlxGroup>();
 	} 
 	
+	///gets the static instance of the manager
 	public static function getInstance() : GameObjectManager
 	{
 		if (instance == null)
@@ -34,6 +38,15 @@ class GameObjectManager extends FlxGroup
 		return instance;
 	}
 	
+	/**
+	 * Adds a gameobject, group, or map to the manager
+	 * @param	?gameObject				gameobject to be added.
+	 * @param	?sprite					sprite to be added, there will be no way to reference this sprite, it is just an easy way to add one for testing
+	 * @param	?group					a group of sprites or gameobjects to be added
+	 * @param	?groupName				must be suppled when a group is added, used to reference the group
+	 * @param	?groupIsGameobjects		whether the group consists of gameobjects or sprites, adds any gameobjects to the global array, components require this to function
+	 * @param	?tileMap				easy way to hold a single tilemap, mainly for testing
+	 */
 	public function AddGameObject(?gameObject : GameObject, ?sprite : FlxSprite, ?group : FlxGroup, ?groupName : String, ?groupIsGameobjects : Bool = true, ?tileMap : FlxTilemap)
 	{
 		if (gameObject != null)
@@ -71,22 +84,23 @@ class GameObjectManager extends FlxGroup
 		}
 	}
 	
+	/**
+	 * Gets a group by its identifier
+	 * @param	name	idenifier to access group
+	 * 
+	 */
 	public function GetGroup(name : String) : FlxGroup
 	{
 		return groups.get(name);
 	}
 	
+	/**
+	 * removes a gameobject from the manager
+	 * @param	GID	the identifier of the object to be removed
+	 */
 	public function RemoveGameObject(GID : Int)
 	{
 		gameObjects.remove(GID);
-	}
-	
-	///Replaces a specified gameobject [WILL BREAK ALL REFERENCES]
-	public function ReplaceGameObject(GID : Int, newObj : GameObject)
-	{
-		remove(gameObjects.get(GID), false);
-		gameObjects.set(GID, newObj);
-		add(newObj);
 	}
 	
 	///Returns the gameobject with the specified GID
