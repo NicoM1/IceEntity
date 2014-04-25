@@ -3,6 +3,14 @@ IceEntity
 
 A simple framework for managing gameobjects and components in haxeflixel
 
+Changes:
+
+  packages have been renamed to: ice.entity.<class>.
+  
+  code has been surrounded in a template haxeflixel project, with GameObjectManager already added.
+  
+  [Due note, you are not required to use this project, and copying out the (ice) folder will work just fine in your own project.
+
 Usage:
 
   call ```add(GameObjectManager.getInstance());``` in the create function of your playstate.
