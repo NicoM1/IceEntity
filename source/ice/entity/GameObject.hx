@@ -1,4 +1,4 @@
-package lib.gameobjects;
+package ice.entity;
 
 import flash.geom.Point;
 import flixel.FlxBasic;

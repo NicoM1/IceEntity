@@ -1,4 +1,4 @@
-package lib.gameobjects;
+package ice.entity;
 
 class Component
 {
