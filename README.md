@@ -5,14 +5,19 @@ A simple framework for managing gameobjects and components in haxeflixel
 
 Changes:
   
-  [NEW]
+  [NEW v0.2]
+  marked version numbers (not coded anywhere in project, just for reference)
+  
+  [NEW v0.2]
   all classes have replaced the word "gameobject" with entity, I know its annoying, but in the end its shorter to type...
   
-  [NEW]
+  [NEW v0.2]
   added a simple message broadcasting system
 
+  [v0.11]
   packages have been renamed to: ice.entity.[class].
   
+  [v0.11]
   code has been surrounded in a template haxeflixel project, with EntityManager already added.
   
   [Due note, you are not required to use this project, and copying out the (ice) folder will work just fine in your own project]
@@ -27,7 +32,7 @@ Usage:
   
   ```init()``` will run on the first update cycle, useful for getting and stashing references to other gameobjects.
   
-Message System:
+Message System [v0.2]:
 
   IceEntity now includes a simple message broadcasting system. It is a useful way of quickly sending information or data between objects, without needing to store a reference. Simply call ```SendMessage()``` on an entity, with any info you need to send (explained in the method details). To recieve messages, simply override the ```RecieveMessage()``` function on an entity, and use that as a simple way to do whatever you want with the messages data, no need to manage a complicated event listener setup:)
   
