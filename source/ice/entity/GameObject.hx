@@ -198,6 +198,17 @@ class GameObject extends FlxSprite
 		
 		return false;
 	}
+	
+	public function GetDistance(?obj1 : FlxObject = null, obj2 : FlxObject):Float
+	{
+		if (obj1 == null)
+		{
+			obj1 = this;
+		}
+		var XX = obj2.getMidpoint().x - obj1.getMidpoint().x;
+		var YY = obj2.getMidpoint().y - obj1.getMidpoint().y;
+		return Math.sqrt(XX * XX + YY * YY);
+	}
 			
 	private function init()
 	{

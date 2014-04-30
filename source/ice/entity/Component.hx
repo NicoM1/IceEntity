@@ -2,7 +2,10 @@ package ice.entity;
 
 class Component
 {
+	 ///GID of owner
 	public var Owner : Int;
+	 ///Actual owner gameobject, null untill init()
+	public var owner : GameObject;
 	
 	private var initialized = false;
 	
@@ -17,11 +20,6 @@ class Component
 	{
 		return GameObjectManager.getInstance().GetGameObject(Owner);
 	}
-	
-	/*public function GetComponentOnOwnerByID<T:Component>(ID : String, type:Class<T>):T
-	{
-		return GetOwner().GetComponentByID(ID,type);
-	}*/
 	
 	public function GetComponentOnOwner<T:Component>(type:Class<T>):T
 	{
@@ -39,6 +37,6 @@ class Component
 			
 	private function init()
 	{
-		
+		owner = GetOwner();
 	}
 }

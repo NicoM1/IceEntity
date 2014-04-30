@@ -25,7 +25,16 @@ class GameObjectManager extends FlxGroup
 		super();
 		gameObjects = new Map<Int, GameObject>();
 		groups = new Map<String, FlxGroup>();
+		highestGID = 0;
+		map = null;
 	} 
+	
+	///clears the entire manager
+	public static function empty()
+	{
+		instance = null;
+		getInstance();
+	}
 	
 	///gets the static instance of the manager
 	public static function getInstance() : GameObjectManager
@@ -137,5 +146,10 @@ class GameObjectManager extends FlxGroup
 		}
 		
 		return null;
+	}
+	
+	override public function destroy():Void 
+	{
+		//super.destroy(); never gets destroyed between scenes
 	}
 }
