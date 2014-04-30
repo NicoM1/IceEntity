@@ -13,7 +13,7 @@ Changes:
 
   packages have been renamed to: ice.entity.[class].
   
-  code has been surrounded in a template haxeflixel project, with GameObjectManager already added.
+  code has been surrounded in a template haxeflixel project, with EntityManager already added.
   
   [Due note, you are not required to use this project, and copying out the (ice) folder will work just fine in your own project]
 
