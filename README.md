@@ -28,9 +28,9 @@ Usage:
   
   use ```EntityManager.getInstance().AddEntity();``` to add objects or groups to the manager.
   
-  use ```AddComponent();``` on a class extending gameobject to add a new component.
+  use ```AddComponent();``` on a class extending entity to add a new component.
   
-  ```init()``` will run on the first update cycle, useful for getting and stashing references to other gameobjects.
+  ```init()``` will run on the first update cycle, useful for getting and stashing references to other entitiess.
   
 Message System [v0.2]:
 
