@@ -4,8 +4,8 @@ class Component
 {
 	 ///GID of owner
 	public var Owner : Int;
-	 ///Actual owner gameobject, null untill init()
-	public var owner : GameObject;
+	 ///Actual owner entity, null untill init()
+	public var owner : Entity;
 	
 	private var initialized = false;
 	
@@ -16,9 +16,9 @@ class Component
 		this.Owner = Owner;
 	}
 	
-	public function GetOwner() : GameObject
+	public function GetOwner() : Entity
 	{
-		return GameObjectManager.getInstance().GetGameObject(Owner);
+		return EntityManager.getInstance().GetEntity(Owner);
 	}
 	
 	public function GetComponentOnOwner<T:Component>(type:Class<T>):T

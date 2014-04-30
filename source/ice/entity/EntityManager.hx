@@ -5,25 +5,25 @@ import flixel.FlxG;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 
-class GameObjectManager extends FlxGroup
+class EntityManager extends FlxGroup
 {
 	///a singleton instance of this class
-	static var instance : GameObjectManager;
+	static var instance : EntityManager;
 	
-	///Int corresponds to GID of gameobject, for faster access
-	private var gameObjects : Map<Int, GameObject>;
+	///Int corresponds to GID of entity, for faster access
+	private var entitys : Map<Int, Entity>;
 	private var groups : Map<String, FlxGroup>; 
 	
 	///simple var for storing a single map
 	static public var map(default, null) : FlxTilemap;
 	
-	///highest current GID of any gameobject, used for autoasigning GIDs
+	///highest current GID of any entity, used for autoasigning GIDs
 	public var highestGID(default, default) : Int = 0;
 	
 	private function new()
 	{
 		super();
-		gameObjects = new Map<Int, GameObject>();
+		entitys = new Map<Int, Entity>();
 		groups = new Map<String, FlxGroup>();
 		highestGID = 0;
 		map = null;
@@ -37,31 +37,31 @@ class GameObjectManager extends FlxGroup
 	}
 	
 	///gets the static instance of the manager
-	public static function getInstance() : GameObjectManager
+	public static function getInstance() : EntityManager
 	{
 		if (instance == null)
 		{
-			instance = new GameObjectManager();
+			instance = new EntityManager();
 		}
 		
 		return instance;
 	}
 	
 	/**
-	 * Adds a gameobject, group, or map to the manager
-	 * @param	?gameObject				gameobject to be added.
+	 * Adds a entity, group, or map to the manager
+	 * @param	?entity				entity to be added.
 	 * @param	?sprite					sprite to be added, there will be no way to reference this sprite, it is just an easy way to add one for testing
-	 * @param	?group					a group of sprites or gameobjects to be added
+	 * @param	?group					a group of sprites or entitys to be added
 	 * @param	?groupName				must be suppled when a group is added, used to reference the group
-	 * @param	?groupIsGameobjects		whether the group consists of gameobjects or sprites, adds any gameobjects to the global array, components require this to function
+	 * @param	?groupIsEntitys		whether the group consists of entities or sprites, adds any entitys to the global array, components require this to function
 	 * @param	?tileMap				easy way to hold a single tilemap, mainly for testing
 	 */
-	public function AddGameObject(?gameObject : GameObject, ?sprite : FlxSprite, ?group : FlxGroup, ?groupName : String, ?groupIsGameobjects : Bool = true, ?tileMap : FlxTilemap)
+	public function AddEntity(?entity : Entity, ?sprite : FlxSprite, ?group : FlxGroup, ?groupName : String, ?groupIsEntities : Bool = true, ?tileMap : FlxTilemap)
 	{
-		if (gameObject != null)
+		if (entity != null)
 		{
-			gameObjects.set(gameObject.GID, gameObject);
-			add(gameObject);
+			entitys.set(entity.GID, entity);
+			add(entity);
 		}
 		if (sprite != null)
 		{
@@ -78,11 +78,11 @@ class GameObjectManager extends FlxGroup
 			{
 				groups.set(groupName, group);
 				add(group);
-				if (groupIsGameobjects)
+				if (groupIsEntities)
 				{
 					for (g in group.members)
 					{
-						AddGameObject(cast(g, GameObject));
+						AddEntity(cast(g, Entity));
 					}
 				}
 			}
@@ -104,26 +104,26 @@ class GameObjectManager extends FlxGroup
 	}
 	
 	/**
-	 * removes a gameobject from the manager
+	 * removes a entity from the manager
 	 * @param	GID	the identifier of the object to be removed
 	 */
-	public function RemoveGameObject(GID : Int)
+	public function RemoveEntity(GID : Int)
 	{
-		gameObjects.remove(GID);
+		entitys.remove(GID);
 	}
 	
-	///Returns the gameobject with the specified GID
-    public function GetGameObject(GID : Int) : GameObject
+	///Returns the entity with the specified GID
+    public function GetEntity(GID : Int) : Entity
 	{
-		return gameObjects.get(GID);
+		return entitys.get(GID);
 	}
 	
-	///Returns all gameobjects with a specific tag
-	public function GetGameObjectsWithTag(tag : String) : Array<GameObject>
+	///Returns all entitys with a specific tag
+	public function GetEntitiesWithTag(tag : String) : Array<Entity>
 	{
-		var gObjects = new Array<GameObject>();
+		var gObjects = new Array<Entity>();
 		
-		for (g in gameObjects)
+		for (g in entitys)
 		{
 			if (g.Tag == tag)
 			{
@@ -134,10 +134,10 @@ class GameObjectManager extends FlxGroup
 		return gObjects;
 	}
 	
-	///Returns the first gameobject found with a specific tag
-	public function GetGameObjectByTag(tag : String) : GameObject
+	///Returns the first entity found with a specific tag
+	public function GetEntityByTag(tag : String) : Entity
 	{		
-		for (g in gameObjects)
+		for (g in entitys)
 		{
 			if (g.Tag == tag)
 			{
@@ -146,6 +146,24 @@ class GameObjectManager extends FlxGroup
 		}
 		
 		return null;
+	}
+	
+	public function SendMessage(sender:Int, messageCode:Int, ?target:Int, ?value:Dynamic, ?recieveOwn:Bool = false)
+	{
+		if (target == null)
+		{
+			for (e in entitys)
+			{
+				if (recieveOwn || e.GID != sender)
+				{
+					e.RecieveMessage(sender, messageCode, value);
+				}
+			}
+		}
+		else
+		{
+			entitys.get(target).RecieveMessage(sender, messageCode, value);
+		}
 	}
 	
 	override public function destroy():Void 

@@ -6,7 +6,7 @@ import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
-import ice.entity.GameObjectManager;
+import ice.entity.EntityManager;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -20,7 +20,8 @@ class PlayState extends FlxState
 	{
 		super.create();
 		
-		add(GameObjectManager.getInstance());
+		add(EntityManager.getInstance());
+		
 	}
 	
 	/**
