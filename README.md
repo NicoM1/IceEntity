@@ -7,7 +7,11 @@ A simple framework for managing gameobjects and components in haxeflixel
 
   **[NEW v0.2.1]**
   added destruction of entities
+  
+  **[NEW v0.2.1]**
   removed template
+  
+  **[NEW v0.2.1]**
   added haxelib setup
   
   [v0.2]
