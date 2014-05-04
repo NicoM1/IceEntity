@@ -31,11 +31,11 @@ A simple framework for managing gameobjects and components in haxeflixel
   
 **Installation**
 
-  [1] run ```haxelib git iceentity https://github.com/NicoM1/IceEntity``` in a terminal with git
+  **[1]** run ```haxelib git iceentity https://github.com/NicoM1/IceEntity``` in a terminal with access to git
   
-  [2] add ```<haxelib name="iceentity"/>``` to your ```Project.xml``` file, directly under ```<haxelib name="flixel"/>```
+  **[2]** add ```<haxelib name="iceentity"/>``` to your ```Project.xml``` file, directly under ```<haxelib name="flixel"/>```
   
-  [3] get annoyed with missing features, give up;)
+  **[3]** get annoyed with missing features, give up;)
 
 **Usage:**
 
