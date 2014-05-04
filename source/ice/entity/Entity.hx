@@ -223,4 +223,18 @@ class Entity extends FlxSprite
 	{
 		
 	}
+	
+	override public function destroy()
+	{
+		if (components != null)
+		{
+			for (c in components)
+			{
+				c.destroy();
+			}
+		}
+		components = null;
+		children = null;
+		super.destroy();
+	}
 }

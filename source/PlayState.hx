@@ -6,6 +6,8 @@ import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxMath;
+import ice.entity.Component;
+import ice.entity.Entity;
 import ice.entity.EntityManager;
 
 /**
@@ -19,8 +21,6 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-		
-		add(EntityManager.getInstance());
 		
 	}
 	

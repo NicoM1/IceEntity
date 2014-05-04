@@ -12,7 +12,7 @@ class EntityManager extends FlxGroup
 	
 	///Int corresponds to GID of entity, for faster access
 	private var entitys : Map<Int, Entity>;
-	private var groups : Map<String, FlxGroup>; 
+	private var groups : Map<String, Array<Int>>; 
 	
 	///simple var for storing a single map
 	static public var map(default, null) : FlxTilemap;
@@ -24,16 +24,15 @@ class EntityManager extends FlxGroup
 	{
 		super();
 		entitys = new Map<Int, Entity>();
-		groups = new Map<String, FlxGroup>();
+		groups = new Map<String, Array<Int>>();
 		highestGID = 0;
 		map = null;
 	} 
 	
-	///clears the entire manager
+	///clears the entire manager, really just calls getInstance().destroy();
 	public static function empty()
 	{
-		instance = null;
-		getInstance();
+		getInstance().destroy();
 	}
 	
 	///gets the static instance of the manager
@@ -76,15 +75,7 @@ class EntityManager extends FlxGroup
 		{
 			if (groupName != null)
 			{
-				groups.set(groupName, group);
-				add(group);
-				if (groupIsEntities)
-				{
-					for (g in group.members)
-					{
-						AddEntity(cast(g, Entity));
-					}
-				}
+				AddGroup(group, groupName, groupIsEntities);
 			}
 			else
 			{
@@ -93,23 +84,68 @@ class EntityManager extends FlxGroup
 		}
 	}
 	
+	function AddGroup(group:FlxGroup, name:String, entities:Bool):Void 
+	{
+		if (!entities)
+		{
+			add(group);
+		}
+		else
+		{
+			var groupArray:Array<Int> = new Array<Int>();
+			for (e in group.members)
+			{
+				var entity = cast(e, Entity);
+				AddEntity(entity);
+				groupArray.push(entity.GID);
+			}
+			groups.set(name, groupArray);
+		}
+	}
+	
 	/**
-	 * Gets a group by its identifier
+	 * Gets a group by its identifier NOTE: this currently does not update when new objects are added, due to groups not being internally stored as FlxGroups
 	 * @param	name	idenifier to access group
 	 * 
 	 */
 	public function GetGroup(name : String) : FlxGroup
 	{
-		return groups.get(name);
+		var groupArray = groups.get(name);
+		var returnGroup:FlxGroup = new FlxGroup();
+		for (e in groupArray)
+		{
+			returnGroup.add(GetEntity(e));
+		}
+		return returnGroup;
 	}
 	
 	/**
 	 * removes a entity from the manager
 	 * @param	GID	the identifier of the object to be removed
+	* @param	group	if object was in a group, specify here
 	 */
-	public function RemoveEntity(GID : Int)
+	public function RemoveEntity(entity : Entity, ?GID : Int, ?group : String)
 	{
-		entitys.remove(GID);
+		if (GID != 0)
+		{
+			if (group != null)
+			{
+				groups.get(group).remove(GID);
+			}
+			GetEntity(GID).destroy();
+			remove(GetEntity(GID), true);
+			entitys.remove(GID);
+		}
+		else
+		{
+			if (group != null)
+			{
+				groups.get(group).remove(entity.GID);
+			}
+			entity.destroy();
+			remove(entity, true);
+			entitys.remove(entity.GID);
+		}
 	}
 	
 	///Returns the entity with the specified GID
@@ -168,6 +204,13 @@ class EntityManager extends FlxGroup
 	
 	override public function destroy():Void 
 	{
-		//super.destroy(); never gets destroyed between scenes
+		super.destroy();
+		for (e in entitys)
+		{
+			e.destroy();
+		}
+		entitys = null;
+		groups = null;
+		instance = null;
 	}
 }

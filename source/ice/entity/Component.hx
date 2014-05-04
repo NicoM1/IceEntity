@@ -39,4 +39,9 @@ class Component
 	{
 		owner = GetOwner();
 	}
+	
+	public function destroy()
+	{
+		owner = null;
+	}
 }
