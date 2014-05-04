@@ -1,0 +1,11 @@
+{
+  "name": "iceentity",
+  "url" : "https://github.com/NicoM1/IceEntity",
+  "license": "MIT",
+  "tags": ["game", "openfl", "flixel", "haxeflixel", "flash", "neko", "cpp", "android", "ios", "cross"],
+  "description": "Simple entity and component management for haxeflixel",
+  "version": "0.3",
+  "releasenote": "Testing package, everything is nearing working properly",
+  "contributors": ["NicoM1"],
+  "dependencies": { "lime": "", "openfl": "", "flixel": "" }
+}
