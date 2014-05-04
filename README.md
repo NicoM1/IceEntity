@@ -4,23 +4,34 @@ IceEntity
 A simple framework for managing gameobjects and components in haxeflixel
 
 **Changes:**
+
+  **[NEW v0.2.1]**
+  added destruction of entities
+  removed template
+  added haxelib setup
   
-  **[NEW v0.2]**
+  [v0.2]
   marked version numbers (not coded anywhere in project, just for reference)
   
-  **[NEW v0.2]**
+  [v0.2]
   all classes have replaced the word "gameobject" with entity, I know its annoying, but in the end its shorter to type...
   
-  **[NEW v0.2]**
+  [v0.2]
   added a simple message broadcasting system
 
-  [v0.11]
+  [v0.1.1]
   packages have been renamed to: ice.entity.[class].
   
-  [v0.11]
+  [v0.1.1]
   code has been surrounded in a template haxeflixel project, with EntityManager already added.
   
-  [Due note, you are not required to use this project, and copying out the (ice) folder will work just fine in your own project]
+**Installation**
+
+  [1] run ```haxelib git iceentity https://github.com/NicoM1/IceEntity``` in a terminal with git
+  
+  [2] add ```<haxelib name="iceentity"/>``` to your ```Project.xml``` file, directly under ```<haxelib name="flixel"/>```
+  
+  [3] get annoyed with missing features, give up;)
 
 **Usage:**
 
@@ -39,6 +50,3 @@ A simple framework for managing gameobjects and components in haxeflixel
   it should be fairly self explanatory, but if not, you can get in touch with me on twitter: [nico_m__](https://twitter.com/nico_m__).
   
   please note, I've had issues with code completion in flashdevelop, possibly due to the singleton pattern, so it may be easier to just read the source if you need function names + parameters. (if anyone knows how to fix this let me know)
-  
-  **[Big Warning!!!]:** There is currently no clean way to remove an entity (or clear the manager) I'm working on it:) (not like anyone actually uses this yet anyway);)
-  
