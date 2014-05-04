@@ -14,20 +14,9 @@ A simple framework for managing gameobjects and components in haxeflixel
   **[NEW v0.2.1]**
   added haxelib setup
   
-  [v0.2]
-  marked version numbers (not coded anywhere in project, just for reference)
+  **Earlier:**
   
-  [v0.2]
-  all classes have replaced the word "gameobject" with entity, I know its annoying, but in the end its shorter to type...
-  
-  [v0.2]
-  added a simple message broadcasting system
-
-  [v0.1.1]
-  packages have been renamed to: ice.entity.[class].
-  
-  [v0.1.1]
-  code has been surrounded in a template haxeflixel project, with EntityManager already added.
+  [See Changelog](https://github.com/NicoM1/IceEntity/blob/master/CHANGELOG.md)
   
 **Installation**
 
