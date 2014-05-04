@@ -4,6 +4,7 @@ IceEntity
 A simple framework for managing gameobjects and components in haxeflixel
 
 **Changes:**
+----------
 
   **[NEW v0.2.1]**
   added destruction of entities
@@ -19,6 +20,7 @@ A simple framework for managing gameobjects and components in haxeflixel
   [See Changelog](https://github.com/NicoM1/IceEntity/blob/master/CHANGELOG.md)
   
 **Installation**
+----------
 
   **[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity``` in a terminal with access to git
   
@@ -27,6 +29,7 @@ A simple framework for managing gameobjects and components in haxeflixel
   **[3]** Get annoyed with missing features, give up;)
 
 **Usage:**
+----------
 
   Call ```add(EntityManager.getInstance());``` in the create function of your playstate.
   
@@ -37,10 +40,12 @@ A simple framework for managing gameobjects and components in haxeflixel
   ```init()``` will run on the first update cycle, useful for getting and stashing references to other entitiess.
   
 **Message System [v0.2]:**
+----------
 
   IceEntity now includes a simple message broadcasting system. It is a useful way of quickly sending information or data between objects, without needing to store a reference. Simply call ```SendMessage()``` on an entity, with any info you need to send (explained in the method details). To recieve messages, simply override the ```RecieveMessage()``` function on an entity, and use that as a simple way to do whatever you want with the messages data, no need to manage a complicated event listener setup:)
   
   **Contact/Extra Info:**
+  ----------
   
   It should be fairly self explanatory, but if not, you can get in touch with me on twitter: [nico_m__](https://twitter.com/nico_m__).
   
