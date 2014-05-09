@@ -181,18 +181,18 @@ class Entity extends FlxSprite
 	
 	/**
 	 * Gets the distance between two FlxObjects
-	 * @param	?obj1	First object, defaults to this object
-	 * @param	obj2	Second object, must be specified
+	 * @param	a	First object
+	 * @param	?b	Second object, defaults to this entity
 	 * @return
 	 */
-	public function GetDistance(?obj1:FlxObject = null, obj2:FlxObject):Float
+	public function GetDistance(a:FlxObject = null, ?b:FlxObject):Float
 	{
-		if (obj1 == null)
+		if (b == null)
 		{
-			obj1 = this;
+			b = this;
 		}
-		var XX = obj2.getMidpoint().x - obj1.getMidpoint().x;
-		var YY = obj2.getMidpoint().y - obj1.getMidpoint().y;
+		var XX = b.getMidpoint().x - a.getMidpoint().x;
+		var YY = b.getMidpoint().y - a.getMidpoint().y;
 		return Math.sqrt(XX * XX + YY * YY);
 	}
 	
