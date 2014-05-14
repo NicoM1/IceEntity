@@ -64,6 +64,7 @@ class EntityManager extends FlxGroup
 			//build entity
 			var ent:Entity = new Entity( -1, tag, pos);
 			
+			//load in art/animation
 			for (art in entity.elementsNamed("art"))
 			{
 				var width:Int; 
@@ -111,6 +112,11 @@ class EntityManager extends FlxGroup
 					
 					ent.animation.add(name, framesIA, framerate, looped);
 				}
+			}
+			
+			for (component in entity.elementsNamed("component"))
+			{
+				
 			}
 			
 			AddEntity(ent);
