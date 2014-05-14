@@ -72,9 +72,45 @@ class EntityManager extends FlxGroup
 				var height:Int;
 				height = Std.parseInt(art.get("height"));
 				
-				ent.loadGraphic(
+				var path:String;
+				path = art.get("path");
 				
+				ent.loadGraphic(path, true, width, height);
 				
+				for (animation in art.elementsNamed("animation"))
+				{
+					var name:String;
+					name = animation.get("name");
+					
+					var framerate:Int;
+					framerate = Std.parseInt(animation.get("framerate"));
+					
+					var looped:Bool;
+					if (animation.get("looped") == "true")
+					{
+						looped = true;
+					}
+					else
+					{
+						looped = false;
+					}
+					
+					var framesS:String;
+					framesS = animation.get("frames");
+					
+					var framesSA:Array<String>;
+					framesSA = framesS.split(",");
+					
+					var framesIA:Array<Int>;
+					framesIA = new Array<Int>();
+					
+					for (frame in framesSA)
+					{
+						framesIA.push(Std.parseInt(frame));
+					}
+					
+					ent.animation.add(name, framesIA, framerate, looped);
+				}
 			}
 			
 			AddEntity(ent);
