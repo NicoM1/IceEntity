@@ -46,6 +46,41 @@ class EntityManager extends FlxGroup
 		return instance;
 	}
 	
+	public function BuildFromXML(xml:String)
+	{
+		var Root:Xml = Xml.parse(xml);
+		Root = Root.firstChild;
+		
+		for (entity in Root.elementsNamed("entity"))
+		{
+			//Get entity's tag
+			var tag:String = entity.get("tag");
+
+			//Get entity's position
+			var pos:Point = new Point();
+			pos.x = entity.get("x");
+			pos.y = entity.get("y");
+			
+			//build entity
+			var ent:Entity = new Entity( -1, tag, pos);
+			
+			for (art in entity.elementsNamed("art"))
+			{
+				var width:Int; 
+				width = Std.parseInt(art.get("width"));
+				
+				var height:Int;
+				height = Std.parseInt(art.get("height"));
+				
+				ent.loadGraphic(
+				
+				
+			}
+			
+			AddEntity(ent);
+		}
+	}
+	
 	/**
 	 * Adds a entity, group, or map to the manager
 	 * @param	?entity				entity to be added.

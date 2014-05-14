@@ -1,2 +1,6 @@
-*.hxproj
-*.xml
+*
+!ice
+!haxelib.json
+!CHANGELOG.md
+!LICENSE.md
+!README.md
