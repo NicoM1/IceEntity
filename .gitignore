@@ -1,4 +1,5 @@
 *
+!.gitignore
 !ice
 !haxelib.json
 !CHANGELOG.md
