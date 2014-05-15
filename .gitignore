@@ -1,6 +1,7 @@
 *
 !.gitignore
-!ice/
+!ice/*
+!ice/entity/*
 !haxelib.json
 !CHANGELOG.md
 !LICENSE.md
