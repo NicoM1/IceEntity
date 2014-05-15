@@ -35,7 +35,7 @@ A simple framework for managing gameobjects and components in haxeflixel
   
  **Entity Parser:**
 ----------
-As of v0.3.0, IceEntity includes a xml parser, which can build entities from simple xml files. Do note, this is a new feature, and may have bugs (not like the rest of IceEntity doesn't;)). In order to use this system, you must:
+As of v0.3.0, IceEntity includes an xml parser, which can build entities from simple xml files. Do note, this is a new feature, and may have bugs (not like the rest of IceEntity doesn't;)). In order to use this system, you must:
 
 **[1]** Create an xml file with this structure:
 
