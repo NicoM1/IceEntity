@@ -1,5 +1,6 @@
 *
 !.gitignore
+!ice/
 !ice/*
 !ice/entity/*
 !haxelib.json
