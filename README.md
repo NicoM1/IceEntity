@@ -6,14 +6,8 @@ A simple framework for managing gameobjects and components in haxeflixel
 **Changes:**
 ----------
 
-  **[NEW v0.2.1]**
-  added destruction of entities
-  
-  **[NEW v0.2.1]**
-  removed template
-  
-  **[NEW v0.2.1]**
-  added haxelib setup
+  **[NEW v0.3.0]**
+  Added a xml parser for building entities
   
   **Earlier:**
   
@@ -37,12 +31,34 @@ A simple framework for managing gameobjects and components in haxeflixel
   
   Use ```AddComponent();``` on a class extending entity to add a new component.
   
-  ```init()``` will run on the first update cycle, useful for getting and stashing references to other entitiess.
+  ```init()``` will run on the first update cycle, useful for getting and stashing references to other entities.
   
-**Message System [v0.2]:**
+ **Entity Parser:**
+----------
+As of v0.3.0, IceEntity includes a xml parser, which can build entities from simple xml files. Do note, this is a new feature, and may have bugs (not like the rest of IceEntity doesn't;)). In order to use this system, you must:
+
+**[1]** Create an xml file with this structure:
+
+    <?xml version="1.0" encoding="utf-8" ?>
+    <data>
+	    <entity tag="myTag" x="0" y="0">
+		    <art width="32" height="32" path="assets/images/myimage.png">
+			    <animation name="idle" frames="0,1,2" framerate="10" looped="true" />
+		    </art>
+		    <component type="com.me.MyComponent">
+			    <param name="speed" type="int" value="10"/>
+		    </component>
+	    </entity>
+    </data>
+	
+**Important information:** Parameters for components **must** be in the order same order as specified in their constructor, **passing the entity's GID is not required**, it will be auto set to the entity's GID. param names are not required, but are strongly recommended for organization. Allowed types for parameters are: **"int" "float" and "bool" anything else will be treated as a plain string, including a lack of the "type" attribute**. Capitalization on param types does not matter. **MOST IMPORTANTLY: any component you wish to add in a xml file MUST be referenced somewhere in your basecode, even adding an ```import com.me.MyComponent;``` to your playstate will work. xml parsing will not work without this, as the component will not be compiled.**
+
+**[2]** Call ```EntityManager.getInstance().BuildFromXML("assets/data/MyEntities.xml");``` in your playstates create function (or wherever really).
+  
+**Message System:**
 ----------
 
-  IceEntity now includes a simple message broadcasting system. It is a useful way of quickly sending information or data between objects, without needing to store a reference. Simply call ```SendMessage()``` on an entity, with any info you need to send (explained in the method details). To recieve messages, simply override the ```RecieveMessage()``` function on an entity, and use that as a simple way to do whatever you want with the messages data, no need to manage a complicated event listener setup:)
+IceEntity now includes a simple message broadcasting system. It is a useful way of quickly sending information or data between objects, without needing to store a reference. Simply call ```SendMessage()``` on an entity, with any info you need to send (explained in the method details). To recieve messages, simply override the ```RecieveMessage()``` function on an entity, and use that as a simple way to do whatever you want with the messages data, no need to manage a complicated event listener setup:)
   
   **Contact/Extra Info:**
   ----------

@@ -1,3 +1,7 @@
+0.3.0
+------------------------------
+* Added entity xml parser
+
 0.2.1
 ------------------------------
 * added destruction of entities
