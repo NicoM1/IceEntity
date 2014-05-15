@@ -51,7 +51,15 @@ As of v0.3.0, IceEntity includes a xml parser, which can build entities from sim
 	    </entity>
     </data>
 	
-**Important information:** Parameters for components **must** be in the same order as specified in their constructor, **passing the entity's GID is not required**, it will be auto set to the entity's GID. param names are not required, but are strongly recommended for organization. Allowed types for parameters are: **"int" "float" and "bool" anything else will be treated as a plain string, including a lack of the "type" attribute**. Capitalization on param types does not matter. **MOST IMPORTANTLY: any component you wish to add in a xml file MUST be referenced somewhere in your basecode, even adding an ```import com.me.MyComponent;``` to your playstate will work. xml parsing will not work without this, as the component will not be compiled.**
+**Important information:** 
+
+Parameters for components **must** be in the same order as specified in their constructor, **passing the entity's GID is not required**, it will be auto set. 
+
+Param "name" attributes are not required, but are strongly recommended for organization.
+
+Allowed types for parameters are: **"int" "float" and "bool" anything else will be treated as a plain string, including a lack of the "type" attribute**. Capitalization on param types does not matter. 
+
+**MOST IMPORTANTLY: any component you wish to add in a xml file MUST be referenced somewhere in your basecode, even adding an ```import com.me.MyComponent;``` to your playstate will work. xml parsing will not work without this, as the component will not be compiled.**
 
 **[2]** Call ```EntityManager.getInstance().BuildFromXML("assets/data/MyEntities.xml");``` in your playstates create function (or wherever really).
   
