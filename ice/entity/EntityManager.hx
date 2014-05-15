@@ -46,10 +46,15 @@ class EntityManager extends FlxGroup
 		return instance;
 	}
 	
-	public function BuildFromXML(xml:String)
+	/**
+	 * Builds entities from an xml file Important: any components needed MUST be imported somewhere in your code
+	 * @param	path		path to the xml
+	 * @param	useAssets	whether to use openfl.assets, required for flash
+	 */
+	public function BuildFromXML(path:String, ?useAssets:Bool = true)
 	{
-		var Root:Xml = Xml.parse(xml);
-		Root = Root.firstChild;
+		var Root:Xml = Xml.parse(IceUtil.LoadString(path, useAssets));
+		Root = Root.firstElement();
 		
 		for (entity in Root.elementsNamed("entity"))
 		{
@@ -58,11 +63,11 @@ class EntityManager extends FlxGroup
 
 			//Get entity's position
 			var pos:Point = new Point();
-			pos.x = entity.get("x");
-			pos.y = entity.get("y");
+			pos.x = Std.parseInt(entity.get("x"));
+			pos.y = Std.parseInt(entity.get("y"));
 			
 			//build entity
-			var ent:Entity = new Entity( -1, tag, pos);
+			var ent:Entity = new Entity(-1, tag, pos);
 			
 			//load in art/animation
 			for (art in entity.elementsNamed("art"))
@@ -78,48 +83,103 @@ class EntityManager extends FlxGroup
 				
 				ent.loadGraphic(path, true, width, height);
 				
-				for (animation in art.elementsNamed("animation"))
+				if (art.firstChild() != null)
 				{
-					var name:String;
-					name = animation.get("name");
-					
-					var framerate:Int;
-					framerate = Std.parseInt(animation.get("framerate"));
-					
-					var looped:Bool;
-					if (animation.get("looped") == "true")
+					for (animation in art.elementsNamed("animation"))
 					{
-						looped = true;
+						var name:String;
+						name = animation.get("name");
+						
+						var framerate:Int;
+						framerate = Std.parseInt(animation.get("framerate"));
+						
+						var looped:Bool;
+						if (animation.get("looped") == "true")
+						{
+							looped = true;
+						}
+						else
+						{
+							looped = false;
+						}
+						
+						var framesS:String;
+						framesS = animation.get("frames");
+						
+						var framesSA:Array<String>;
+						framesSA = framesS.split(",");
+						
+						var framesIA:Array<Int>;
+						framesIA = new Array<Int>();
+						
+						for (frame in framesSA)
+						{
+							framesIA.push(Std.parseInt(frame));
+						}
+						
+						ent.animation.add(name, framesIA, framerate, looped);
 					}
-					else
-					{
-						looped = false;
-					}
-					
-					var framesS:String;
-					framesS = animation.get("frames");
-					
-					var framesSA:Array<String>;
-					framesSA = framesS.split(",");
-					
-					var framesIA:Array<Int>;
-					framesIA = new Array<Int>();
-					
-					for (frame in framesSA)
-					{
-						framesIA.push(Std.parseInt(frame));
-					}
-					
-					ent.animation.add(name, framesIA, framerate, looped);
 				}
-			}
 			
-			for (component in entity.elementsNamed("component"))
-			{
+				for (component in entity.elementsNamed("component"))
+				{		
+					var params:Array<Dynamic>;
+					params = new Array<Dynamic>();
+					params.push(ent.GID);
+					
+					if (component.firstChild() != null)
+					{
+						for (param in component.elementsNamed("param"))
+						{
+							var type:String;
+							type = param.get("type").toLowerCase();
+							
+							var value:String;
+							value = param.get("value");
+							
+							switch(type)
+							{
+								case ("int"):
+								{
+									params.push(Std.parseInt(value));
+								}
+								case ("float"):
+								{
+									params.push(Std.parseFloat(value));
+								}
+								case ("bool"):
+								{
+									if (value == "true" || value == "True")
+									{
+										params.push(true);
+									}
+									else
+									{
+										params.push(false);
+									}
+								}
+								default:
+								{
+									params.push(value);
+								}
+							}
+						}
+					}
+					
+					try 
+					{
+						var classType = Type.resolveClass(component.get("type"));
+						var newComponent = Type.createInstance(classType, params);
+						ent.AddComponent(newComponent);
+					}
+					catch (msg:Dynamic)
+					{
+						throw ("Unable to resolve class from xml: " + msg);
+					}
+				}
 				
+				AddEntity(ent);
 			}
-			
-			AddEntity(ent);
 		}
 	}
 	
