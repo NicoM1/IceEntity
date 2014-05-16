@@ -114,10 +114,44 @@ class EntityManager extends FlxGroup
 						
 						for (frame in framesSA)
 						{
-							framesIA.push(Std.parseInt(frame));
+							var frameList:Array<String> = frame.split("-");
+							if (frameList.length == 2)
+							{
+								var start:Int = Std.parseInt(frameList[0]);
+								var end:Int = Std.parseInt(frameList[1]);
+								var index:Int;
+								
+								if (start < end)
+								{
+									index = start;
+									while (index <= end)
+									{
+										framesIA.push(index++);
+									}
+								}
+								else if (start > end)
+								{
+									index = start;
+									while (index >= end)
+									{
+										framesIA.push(index--);
+									}
+								}
+							}
+							else
+							{
+								framesIA.push(Std.parseInt(frame));
+							}
 						}
 						
 						ent.animation.add(name, framesIA, framerate, looped);
+						if (animation.exists("autorun"))
+						{
+							if (animation.get("autorun") == "true" || animation.get("autorun") == "True")
+							{
+								ent.animation.play(animation.get("name"));
+							}
+						}
 					}
 				}
 			

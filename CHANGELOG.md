@@ -1,6 +1,10 @@
+0.3.1
+------------------------------
+* added ability to use hyphens in animation parsing
+
 0.3.0
 ------------------------------
-* Added entity xml parser
+* added entity xml parser
 
 0.2.1
 ------------------------------

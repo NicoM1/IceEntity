@@ -6,8 +6,11 @@ A simple framework for managing gameobjects and components in haxeflixel
 **Changes:**
 ----------
 
+  **[NEW v0.3.1]**
+  Allowed hyphens when parsing animations
+  
   **[NEW v0.3.0]**
-  Added a xml parser for building entities
+  Added an xml parser for building entities
   
   **Earlier:**
   
@@ -43,7 +46,9 @@ As of v0.3.0, IceEntity includes an xml parser, which can build entities from si
     <data>
 	    <entity tag="myTag" x="0" y="0">
 		    <art width="32" height="32" path="assets/images/myimage.png">
-			    <animation name="idle" frames="0,1,2" framerate="10" looped="true" />
+			    <animation name="idle" frames="0,1,2,3-6,6-0" framerate="10" looped="true" autorun="true"/>
+				//ANIMATIONS: all parameters must be supplied, except "autorun" which mearly starts the animation as soon as it is loaded
+				//FRAMES: as of v0.3.1, "frames" can now use hyphens, allowing you to do things such as: "0-10", or "10-0", note that commas are still allowed, and this is valid: "0-10,10-0,0,1,2,3,4,5,6,7,8,9,10"
 		    </art>
 		    <component type="com.me.MyComponent">
 			    <param name="speed" type="int" value="10"/>
