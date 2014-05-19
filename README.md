@@ -8,7 +8,7 @@ A simple framework for managing gameobjects and components in haxeflixel
    
   **[NEW v0.4.0]**
   
-  Changed group storage and behaviour
+  Changed group storage and behavior
   
   Split AddEntity() into separate methods
 
