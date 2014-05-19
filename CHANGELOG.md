@@ -1,3 +1,8 @@
+0.4.0
+------------------------------
+* changed group storage and behaviour
+* split AddEntity() into separate methods 
+
 0.3.1
 ------------------------------
 * added ability to use hyphens in animation parsing

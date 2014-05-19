@@ -5,6 +5,11 @@ A simple framework for managing gameobjects and components in haxeflixel
 
 **Changes:**
 ----------
+   
+  **[NEW v0.4.0]**
+  Changed group storage and behaviour
+  
+  Split AddEntity() into separate methods
 
   **[NEW v0.3.1]**
   Allowed hyphens when parsing animations
