@@ -1,9 +1,13 @@
 package ice.entity;
 import flash.geom.Point;
+import flixel.FlxBasic;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxG;
 import flixel.group.FlxGroup;
+import flixel.group.FlxTypedGroup;
 import flixel.tile.FlxTilemap;
+import haxe.zip.Entry.ExtraField;
 
 class EntityManager extends FlxGroup
 {
@@ -12,7 +16,7 @@ class EntityManager extends FlxGroup
 	
 	///Int corresponds to GID of entity, for faster access
 	private var entitys : Map<Int, Entity>;
-	private var groups : Map<String, Array<Int>>; 
+	private var groups : Map<String, FlxTypedGroup<Entity>>; 
 	
 	///simple var for storing a single map
 	static public var map(default, null) : FlxTilemap;
@@ -20,20 +24,15 @@ class EntityManager extends FlxGroup
 	///highest current GID of any entity, used for autoasigning GIDs
 	public var highestGID(default, default) : Int = 0;
 	
+	//{ Constructor and Instance
 	private function new()
 	{
 		super();
 		entitys = new Map<Int, Entity>();
-		groups = new Map<String, Array<Int>>();
+		groups = new Map<String, FlxTypedGroup<Entity>>();
 		highestGID = 0;
 		map = null;
 	} 
-	
-	///clears the entire manager, really just calls getInstance().destroy();
-	public static function empty()
-	{
-		getInstance().destroy();
-	}
 	
 	///gets the static instance of the manager
 	public static function getInstance() : EntityManager
@@ -45,7 +44,9 @@ class EntityManager extends FlxGroup
 		
 		return instance;
 	}
+
 	
+	//{ Entity Parser
 	/**
 	 * Builds entities from an xml file Important: any components needed MUST be imported somewhere in your code
 	 * @param	path		path to the xml
@@ -217,108 +218,106 @@ class EntityManager extends FlxGroup
 		}
 	}
 	
-	/**
-	 * Adds a entity, group, or map to the manager
-	 * @param	?entity				entity to be added.
-	 * @param	?sprite					sprite to be added, there will be no way to reference this sprite, it is just an easy way to add one for testing
-	 * @param	?group					a group of sprites or entitys to be added
-	 * @param	?groupName				must be suppled when a group is added, used to reference the group
-	 * @param	?groupIsEntitys		whether the group consists of entities or sprites, adds any entitys to the global array, components require this to function
-	 * @param	?tileMap				easy way to hold a single tilemap, mainly for testing
-	 */
-	public function AddEntity(?entity : Entity, ?sprite : FlxSprite, ?group : FlxGroup, ?groupName : String, ?groupIsEntities : Bool = true, ?tileMap : FlxTilemap)
-	{
-		if (entity != null)
-		{
-			entitys.set(entity.GID, entity);
-			add(entity);
-		}
-		if (sprite != null)
-		{
-			add(sprite);
-		}
-		if (tileMap != null)
-		{
-			map = tileMap;
-			add(tileMap);
-		}
-		if (group != null)
-		{
-			if (groupName != null)
-			{
-				AddGroup(group, groupName, groupIsEntities);
-			}
-			else
-			{
-				throw "No group name provided";
-			}
-		}
-	}
+	//}
 	
-	function AddGroup(group:FlxGroup, name:String, entities:Bool):Void 
+	//{ Add Items
+	/**
+	 * Adds an entity to the manager
+	 * @param	entity		entity to be added.
+	 */
+	public function AddEntity(entity : Entity)
 	{
-		if (!entities)
-		{
-			add(group);
-		}
-		else
-		{
-			var groupArray:Array<Int> = new Array<Int>();
-			for (e in group.members)
-			{
-				var entity = cast(e, Entity);
-				AddEntity(entity);
-				groupArray.push(entity.GID);
-			}
-			groups.set(name, groupArray);
-		}
+		entitys.set(entity.GID, entity);
+		add(entity);
 	}
 	
 	/**
-	 * Gets a group by its identifier NOTE: this currently does not update when new objects are added, due to groups not being internally stored as FlxGroups
-	 * @param	name	idenifier to access group
-	 * 
+	 * Adds a flixel object to the scene, just for easy rendering, no fancy referencing
+	 * @param	basic	whatever type of flixel object you want to add
 	 */
-	public function GetGroup(name : String) : FlxGroup
+	public function AddFlxBasic(basic:FlxBasic)
 	{
-		var groupArray = groups.get(name);
-		var returnGroup:FlxGroup = new FlxGroup();
-		for (e in groupArray)
-		{
-			returnGroup.add(GetEntity(e));
-		}
-		return returnGroup;
+		add(basic);
 	}
+	
+	/**
+	 * Adds a group to the manager
+	 * @param	group	group of entities to add
+	 * @param	name	name to reference this group
+	 */
+	public function AddGroup(group:FlxTypedGroup<Entity>, name:String):Void 
+	{
+		for (e in group.members)
+		{
+			AddEntity(e);
+		}
+		groups.set(name, group);
+	}
+	//}
+	
+	//{ Removal and Destruction
 	
 	/**
 	 * removes a entity from the manager
-	 * @param	GID	the identifier of the object to be removed
-	* @param	group	if object was in a group, specify here
+	 * @param 	?entity 	a specific entity to remove
+	 * @param	?GID		the identifier of the object to be removed
 	 */
-	public function RemoveEntity(entity : Entity, ?GID : Int, ?group : String)
+	public function RemoveEntity(?entity:Entity, ?GID:Int)
 	{
 		if (GID != 0)
 		{
-			if (group != null)
-			{
-				groups.get(group).remove(GID);
-			}
 			GetEntity(GID).destroy();
 			remove(GetEntity(GID), true);
 			entitys.remove(GID);
 		}
 		else
 		{
-			if (group != null)
-			{
-				groups.get(group).remove(entity.GID);
-			}
 			entity.destroy();
 			remove(entity, true);
 			entitys.remove(entity.GID);
 		}
 	}
 	
+	/**
+	 * Removes an entity that was in a group, THIS REMOVES ENTITY COMPLETELY, if you wish to keep the entity in the manager, just use GetGroup().remove()
+	 * @param	?entity		a specific entity to remove
+	 * @param	?GID		the identifier of the object to be removed
+	 * @param	group		the group the entity belonged to
+	 */
+	public function RemoveFromGroup(?entity:Entity, ?GID:Int = 0, group:String)
+	{
+		if (entity == null)
+		{
+			if (GID == 0)
+			{
+				throw "either a specific entity or a valid GID must be specified";
+			}
+			entity = GetEntity(GID);
+		}
+		GetGroup(group).remove(entity, true);
+		RemoveEntity(entity);
+	}
+	
+	///clears the entire manager, really just calls getInstance().destroy();
+	public static function empty()
+	{
+		getInstance().destroy();
+	}
+	
+	override public function destroy():Void 
+	{
+		super.destroy();
+		for (e in entitys)
+		{
+			e.destroy();
+		}
+		entitys = null;
+		groups = null;
+		instance = null;
+	}
+	//}
+	
+	//{ Get Items
 	///Returns the entity with the specified GID
     public function GetEntity(GID : Int) : Entity
 	{
@@ -355,6 +354,18 @@ class EntityManager extends FlxGroup
 		return null;
 	}
 	
+	/**
+	 * Gets a group by its identifier
+	 * @param	name	idenifier to access group
+	 * 
+	 */
+	public function GetGroup(name : String) : FlxTypedGroup<Entity>
+	{
+		return groups.get(name);
+	}
+	//}
+	
+	//{ Messages
 	public function SendMessage(sender:Int, messageCode:Int, ?target:Int, ?value:Dynamic, ?recieveOwn:Bool = false)
 	{
 		if (target == null)
@@ -372,16 +383,5 @@ class EntityManager extends FlxGroup
 			entitys.get(target).RecieveMessage(sender, messageCode, value);
 		}
 	}
-	
-	override public function destroy():Void 
-	{
-		super.destroy();
-		for (e in entitys)
-		{
-			e.destroy();
-		}
-		entitys = null;
-		groups = null;
-		instance = null;
-	}
+	//}
 }
