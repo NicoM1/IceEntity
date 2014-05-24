@@ -8,6 +8,9 @@ import flixel.group.FlxGroup;
 import flixel.group.FlxTypedGroup;
 import flixel.tile.FlxTilemap;
 import haxe.zip.Entry.ExtraField;
+import hscript.Expr;
+import ice.parser.Script;
+import ice.parser.ScriptHandler;
 
 class EntityManager extends FlxGroup
 {
@@ -44,8 +47,8 @@ class EntityManager extends FlxGroup
 		
 		return instance;
 	}
+	//}
 
-	
 	//{ Entity Parser
 	/**
 	 * Builds entities from an xml file Important: any components needed MUST be imported somewhere in your code
@@ -213,8 +216,89 @@ class EntityManager extends FlxGroup
 					}
 				}
 				
+				for (script in entity.elementsNamed("script"))
+				{
+					ParseScript(script, ent);
+				}
+				
 				AddEntity(ent);
 			}
+		}
+		
+		for (script in Root.elementsNamed("script"))
+		{
+			ParseScript(script, null);
+		}
+	}
+	
+	static private function ParseScript(script:Xml, ?owner:Entity)
+	{
+		var file:String = "";
+		var path:String;
+		path = script.get("path");
+		if (path != null && path != "")
+		{
+			file = IceUtil.LoadString(path, true);
+		}
+		else
+		{
+			for (text in script.elementsNamed("text"))
+			{
+				file = text.firstChild().nodeValue;
+			}
+		}
+		
+		var ParsedScript:Script = new Script(file);
+		
+		for (request in script.elementsNamed("request"))
+		{
+			var module = ScriptHandler.GetModule(request.get("name"));
+			if (module != null)
+			{
+				ParsedScript.interp.variables.set(request.get("name"), module);
+			}
+			else
+			{
+				throw "module not available";
+			}
+		}
+		
+		for (expose in script.elementsNamed("expose"))
+		{
+			if (ScriptHandler.allowExpose)
+			{
+				var path = expose.get("path");
+				if (ScriptHandler.blacklist.exists(path))
+				{
+					throw "access to this class is blacklisted: " + path;
+				}
+				else
+				{
+					var module = Type.resolveClass(path);
+					if (module != null)
+					{
+						ParsedScript.interp.variables.set(expose.get("name"), module);
+					}
+					else
+					{
+						throw "expose attempt failed";
+					}
+				}
+			}
+			else
+			{
+				throw "access to expose is restricted";
+			}
+		}
+		
+		if (owner != null)
+		{
+			ParsedScript.interp.variables.set("owner", owner);
+			owner.scripts.Add(ParsedScript, Std.parseInt(script.get("id")));
+		}
+		else
+		{
+			ScriptHandler.scripts.Add(ParsedScript, Std.parseInt(script.get("id")));
 		}
 	}
 	
@@ -307,6 +391,7 @@ class EntityManager extends FlxGroup
 	override public function destroy():Void 
 	{
 		super.destroy();
+		ScriptHandler.scripts.Destroy();
 		for (e in entitys)
 		{
 			e.destroy();
@@ -382,6 +467,14 @@ class EntityManager extends FlxGroup
 		{
 			entitys.get(target).RecieveMessage(sender, messageCode, value);
 		}
+	}
+	//}
+	
+	//{ Update
+	override public function update():Void 
+	{
+		ScriptHandler.Update();
+		super.update();
 	}
 	//}
 }

@@ -4,6 +4,7 @@ import flash.geom.Point;
 import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.FlxObject;
+import ice.parser.ScriptHolder;
 
 class Entity extends FlxSprite
 {
@@ -13,6 +14,8 @@ class Entity extends FlxSprite
 	
 	///A general identifier, for grouping objects, Ex: "Enemy"
 	public var Tag:String;
+	
+	public var scripts:ScriptHolder;
 	
 	public var Parent(default, null):Int;
 	
@@ -48,6 +51,7 @@ class Entity extends FlxSprite
 		
 		components = new Array<Component>();
 		children = new Array<Int>();	
+		scripts = new ScriptHolder();
 	}
 	
 	public function AddChild(childGID:Int)
@@ -144,6 +148,8 @@ class Entity extends FlxSprite
 		{
 			c.Update();
 		}
+		
+		scripts.Update();
 	}
 	
 	public function IsAgainst(surface:FlxBasic, direction:Int) : Bool
@@ -233,6 +239,8 @@ class Entity extends FlxSprite
 				c.destroy();
 			}
 		}
+		scripts.Destroy();
+		scripts = null;
 		components = null;
 		children = null;
 		super.destroy();
