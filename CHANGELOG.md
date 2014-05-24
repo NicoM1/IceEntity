@@ -1,3 +1,7 @@
+0.5.0
+------------------------------
+* added hscript integration
+
 0.4.0
 ------------------------------
 * changed group storage and behaviour
