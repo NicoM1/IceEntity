@@ -1,3 +1,8 @@
+0.5.1
+------------------------------
+* fix for new handling of flxgroups
+* add init variable to (sort of) fix recurring init
+
 0.5.0
 ------------------------------
 * added hscript integration

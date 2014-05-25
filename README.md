@@ -110,7 +110,9 @@ Before I describe how to actually write a script, let me make sure you know the 
 		<text>
 			@init
 			{
-				i = 10;
+				if(!init) <!--this is critical, due to some annoying features of hscript-->
+					i = 10;
+				}
 			}
 			@update
 			{
