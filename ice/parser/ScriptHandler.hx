@@ -64,7 +64,8 @@ class ScriptHandler extends FlxBasic
 		startIndex = script.indexOf("{", startIndex) + 1;		
 		var endIndex:Int = script.indexOf("}", startIndex);
 		
-		var finalScript = script.substring(startIndex, endIndex);
+		var finalScript:String = ""; 
+		finalScript += script.substring(startIndex, endIndex);
 		
 		return parser.parseString(finalScript);
 	}

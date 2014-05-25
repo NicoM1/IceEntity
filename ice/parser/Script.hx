@@ -16,6 +16,7 @@ class Script
 		this.script = script;
 		
 		interp = new Interp();
+		interp.variables.set("init", false);
 		
 		updateScript = ScriptHandler.Parse("update",script);
 		destroyScript = ScriptHandler.Parse("destroy", script);
@@ -23,7 +24,9 @@ class Script
 	
 	function Init() 
 	{		
-		interp.execute(ScriptHandler.Parse("init", script));
+		var initS = ScriptHandler.Parse("init", script);
+		interp.execute(initS);
+		interp.variables.set("init", true);
 		
 		script = null;
 	}
