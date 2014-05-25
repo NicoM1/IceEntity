@@ -129,7 +129,12 @@ As you can see, the "expose" tag allows the script to gain access to a static cl
 
 **[3]** You can think of the lines with "@" as functions, although their variables are **global scope**. Currently, the above 3 are the only possible "functions", you can think of them as: "at(@) (function) do whatever is in these brackets." **Do not add comments between the function name and first curly-bracket**, elsewhere, comments are great.
 
-**[4]** The scripting system relies on hscript, which is basically interpreted haxe. Unfortunatly, I do not know enough about hscript yet to explain what you can and can't do, but two things to note are: do not use the "var" keyword, just pretend the variables already exist, and do not specify variable types. If you are more experienced in hscript, please submit a pull request with a fuller description:)
+**[4]** The scripting system relies on hscript, which is basically interpreted haxe. Unfortunatly, I do not know enough about hscript yet to explain what you can and can't do, but two things to note are: do not use the "var" keyword, just pretend the variables already exist, and do not specify variable types. If you are more experienced in hscript, please submit a pull request with a fuller description:) **important edit:** I have also found that you can not use an opening curly bracket, so if you write an if statement, it is:
+
+	if(true)
+		return true;
+	}
+**DO NOT USE AN OPENING BRACKET** you will get weird eof errors:)
 
 **[5]** As a developer, you may not want scripts, specificly mods, to have access to sensitive areas of your game. There are two ways to achieve this. The broad stroke way is to completely disallow access to the expose tag, ensuring scripts have no access to anything unless you specificly add it to the ```ScriptHandler```s modules list. This can be done with: ```ScriptHandler.allowExpose = false;```. The second, more specific way is to "blacklist" classes with ```ScriptHandler.Blacklist("path.to.Class");```, this will warn the user they can not access this package.
   
