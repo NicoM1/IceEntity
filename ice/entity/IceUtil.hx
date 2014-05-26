@@ -2,9 +2,11 @@ package ice.entity;
 
 import haxe.io.Eof;
 import openfl.Assets;
-#if !flash
+#if !flash 
+#if !js
 import sys.io.File;
 import sys.io.FileInput;
+#end
 #end
 
 /**
@@ -26,11 +28,13 @@ class IceUtil
 	static public function LoadString(path:String, useAssets:Bool):String
 	{
 		var string:String = "";
-		#if flash
+		#if flash 
+		#if js
 		if (!useAssets)
 		{
 			throw "run time file loading is not supported on flash";
 		}
+		#end
 		#end
 		if (useAssets)
 		{
@@ -39,6 +43,7 @@ class IceUtil
 		else
 		{
 			#if !flash
+			#if !js
 			try
 			{
 				var fileIn = File.read(path, false);
@@ -52,6 +57,7 @@ class IceUtil
 			{
 				return string;
 			}
+			#end
 			#end
 		}
 
