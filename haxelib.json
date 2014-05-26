@@ -4,8 +4,8 @@
   "license": "MIT",
   "tags": ["game", "openfl", "flixel", "haxeflixel", "flash", "neko", "cpp", "android", "ios", "cross"],
   "description": "Simple entity and component management for haxeflixel",
-  "version": "0.5.1",
-  "releasenote": "Added hscript integration",
+  "version": "0.5.2",
+  "releasenote": "Fix script parsing",
   "contributors": ["NicoM1"],
   "dependencies": { "lime": "", "openfl": "", "flixel": "", "hscript": ""}
 }

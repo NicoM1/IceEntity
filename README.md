@@ -80,8 +80,6 @@ Allowed types for parameters are: **"int" "float" and "bool" anything else will 
 
 **HScript Integration:**
 ----------
-**Important:** After doing some real testing, I've found serious issues, not in my implementation, but in how hscript handles the scripts. It means that, while this works, you are going to be annoyed by so many things, that this is not really usable. I hate to say this, as I'm really proud of this feature. I'm hoping to get in touch with the creator of hscript, and figure out some things. Hopefully this will be fixed shortly, but untill then, please just use standard, hard-coded components.
-**Important Edit:** nevermind, it was all my fault, completely...duhhh, I will fix it soon, sorry.
 
 As of v0.5.0, IceEntity has integrated the hscript scripting engine into its entity parser, and entity classes. Note this is a brand new feature, relativly untested, and may not be as efficient as standard components. If you find an issue, or are confused, tweet to me at: [@nico_m__](https://twitter.com/nico_m__), or email me: nico(dot)may99(at)gmail(dot)com. This allows you, the developer, to program without recompiling, or do many other cool things. I'll let you think of the possibilities:). It also means, that with little or no work, modding can be inegrated into your game! Here are the steps to getting this to work in you game:
 
@@ -116,30 +114,25 @@ Before I describe how to actually write a script, let me make sure you know the 
 				if(!init) <!--this is critical, due to some annoying features of hscript-->
 					i = 10;
 				}
-			}
+			}| <!--close these "functions" with }|-->
 			@update
 			{
 				trace(Player.x); 
 				trace(FlxG.camera.x);
 				trace(i);
-			}
+			}|
 			@destroy
 			{
 				Player = null;
-			}
+			}|
 		</text>
 	</script>
 	
 As you can see, the "expose" tag allows the script to gain access to a static class, and reference it as whatever is in the "name" attribute. The "request" tag allows the script to get access to a class instance (or, truthfully, a static class will also work), from the ```ScriptHandler```s global pool. You can add to the pool in your code with ```ScriptHandler.AddModule(name, value);``` Note that this must be done BEFORE you parse the entity file, or you will get a nasty error message.
 
-**[3]** You can think of the lines with "@" as functions, although their variables are **global scope**. Currently, the above 3 are the only possible "functions", you can think of them as: "at(@) (function) do whatever is in these brackets." **Do not add comments between the function name and first curly-bracket**, elsewhere, comments are great.
+**[3]** You can think of the lines with "@" as functions, although their variables are **global scope**. Currently, the above 3 are the only possible "functions", you can think of them as: "at(@) (function) do whatever is in these brackets." **Do not add comments between the function name and first curly-bracket**, elsewhere, comments are great. Close these "functions" with the "}" chararacter followed immediatly by the "|" character, like so: "}|".
 
-**[4]** The scripting system relies on hscript, which is basically interpreted haxe. Unfortunatly, I do not know enough about hscript yet to explain what you can and can't do, but two things to note are: do not use the "var" keyword, just pretend the variables already exist, and do not specify variable types. If you are more experienced in hscript, please submit a pull request with a fuller description:) **important edit:** I have also found that you can not use an opening curly bracket, so if you write an if statement, it is:
-
-	if(true)
-		return true;
-	}
-**DO NOT USE AN OPENING BRACKET** you will get weird eof errors:)
+**[4]** The scripting system relies on hscript, which is basically interpreted haxe. Unfortunatly, I do not know enough about hscript yet to explain what you can and can't do, but two things to note are: do not use the "var" keyword, just pretend the variables already exist, and do not specify variable types. If you are more experienced in hscript, please submit a pull request with a fuller description:)
 
 **[5]** As a developer, you may not want scripts, specificly mods, to have access to sensitive areas of your game. There are two ways to achieve this. The broad stroke way is to completely disallow access to the expose tag, ensuring scripts have no access to anything unless you specificly add it to the ```ScriptHandler```s modules list. This can be done with: ```ScriptHandler.allowExpose = false;```. The second, more specific way is to "blacklist" classes with ```ScriptHandler.Blacklist("path.to.Class");```, this will warn the user they can not access this package.
   
