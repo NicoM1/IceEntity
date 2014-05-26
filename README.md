@@ -112,6 +112,7 @@ Before I describe how to actually write a script, let me make sure you know the 
 			@init
 			{
 				if(!init) <!--this is critical, due to some annoying features of hscript-->
+				{
 					i = 10;
 				}
 			}| <!--close these "functions" with }|-->
