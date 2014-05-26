@@ -81,6 +81,7 @@ Allowed types for parameters are: **"int" "float" and "bool" anything else will 
 **HScript Integration:**
 ----------
 **Important:** After doing some real testing, I've found serious issues, not in my implementation, but in how hscript handles the scripts. It means that, while this works, you are going to be annoyed by so many things, that this is not really usable. I hate to say this, as I'm really proud of this feature. I'm hoping to get in touch with the creator of hscript, and figure out some things. Hopefully this will be fixed shortly, but untill then, please just use standard, hard-coded components.
+**Important Edit:** nevermind, it was all my fault, completely...duhhh, I will fix it soon, sorry.
 
 As of v0.5.0, IceEntity has integrated the hscript scripting engine into its entity parser, and entity classes. Note this is a brand new feature, relativly untested, and may not be as efficient as standard components. If you find an issue, or are confused, tweet to me at: [@nico_m__](https://twitter.com/nico_m__), or email me: nico(dot)may99(at)gmail(dot)com. This allows you, the developer, to program without recompiling, or do many other cool things. I'll let you think of the possibilities:). It also means, that with little or no work, modding can be inegrated into your game! Here are the steps to getting this to work in you game:
 
