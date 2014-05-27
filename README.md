@@ -111,14 +111,12 @@ Before I describe how to actually write a script, let me make sure you know the 
 		<text>
 			@init
 			{
-				if(!init) <!--this is critical, due to some annoying features of hscript-->
-				{
-					i = 10;
-				}
+				i = 10;
 			}| <!--close these "functions" with }|-->
 			@update
 			{
 				trace(Player.x); 
+				trace(owner.x); <!--if this script was inside an entity declaration, you can reference that entity with "owner"-->
 				trace(FlxG.camera.x);
 				trace(i);
 			}|

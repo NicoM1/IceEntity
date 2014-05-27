@@ -1,3 +1,7 @@
+0.5.3
+------------------------------
+* hard-code the if(!init) check
+
 0.5.2
 ------------------------------
 * fix parsing of entity scripts
