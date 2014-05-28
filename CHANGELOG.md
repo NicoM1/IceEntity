@@ -1,3 +1,7 @@
+0.5.4
+------------------------------
+* fix underlying mistake that caused the need for the if(!init) check
+
 0.5.3
 ------------------------------
 * hard-code the if(!init) check
