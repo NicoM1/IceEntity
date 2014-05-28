@@ -60,25 +60,34 @@ class ScriptHandler extends FlxBasic
 	
 	static public function Parse(func:String, script:String):Expr
 	{		
-		return parser.parseString(ParseString(func,script));
+		var returnScript = ParseString(func, script);
+		if (returnScript != null)
+		{
+			return parser.parseString(returnScript);
+		}
+		return null;
 	}
 	
 	static public function ParseString(func:String, script:String):String
 	{		
 		var startIndex:Int = script.indexOf("@" + func);
+		if (startIndex < 0)
+		{
+			return null;
+		}
 		startIndex = script.indexOf("{", startIndex) + 1;		
 		var endIndex:Int = script.indexOf("}|", startIndex);
 		
 		var finalScript:String = ""; 
-		if (func == "init")
+		/*if (func == "init")
 		{
 			finalScript += "if(!init)\n{";
-		}
+		}*/
 		finalScript += script.substring(startIndex, endIndex);
-		if (func == "init")
+		/*if (func == "init")
 		{
 			finalScript += "}";
-		}
+		}*/
 		
 		return finalScript;
 	}

@@ -10,16 +10,10 @@ class Script
 	var destroyScript:Expr;
 	var script:String;
 	var init:Bool = false;
-	var hasUpdate:Bool = false;
 	
 	public function new(script:String) 
 	{		
 		this.script = script;
-		
-		if (script.indexOf("@update") >= 0)
-		{
-			hasUpdate = true;
-		}
 		
 		interp = new Interp();
 		interp.variables.set("init", false);
@@ -31,7 +25,10 @@ class Script
 	function Init() 
 	{		
 		var initS = ScriptHandler.Parse("init", script);
-		interp.execute(initS);
+		if (initS != null)
+		{
+			interp.execute(initS);
+		}
 		interp.variables.set("init", true);
 		
 		script = null;
@@ -44,7 +41,8 @@ class Script
 			Init();
 			init = true;
 		}
-		if (hasUpdate)
+		
+		if (updateScript != null)
 		{
 			interp.execute(updateScript);
 		}
