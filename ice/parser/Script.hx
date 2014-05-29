@@ -50,10 +50,13 @@ class Script
 	
 	public function Destroy() 
 	{
-		interp.execute(destroyScript);
-		interp = null;
-		updateScript = null;
-		destroyScript = null;
+		if (destroyScript != null)
+		{
+			interp.execute(destroyScript);
+			interp = null;
+			updateScript = null;
+			destroyScript = null;
+		}
 	}
 	
 }
