@@ -1,3 +1,7 @@
+0.5.5
+------------------------------
+* check destroyScript for null
+
 0.5.4
 ------------------------------
 * fix underlying mistake that caused the need for the if(!init) check
