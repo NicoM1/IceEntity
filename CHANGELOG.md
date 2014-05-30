@@ -1,3 +1,7 @@
+0.5.6
+------------------------------
+* fix spelling of receive
+
 0.5.5
 ------------------------------
 * check destroyScript for null
