@@ -207,11 +207,11 @@ class Entity extends FlxSprite
 	 * @param	messageCode		An int ID, for determining message type
 	 * @param	target			An optional specific GID for this message to be sent to
 	 * @param	?value			An optional value, for sending larger or more specific data
-	 * @param	?recieveOwn		Whether to allow this object to recieve its own sent messages
+	 * @param	?receiveOwn		Whether to allow this object to receive its own sent messages
 	 */
-	public function SendMessage(messageCode:Int, ?target:Int, ?value:Dynamic, ?recieveOwn:Bool = false) 
+	public function SendMessage(messageCode:Int, ?target:Int, ?value:Dynamic, ?receiveOwn:Bool = false) 
 	{
-		EntityManager.getInstance().SendMessage(GID, messageCode, target, value, recieveOwn);
+		EntityManager.getInstance().SendMessage(GID, messageCode, target, value, receiveOwn);
 	}
 	
 	/**
@@ -220,7 +220,7 @@ class Entity extends FlxSprite
 	 * @param	messageCode		An int ID, for determining message type
 	 * @param	?value			An optional value, possibly carrying larger or more specific data
 	 */
-	public function RecieveMessage(sender:Int, messageCode:Int, ?value:Dynamic)
+	public function ReceiveMessage(sender:Int, messageCode:Int, ?value:Dynamic)
 	{
 		
 	}

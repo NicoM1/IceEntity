@@ -17,7 +17,7 @@ class EntityManager extends FlxGroup
 	static var instance : EntityManager;
 	
 	///Int corresponds to GID of entity, for faster access
-	private var entitys : Map<Int, Entity>;
+	private var entities : Map<Int, Entity>;
 	private var groups : Map<String, FlxTypedGroup<Entity>>; 
 	
 	///simple var for storing a single map
@@ -30,7 +30,7 @@ class EntityManager extends FlxGroup
 	private function new()
 	{
 		super();
-		entitys = new Map<Int, Entity>();
+		entities = new Map<Int, Entity>();
 		groups = new Map<String, FlxTypedGroup<Entity>>();
 		highestGID = 0;
 		map = null;
@@ -310,7 +310,7 @@ class EntityManager extends FlxGroup
 	 */
 	public function AddEntity(entity : Entity)
 	{
-		entitys.set(entity.GID, entity);
+		entities.set(entity.GID, entity);
 		add(entity);
 	}
 	
@@ -351,13 +351,13 @@ class EntityManager extends FlxGroup
 		{
 			GetEntity(GID).destroy();
 			remove(GetEntity(GID), true);
-			entitys.remove(GID);
+			entities.remove(GID);
 		}
 		else
 		{
 			entity.destroy();
 			remove(entity, true);
-			entitys.remove(entity.GID);
+			entities.remove(entity.GID);
 		}
 	}
 	
@@ -391,11 +391,11 @@ class EntityManager extends FlxGroup
 	{
 		super.destroy();
 		ScriptHandler.scripts.Destroy();
-		for (e in entitys)
+		for (e in entities)
 		{
 			e.destroy();
 		}
-		entitys = null;
+		entities = null;
 		groups = null;
 		instance = null;
 	}
@@ -405,15 +405,15 @@ class EntityManager extends FlxGroup
 	///Returns the entity with the specified GID
     public function GetEntity(GID : Int) : Entity
 	{
-		return entitys.get(GID);
+		return entities.get(GID);
 	}
 	
-	///Returns all entitys with a specific tag
+	///Returns all entities with a specific tag
 	public function GetEntitiesWithTag(tag : String) : Array<Entity>
 	{
 		var gObjects = new Array<Entity>();
 		
-		for (g in entitys)
+		for (g in entities)
 		{
 			if (g.Tag == tag)
 			{
@@ -427,7 +427,7 @@ class EntityManager extends FlxGroup
 	///Returns the first entity found with a specific tag
 	public function GetEntityByTag(tag : String) : Entity
 	{		
-		for (g in entitys)
+		for (g in entities)
 		{
 			if (g.Tag == tag)
 			{
@@ -450,21 +450,21 @@ class EntityManager extends FlxGroup
 	//}
 	
 	//{ Messages
-	public function SendMessage(sender:Int, messageCode:Int, ?target:Int, ?value:Dynamic, ?recieveOwn:Bool = false)
+	public function SendMessage(sender:Int, messageCode:Int, ?target:Int, ?value:Dynamic, ?receiveOwn:Bool = false)
 	{
 		if (target == null)
 		{
-			for (e in entitys)
+			for (e in entities)
 			{
-				if (recieveOwn || e.GID != sender)
+				if (receiveOwn || e.GID != sender)
 				{
-					e.RecieveMessage(sender, messageCode, value);
+					e.ReceiveMessage(sender, messageCode, value);
 				}
 			}
 		}
 		else
 		{
-			entitys.get(target).RecieveMessage(sender, messageCode, value);
+			entities.get(target).ReceiveMessage(sender, messageCode, value);
 		}
 	}
 	//}
