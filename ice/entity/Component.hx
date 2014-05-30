@@ -4,7 +4,7 @@ class Component
 {
 	 ///GID of owner
 	public var Owner : Int;
-	 ///Actual owner entity, null untill init()
+	 ///Actual owner entity, null until init()
 	public var owner : Entity;
 	
 	private var initialized = false;

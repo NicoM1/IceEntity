@@ -12,7 +12,7 @@ class ScriptHandler extends FlxBasic
 	
 	static public var scripts:ScriptHolder;
 	
-	///If scripts can use <expose> elements to get acess to game code
+	///If scripts can use <expose> elements to get access to game code
 	public static var allowExpose:Bool = true;
 	public static var blacklist(get, null):Map<String,Bool>;
 	
@@ -30,7 +30,7 @@ class ScriptHandler extends FlxBasic
 	}
 	
 	/**
-	 * Adds a static class, or class instace to the global pool, so <request> tags can get them
+	 * Adds a static class, or class instance to the global pool, so <request> tags can get them
 	 * @param	name		how you wish to reference this class in your script
 	 * @param	module		the class to add to the pool
 	 */	
