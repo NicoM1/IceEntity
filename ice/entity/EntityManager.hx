@@ -450,21 +450,21 @@ class EntityManager extends FlxGroup
 	//}
 	
 	//{ Messages
-	public function SendMessage(sender:Int, messageCode:Int, ?target:Int, ?value:Dynamic, ?recieveOwn:Bool = false)
+	public function SendMessage(sender:Int, messageCode:Int, ?target:Int, ?value:Dynamic, ?receiveOwn:Bool = false)
 	{
 		if (target == null)
 		{
 			for (e in entitys)
 			{
-				if (recieveOwn || e.GID != sender)
+				if (receiveOwn || e.GID != sender)
 				{
-					e.RecieveMessage(sender, messageCode, value);
+					e.ReceiveMessage(sender, messageCode, value);
 				}
 			}
 		}
 		else
 		{
-			entitys.get(target).RecieveMessage(sender, messageCode, value);
+			entitys.get(target).ReceiveMessage(sender, messageCode, value);
 		}
 	}
 	//}
