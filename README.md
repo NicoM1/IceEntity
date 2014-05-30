@@ -1,6 +1,8 @@
 IceEntity
 =========
 
+![IceEntity Demo](http://i.imgur.com/9tQt9rh.png)
+
 A simple framework for managing gameobjects and components in haxeflixel
 
 **Changes:**
