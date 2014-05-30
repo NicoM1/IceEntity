@@ -1,4 +1,5 @@
 package ice.entity;
+
 import flash.geom.Point;
 import flixel.FlxBasic;
 import flixel.FlxObject;
@@ -17,7 +18,7 @@ class EntityManager extends FlxGroup
 	static var instance : EntityManager;
 	
 	///Int corresponds to GID of entity, for faster access
-	private var entities : Map<Int, Entity>;
+	private var entities : Array<Entity>;
 	private var groups : Map<String, FlxTypedGroup<Entity>>; 
 	
 	///simple var for storing a single map
@@ -30,7 +31,7 @@ class EntityManager extends FlxGroup
 	private function new()
 	{
 		super();
-		entities = new Map<Int, Entity>();
+		entities = new Array<Entity>();
 		groups = new Map<String, FlxTypedGroup<Entity>>();
 		highestGID = 0;
 		map = null;
@@ -309,8 +310,8 @@ class EntityManager extends FlxGroup
 	 * @param	entity		entity to be added.
 	 */
 	public function AddEntity(entity : Entity)
-	{
-		entities.set(entity.GID, entity);
+	{ 
+		entities[entity.GID] = entity;
 		add(entity);
 	}
 	
@@ -351,13 +352,13 @@ class EntityManager extends FlxGroup
 		{
 			GetEntity(GID).destroy();
 			remove(GetEntity(GID), true);
-			entities.remove(GID);
+			entities[GID] = null;
 		}
 		else
 		{
 			entity.destroy();
 			remove(entity, true);
-			entities.remove(entity.GID);
+			entities[entity.GID] = null;
 		}
 	}
 	
@@ -405,7 +406,7 @@ class EntityManager extends FlxGroup
 	///Returns the entity with the specified GID
     public function GetEntity(GID : Int) : Entity
 	{
-		return entities.get(GID);
+		return entities[GID];
 	}
 	
 	///Returns all entities with a specific tag
@@ -464,7 +465,7 @@ class EntityManager extends FlxGroup
 		}
 		else
 		{
-			entities.get(target).ReceiveMessage(sender, messageCode, value);
+			entities[target].ReceiveMessage(sender, messageCode, value);
 		}
 	}
 	//}
