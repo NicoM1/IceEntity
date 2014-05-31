@@ -20,7 +20,7 @@ class EntityManager extends FlxGroup
 	static var instance : EntityManager;
 	
 	///Int corresponds to GID of entity, for faster access
-	private var entities : Array<Entity>;
+	public var entities(default, null) : Array<Entity>;
 	private var groups : Map<String, FlxTypedGroup<Entity>>; 
 	
 	///simple var for storing a single map
@@ -38,16 +38,7 @@ class EntityManager extends FlxGroup
 		highestGID = 0;
 		map = null;
 		
-		Assets.addEventListener(Event.CHANGE, ReloadAll);
 	} 
-	
-	private function ReloadAll(e)
-	{
-		for (e in entities)
-		{
-			e.scripts.ReloadScripts();
-		}
-	}
 	
 	///gets the static instance of the manager
 	public static function getInstance() : EntityManager
@@ -71,6 +62,8 @@ class EntityManager extends FlxGroup
 	{
 		var Root:Xml = Xml.parse(IceUtil.LoadString(path, useAssets));
 		Root = Root.firstElement();
+		
+		ScriptHandler.SetReloadDelay(Std.parseFloat(Root.get("reloaddelay")));
 		
 		for (entity in Root.elementsNamed("entity"))
 		{

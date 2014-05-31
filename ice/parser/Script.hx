@@ -2,6 +2,7 @@ package ice.parser;
 
 import hscript.Expr;
 import hscript.Interp;
+import ice.entity.IceUtil;
 import openfl.Assets;
 
 class Script
@@ -66,7 +67,11 @@ class Script
 	{
 		if (path != "")
 		{
+			#if ICE_LIVE_RELOAD
+			script = IceUtil.LoadString(path, false);
+			#else
 			script = Assets.getText(path);
+			#end
 			updateScript = ScriptHandler.Parse("update",script);
 			destroyScript = ScriptHandler.Parse("destroy", script);
 			var reloadS = ScriptHandler.Parse("reload", script);

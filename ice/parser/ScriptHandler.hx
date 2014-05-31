@@ -1,8 +1,12 @@
 package ice.parser;
 import flixel.FlxBasic;
+import flixel.FlxG;
 import hscript.Expr;
 import hscript.Parser;
 import hscript.Interp;
+import ice.entity.EntityManager;
+import openfl.Assets;
+import openfl.events.Event;
 
 class ScriptHandler extends FlxBasic
 {
@@ -11,6 +15,13 @@ class ScriptHandler extends FlxBasic
 	static var modules:Map<String,Dynamic>;
 	
 	static public var scripts:ScriptHolder;
+	
+	static private var init:Bool = false;
+		
+	#if ICE_LIVE_RELOAD
+	static private var timer:Float = 0;
+	static private var reloadDelay:Float = 1;
+	#end
 	
 	///If scripts can use <expose> elements to get access to game code
 	public static var allowExpose:Bool = true;
@@ -27,6 +38,21 @@ class ScriptHandler extends FlxBasic
 		modules = new Map<String,Dynamic>();
 		scripts = new ScriptHolder();
 		blacklist = new Map<String,Bool>();
+	}
+	
+	static public function SetReloadDelay(delay:Float)
+	{
+		#if ICE_LIVE_RELOAD
+		reloadDelay = delay;
+		#end
+	}
+	
+	static private function ReloadAll()
+	{
+		for (e in EntityManager.getInstance().entities)
+		{
+			e.scripts.ReloadScripts();
+		}
 	}
 	
 	/**
@@ -83,6 +109,18 @@ class ScriptHandler extends FlxBasic
 	
 	static public function Update()
 	{
+		if (!init)
+		{
+			Assets.addEventListener(Event.CHANGE, ReloadAll);
+		}
+		#if ICE_LIVE_RELOAD
+		timer += FlxG.elapsed;
+		if (timer > reloadDelay)
+		{
+			ReloadAll();
+			timer = 0;
+		}
+		#end
 		scripts.Update();
 	}
 }
