@@ -8,6 +8,9 @@ A simple framework for managing gameobjects and components in haxeflixel
 **Changes:**
 ----------
 
+  **[NEW v0.6.0]**
+  Added live-reloading of scripts
+
   **[NEW v0.5.0]**
   Added hscript integration
    
@@ -115,6 +118,10 @@ Before I describe how to actually write a script, let me make sure you know the 
 			{
 				i = 10;
 			}| <!--close these "functions" with }|-->
+			@reload
+			{
+				<!--described in next section-->
+			}|
 			@update
 			{
 				trace(Player.x); 
@@ -131,11 +138,35 @@ Before I describe how to actually write a script, let me make sure you know the 
 	
 As you can see, the "expose" tag allows the script to gain access to a static class, and reference it as whatever is in the "name" attribute. The "request" tag allows the script to get access to a class instance (or, truthfully, a static class will also work), from the ```ScriptHandler```s global pool. You can add to the pool in your code with ```ScriptHandler.AddModule(name, value);``` Note that this must be done BEFORE you parse the entity file, or you will get a nasty error message.
 
-**[3]** You can think of the lines with "@" as functions, although their variables are **global scope**. Currently, the above 3 are the only possible "functions", you can think of them as: "at(@) (function) do whatever is in these brackets." **Do not add comments between the function name and first curly-bracket**, elsewhere, comments are great. Close these "functions" with the "}" chararacter followed immediatly by the "|" character, like so: "}|".
+**[3]** You can think of the lines with "@" as functions, although their variables are **global scope**. Currently, the above 4 are the only possible "functions", you can think of them as: "at(@) (function) do whatever is in these brackets." **Do not add comments between the function name and first curly-bracket**, elsewhere, comments are great. Close these "functions" with the "}" chararacter followed immediatly by the "|" character, like so: "}|".
 
 **[4]** The scripting system relies on hscript, which is basically interpreted haxe. Unfortunatly, I do not know enough about hscript yet to explain what you can and can't do, but two things to note are: do not use the "var" keyword, just pretend the variables already exist, and do not specify variable types. If you are more experienced in hscript, please submit a pull request with a fuller description:)
 
 **[5]** As a developer, you may not want scripts, specificly mods, to have access to sensitive areas of your game. There are two ways to achieve this. The broad stroke way is to completely disallow access to the expose tag, ensuring scripts have no access to anything unless you specificly add it to the ```ScriptHandler```s modules list. This can be done with: ```ScriptHandler.allowExpose = false;```. The second, more specific way is to "blacklist" classes with ```ScriptHandler.Blacklist("path.to.Class");```, this will warn the user they can not access this package.
+
+**Live Scripting**
+----------
+
+As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading system, to allow you to literally code your game **while it is running**. This currently only works for Windows and Neko builds, and only for external script files (ie scripts created inside of your entities.xml file will not be editable at runtime). Here is what you need to do to make use of this new feature:
+
+**[1]** Any scripts you want to be able to edit at runtime must be taken out of your xml file, placed in their own file, and then declared in your script element's "path" attribute.
+
+**[2]** To help with testing, a new scripting function has been added:
+    @reload
+	{
+		//This runs every time the script is updated, you can use it to edit variables for testing.
+		//Note that it is ONLY for testing, you should not use this for any real game code, just for playing with values for speed and so on. THIS NEVER RUNS IN A FINAL BUILD
+	}|
+	
+**[3]** The files you edit while making use of live reloading **are not your main files**. The files you want to edit are in: yourProject\export\windows\[neko or cpp]\bin\assets\data. **If you wish to use the logic you've created, copy these files back into your main folder when you are done**.
+
+**[4]** Unfortunately, "live reloading" isn't *quite* live yet. Once you've built and opened your game, open a console window and navigate to your main project folder. Now, whenever you wish to see the effect of a change you made, simply type "lime update [neko/windows]" (where [neko/windows] is whatever target your running your project in. Hint: after you've done this once, you can just press the [up arrow] and then enter to update it again.
+
+**[5]** General Notes: 
+
+**This doesn't work for scripts specified in the "text" elements of your xml file**
+
+As a rule of thumb, any script that you wish to use the "@update" function in should be contained in its own file, not in your xml file. This does two things: keeps your xml file readable, and combats the annoyance of live-reloading not working for internal scripts.
   
 **Message System:**
 ----------

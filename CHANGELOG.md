@@ -1,3 +1,9 @@
+0.6.0
+------------------------------
+* integrate live-reloading of external scripts
+* add @reload function for scripts
+* change Owner to GID
+
 0.5.6
 ------------------------------
 * fix spelling of receive
