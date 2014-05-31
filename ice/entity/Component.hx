@@ -3,7 +3,7 @@ package ice.entity;
 class Component
 {
 	 ///GID of owner
-	public var Owner : Int;
+	public var GID : Int;
 	 ///Actual owner entity, null until init()
 	public var owner : Entity;
 	
@@ -13,12 +13,12 @@ class Component
 	
 	public function new(Owner : Int) 
 	{
-		this.Owner = Owner;
+		this.GID = Owner;
 	}
 	
 	public function GetOwner() : Entity
 	{
-		return EntityManager.getInstance().GetEntity(Owner);
+		return EntityManager.getInstance().GetEntity(GID);
 	}
 	
 	public function GetComponentOnOwner<T:Component>(type:Class<T>):T
