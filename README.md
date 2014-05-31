@@ -8,6 +8,9 @@ A simple framework for managing gameobjects and components in haxeflixel
 **Changes:**
 ----------
 
+  **[NEW v0.6.1]**
+  Made live-reloading fully automatic
+
   **[NEW v0.6.0]**
   Added live-reloading of scripts
 
@@ -161,7 +164,17 @@ As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading syste
 	
 **[3]** The files you edit while making use of live reloading **are not your main files**. The files you want to edit are in: yourProject\export\windows\ (neko or cpp)\bin\assets\data. **If you wish to use the logic you've created, copy these files back into your main folder when you are done**.
 
-**[4]** Unfortunately, "live reloading" isn't *quite* live yet. Once you've built and opened your game, open a console window and navigate to your main project folder. Now, whenever you wish to see the effect of a change you made, simply type "lime update [neko/windows]" (where [neko/windows] is whatever target your running your project in). Hint: after you've done this once, you can just press the [up arrow] and then enter to update it again.
+**[4]** As of v0.6.1, there are now two ways of initiating live-reloading, for easier (and more helpful) usage, I recommend the first option:
+
+**[Option 1]** Fully Automatic Live-Scripting:
+
+This is the easier, and more useful method of live-scripting, **however**, it is likely much more taxing on your system. All you need to do to use this system is to add:
+```<haxedef name="ICE_LIVE_RELOAD"/>``` to your project.xml file. Thats it!!!!
+If you want control over the exact time between reloads, you can add a ```reloaddelay``` attribute to the root element of your entities.xml file.
+
+**[Option 1]** (only sort of) Live-Scripting:
+
+Here is the less user friendly version: Once you've built and opened your game, open a console window and navigate to your main project folder. Now, whenever you wish to see the effect of a change you've made, simply type "lime update [neko/windows]" (where [neko/windows] is whatever target your running your project in). Hint: after you've done this once, you can just press the [up arrow] and then enter to update it again.
 
 **[5]** General Notes: 
 

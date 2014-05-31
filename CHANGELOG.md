@@ -1,3 +1,7 @@
+0.6.1
+------------------------------
+* add option for true live-reloading
+
 0.6.0
 ------------------------------
 * integrate live-reloading of external scripts
