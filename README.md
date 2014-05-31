@@ -180,6 +180,8 @@ Here is the less user friendly version: Once you've built and opened your game, 
 
 **This doesn't work for scripts specified in the "text" elements of your xml file**
 
+**If using full-auto scripting, make sure to remove ```<haxedef name="ICE_LIVE_RELOAD"/>``` before releasing your game, it is a performace waster, and has no use in a final build.**
+
 As a rule of thumb, any script that you wish to use the "@update" function in should be contained in its own file, not in your xml file. This does two things: keeps your xml file readable, and combats the annoyance of live-reloading not working for internal scripts.
   
 **Message System:**
