@@ -152,6 +152,7 @@ As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading syste
 **[1]** Any scripts you want to be able to edit at runtime must be taken out of your xml file, placed in their own file, and then declared in your script element's "path" attribute.
 
 **[2]** To help with testing, a new scripting function has been added:
+
     @reload
 	{
 		//This runs every time the script is updated, you can use it to edit variables for testing.
