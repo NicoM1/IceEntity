@@ -11,6 +11,8 @@ import haxe.zip.Entry.ExtraField;
 import hscript.Expr;
 import ice.parser.Script;
 import ice.parser.ScriptHandler;
+import openfl.Assets;
+import openfl.events.Event;
 
 class EntityManager extends FlxGroup
 {
@@ -35,7 +37,17 @@ class EntityManager extends FlxGroup
 		groups = new Map<String, FlxTypedGroup<Entity>>();
 		highestGID = 0;
 		map = null;
+		
+		Assets.addEventListener(Event.CHANGE, ReloadAll);
 	} 
+	
+	private function ReloadAll(e)
+	{
+		for (e in entities)
+		{
+			e.scripts.ReloadScripts();
+		}
+	}
 	
 	///gets the static instance of the manager
 	public static function getInstance() : EntityManager
@@ -234,9 +246,15 @@ class EntityManager extends FlxGroup
 	static private function ParseScript(script:Xml, ?owner:Entity)
 	{
 		var file:String = "";
-		var path:String;
+		
+		var path:String = "";
 		path = script.get("path");
-		if (path != null && path != "")
+		if (path == null)
+		{
+			path = "";
+		}
+		
+		if (path != "")
 		{
 			file = IceUtil.LoadString(path, true);
 		}
@@ -248,7 +266,7 @@ class EntityManager extends FlxGroup
 			}
 		}
 		
-		var ParsedScript:Script = new Script(file);
+		var ParsedScript:Script = new Script(file, path);
 		
 		for (request in script.elementsNamed("request"))
 		{

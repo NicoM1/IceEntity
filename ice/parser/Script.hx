@@ -2,6 +2,7 @@ package ice.parser;
 
 import hscript.Expr;
 import hscript.Interp;
+import openfl.Assets;
 
 class Script
 {
@@ -10,10 +11,12 @@ class Script
 	var destroyScript:Expr;
 	var script:String;
 	var init:Bool = false;
+	var path:String = "";
 	
-	public function new(script:String) 
+	public function new(script:String, ?path:String = "") 
 	{		
 		this.script = script;
+		this.path = path;
 		
 		interp = new Interp();
 		interp.variables.set("init", false);
@@ -59,4 +62,18 @@ class Script
 		}
 	}
 	
+	public function ReloadScript()
+	{
+		if (path != "")
+		{
+			script = Assets.getText(path);
+			updateScript = ScriptHandler.Parse("update",script);
+			destroyScript = ScriptHandler.Parse("destroy", script);
+			var reloadS = ScriptHandler.Parse("reload", script);
+			if (reloadS != null)
+			{
+				interp.execute(reloadS);
+			}
+		}
+	}
 }

@@ -53,4 +53,11 @@ class ScriptHolder
 		scripts = new Array<Script>();
 	}
 	
+	public function ReloadScripts()
+	{
+		for (s in scripts)
+		{
+			s.ReloadScript();
+		}
+	}
 }
