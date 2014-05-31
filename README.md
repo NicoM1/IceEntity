@@ -161,7 +161,7 @@ As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading syste
 	
 **[3]** The files you edit while making use of live reloading **are not your main files**. The files you want to edit are in: yourProject\export\windows\ (neko or cpp)\bin\assets\data. **If you wish to use the logic you've created, copy these files back into your main folder when you are done**.
 
-**[4]** Unfortunately, "live reloading" isn't *quite* live yet. Once you've built and opened your game, open a console window and navigate to your main project folder. Now, whenever you wish to see the effect of a change you made, simply type "lime update [neko/windows]" (where [neko/windows] is whatever target your running your project in. Hint: after you've done this once, you can just press the [up arrow] and then enter to update it again.
+**[4]** Unfortunately, "live reloading" isn't *quite* live yet. Once you've built and opened your game, open a console window and navigate to your main project folder. Now, whenever you wish to see the effect of a change you made, simply type "lime update [neko/windows]" (where [neko/windows] is whatever target your running your project in). Hint: after you've done this once, you can just press the [up arrow] and then enter to update it again.
 
 **[5]** General Notes: 
 
