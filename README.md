@@ -182,6 +182,8 @@ Here is the less user friendly version: Once you've built and opened your game, 
 
 **If using full-auto scripting, make sure to remove ```<haxedef name="ICE_LIVE_RELOAD"/>``` before releasing your game, it is a performace waster, and has no use in a final build.**
 
+For more responsive use I recommend adding ```<haxedef name="FLX_NO_FOCUS_LOST_SCREEN"/>``` to your project.xml, and setting ```FlxG.autoPause``` to ```false```. This way, you do not need to give the game focus to see your changes in action.
+
 As a rule of thumb, any script that you wish to use the "@update" function in should be contained in its own file, not in your xml file. This does two things: keeps your xml file readable, and combats the annoyance of live-reloading not working for internal scripts.
   
 **Message System:**
