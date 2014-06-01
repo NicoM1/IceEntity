@@ -1,3 +1,7 @@
+0.6.3
+------------------------------
+* fix backward conditionals that broke string loading
+
 0.6.2
 ------------------------------
 * only call @reload if script changed
