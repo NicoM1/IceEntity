@@ -176,7 +176,7 @@ If you want control over the exact time between reloads, you can add a ```reload
 
 Here is the less user friendly version: Once you've built and opened your game, open a console window and navigate to your main project folder. Now, whenever you wish to see the effect of a change you've made, simply type "lime update [neko/windows]" (where [neko/windows] is whatever target your running your project in). Hint: after you've done this once, you can just press the [up arrow] and then enter to update it again.
 
-**[5]** General Notes: 
+**[5] Important Notes**: 
 
 **This doesn't work for scripts specified in the "text" elements of your xml file**
 
