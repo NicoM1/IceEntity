@@ -40,7 +40,7 @@ class IceUtil
 		}
 		else
 		{
-			#if (flash || js)
+			#if !(flash || js)
 			try
 			{
 				var fileIn = File.read(path, false);
