@@ -1,3 +1,7 @@
+0.6.2
+------------------------------
+* only call @reload if script changed
+
 0.6.1
 ------------------------------
 * add option for true live-reloading
