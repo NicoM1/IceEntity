@@ -70,6 +70,10 @@ class Script
 		{
 			#if ICE_LIVE_RELOAD
 			newScript = IceUtil.LoadString(path, false);
+			if (newScript == null)
+			{
+				return;
+			}
 			if (newScript == script)
 			{
 				return;

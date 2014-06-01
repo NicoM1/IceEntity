@@ -54,6 +54,10 @@ class IceUtil
 			{
 				return string;
 			}
+			catch (e:Dynamic)
+			{
+				return null;
+			}
 			#end
 		}
 
