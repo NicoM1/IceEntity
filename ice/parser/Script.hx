@@ -11,6 +11,7 @@ class Script
 	var updateScript:Expr;
 	var destroyScript:Expr;
 	var script:String;
+	var newScript:String;
 	var init:Bool = false;
 	var path:String = "";
 	
@@ -68,7 +69,12 @@ class Script
 		if (path != "")
 		{
 			#if ICE_LIVE_RELOAD
-			script = IceUtil.LoadString(path, false);
+			newScript = IceUtil.LoadString(path, false);
+			if (newScript == script)
+			{
+				return;
+			}
+			script = newScript;
 			#else
 			script = Assets.getText(path);
 			#end
