@@ -28,13 +28,11 @@ class IceUtil
 	static public function LoadString(path:String, useAssets:Bool):String
 	{
 		var string:String = "";
-		#if flash 
-		#if js
+		#if (flash || js)
 		if (!useAssets)
 		{
 			throw "run time file loading is not supported on flash";
 		}
-		#end
 		#end
 		if (useAssets)
 		{
@@ -42,8 +40,7 @@ class IceUtil
 		}
 		else
 		{
-			#if !flash
-			#if !js
+			#if (flash || js)
 			try
 			{
 				var fileIn = File.read(path, false);
@@ -57,7 +54,6 @@ class IceUtil
 			{
 				return string;
 			}
-			#end
 			#end
 		}
 
