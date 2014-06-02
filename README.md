@@ -151,7 +151,7 @@ As you can see, the "expose" tag allows the script to gain access to a static cl
 ----------
 
 ![Live-Scripting Demo](http://i.imgur.com/CkyiKeF.gif)
-As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading system, to allow you to literally code your game **while it is running**. This currently only works for Windows and Neko builds, and only for external script files (ie scripts created inside of your entities.xml file will not be editable at runtime). Here is what you need to do to make use of this new feature:
+As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading system, to allow you to literally code your game **while it is running**. This currently only works for Windows and Neko builds [edit: I think Linux and Mac as well, all I meant was cpp or neko], and only for external script files (ie scripts created inside of your entities.xml file will not be editable at runtime). Here is what you need to do to make use of this new feature:
 
 **[1]** Any scripts you want to be able to edit at runtime must be taken out of your xml file, placed in their own file, and then declared in your script element's "path" attribute.
 
