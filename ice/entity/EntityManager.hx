@@ -6,6 +6,7 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxG;
 import flixel.group.FlxGroup;
+import flixel.group.FlxTypedGroup;
 import flixel.tile.FlxTilemap;
 import haxe.zip.Entry.ExtraField;
 import hscript.Expr;
@@ -21,7 +22,7 @@ class EntityManager extends FlxGroup
 	
 	///Int corresponds to GID of entity, for faster access
 	public var entities(default, null) : Array<Entity>;
-	private var groups : Map<String, FlxTypedGroup<Entity>>; 
+	private var groups : Map<String, FlxTypedGroup<Entity>>;
 	
 	///simple var for storing a single map
 	static public var map(default, null) : FlxTilemap;
