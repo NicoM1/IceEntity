@@ -36,13 +36,13 @@ A simple framework for managing gameobjects and components in haxeflixel
 **Installation**
 ----------
 
-  **[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity master``` in a terminal with access to git
-  
-  **Note: If you use the development version of HaxeFlixel (as I do), please replace ```master``` with ```dev```, this will make sure that IceEntity works properly with your prefered version of HaxeFlixel.**
-  
-  **[2]** Add ```<haxelib name="iceentity"/>``` to your ```Project.xml``` file, directly under ```<haxelib name="flixel"/>```
-  
-  **[3]** Get annoyed with missing features, give up;)
+**[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity dev``` in a terminal with access to git
+ 
+Note: I recommend using the dev branch, as I can't guarantee the master branch will always be up to date, but in order to use the dev branch, you must be on the dev version of HaxeFlixel
+
+**[2]** Add ```<haxelib name="iceentity"/>``` to your Project.xml file, directly under ```<haxelib name="flixel"/>```
+
+**[3]** That's all:)
 
 **Usage:**
 ----------
@@ -55,7 +55,7 @@ A simple framework for managing gameobjects and components in haxeflixel
   
   ```init()``` will run on the first update cycle, useful for getting and stashing references to other entities.
   
- **Entity Parser:**
+**Entity Parser:**
 ----------
 As of v0.3.0, IceEntity includes an xml parser, which can build entities from simple xml files. Do note, this is a new feature, and may have bugs (not like the rest of IceEntity doesn't;)). In order to use this system, you must:
 
