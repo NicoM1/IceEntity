@@ -18,6 +18,7 @@ class EntityManager extends FlxGroup
 {
 	///a singleton instance of this class
 	public static var instance(get, null) : EntityManager;
+	private static var _instance : EntityManager;
 	
 	///Int corresponds to GID of entity, for faster access
 	public var entities(default, null) : Array<Entity>;
@@ -43,12 +44,12 @@ class EntityManager extends FlxGroup
 	///gets the static instance of the manager
 	public static function getInstance() : EntityManager
 	{
-		if (instance == null)
+		if (_instance == null)
 		{
-			instance = new EntityManager();
+			_instance = new EntityManager();
 		}
 		
-		return instance;
+		return _instance;
 	}
 	public static inline function get_instance() : EntityManager
 	{
