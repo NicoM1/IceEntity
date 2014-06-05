@@ -17,7 +17,6 @@ import openfl.events.Event;
 class EntityManager extends FlxGroup
 {
 	///a singleton instance of this class
-	@:isVar
 	public static var instance(get, null) : EntityManager;
 	
 	///Int corresponds to GID of entity, for faster access
