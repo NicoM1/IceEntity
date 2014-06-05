@@ -1,10 +1,10 @@
 package ice.entity;
 
 import flash.geom.Point;
+import flixel.FlxG;
 import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxG;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 import haxe.zip.Entry.ExtraField;
@@ -17,14 +17,14 @@ import openfl.events.Event;
 class EntityManager extends FlxGroup
 {
 	///a singleton instance of this class
-	static var instance : EntityManager;
+	public static var instance(get, null) : EntityManager;
 	
 	///Int corresponds to GID of entity, for faster access
 	public var entities(default, null) : Array<Entity>;
 	private var groups : Map<String, FlxTypedGroup<Entity>>; 
 	
 	///simple var for storing a single map
-	static public var map(default, null) : FlxTilemap;
+	public static var map(default, null) : FlxTilemap;
 	
 	///highest current GID of any entity, used for autoasigning GIDs
 	public var highestGID(default, default) : Int = 0;
@@ -49,6 +49,10 @@ class EntityManager extends FlxGroup
 		}
 		
 		return instance;
+	}
+	public static inline function get_instance() : EntityManager
+	{
+		return getInstance();
 	}
 	//}
 
@@ -415,7 +419,7 @@ class EntityManager extends FlxGroup
 	
 	//{ Get Items
 	///Returns the entity with the specified GID
-    public function GetEntity(GID : Int) : Entity
+    	public function GetEntity(GID : Int) : Entity
 	{
 		return entities[GID];
 	}
