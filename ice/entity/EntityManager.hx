@@ -18,7 +18,7 @@ import openfl.events.Event;
 class EntityManager extends FlxGroup
 {
 	///a singleton instance of this class
-	static var instance : EntityManager;
+	public static var instance(get, null) : EntityManager;
 	
 	///Int corresponds to GID of entity, for faster access
 	public var entities(default, null) : Array<Entity>;
@@ -50,6 +50,10 @@ class EntityManager extends FlxGroup
 		}
 		
 		return instance;
+	}
+	public static inline function get_instance() : EntityManager
+	{ 
+		return getInstance(); 
 	}
 	//}
 
@@ -416,7 +420,7 @@ class EntityManager extends FlxGroup
 	
 	//{ Get Items
 	///Returns the entity with the specified GID
-    public function GetEntity(GID : Int) : Entity
+    	public function GetEntity(GID : Int) : Entity
 	{
 		return entities[GID];
 	}
