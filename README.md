@@ -48,9 +48,9 @@ A simple framework for managing gameobjects and components in haxeflixel
 **Usage:**
 ----------
 
-  Call ```add(EntityManager.getInstance());``` in the create function of your playstate.
+  Call ```add(EntityManager.instance);``` in the create function of your playstate.
   
-  Use ```EntityManager.getInstance().AddEntity();``` to add objects or groups to the manager.
+  Use ```EntityManager.instance.AddEntity();``` to add objects or groups to the manager.
   
   Use ```AddComponent();``` on a class extending entity to add a new component.
   
@@ -87,7 +87,7 @@ Allowed types for parameters are: **"int" "float" and "bool" anything else will 
 
 **MOST IMPORTANTLY: any component you wish to add in a xml file MUST be referenced somewhere in your basecode, even adding an ```import com.me.MyComponent;``` to your playstate will work. xml parsing will not work without this, as the component will not be compiled.**
 
-**[2]** Call ```EntityManager.getInstance().BuildFromXML("assets/data/MyEntities.xml");``` in your playstates create function (or wherever really).
+**[2]** Call ```EntityManager.instance.BuildFromXML("assets/data/MyEntities.xml");``` in your playstates create function (or wherever really).
 
 **HScript Integration:**
 ----------
