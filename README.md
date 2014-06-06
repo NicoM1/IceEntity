@@ -8,6 +8,9 @@ A simple framework for managing gameobjects and components in haxeflixel
 **Changes:**
 ----------
 
+  **[NEW v0.7.0]**
+  Allow access to instance via a property
+
   **[NEW v0.6.1]**
   Made live-reloading fully automatic
 
