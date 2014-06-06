@@ -1,3 +1,7 @@
+0.7.0
+------------------------------
+* allow access to instance via a property
+
 0.6.3
 ------------------------------
 * fix backward conditionals that broke string loading
