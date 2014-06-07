@@ -241,7 +241,7 @@ class EntityManager extends FlxGroup
 		}
 	}
 	
-	static private function ParseScript(script:Xml, ?owner:Entity)
+	private function ParseScript(script:Xml, ?owner:Entity)
 	{
 		var file:String = "";
 		
@@ -304,6 +304,14 @@ class EntityManager extends FlxGroup
 			else
 			{
 				throw "access to expose is restricted";
+			}
+		}
+		
+		if (script.exists("noreload"))
+		{
+			if (script.get("noreload") == "true")
+			{
+				ParsedScript.noReload = true;
 			}
 		}
 		

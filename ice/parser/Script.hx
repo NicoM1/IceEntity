@@ -14,6 +14,7 @@ class Script
 	var newScript:String;
 	var init:Bool = false;
 	var path:String = "";
+	public var noReload = false;
 	
 	public function new(script:String, ?path:String = "") 
 	{		
@@ -66,7 +67,7 @@ class Script
 	
 	public function ReloadScript()
 	{
-		if (path != "")
+		if (!noReload && path != "")
 		{
 			#if ICE_LIVE_RELOAD
 			newScript = IceUtil.LoadString(path, false);

@@ -2,7 +2,7 @@ package ice.parser;
 
 class ScriptHolder
 {
-	var scripts:Array<Script>;
+	public var scripts(default,null):Array<Script>;
 	
 	public function new() 
 	{
