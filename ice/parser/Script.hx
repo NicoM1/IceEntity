@@ -15,6 +15,8 @@ class Script
 	var init:Bool = false;
 	var path:String = "";
 	public var noReload = false;
+	public var doClean(default,null):Bool = false;
+	public var noClean:Bool = false;
 	
 	public function new(script:String, ?path:String = "") 
 	{		
@@ -38,6 +40,11 @@ class Script
 		interp.variables.set("init", true);
 		
 		script = null;
+		
+		if (!noClean && updateScript == null && destroyScript == null)
+		{
+			doClean = true;
+		}
 	}
 	
 	public function Update() 

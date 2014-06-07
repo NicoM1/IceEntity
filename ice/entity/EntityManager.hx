@@ -315,6 +315,14 @@ class EntityManager extends FlxGroup
 			}
 		}
 		
+		if (script.exists("noclean"))
+		{
+			if (script.get("noclean") == "true")
+			{
+				ParsedScript.noClean = true;
+			}
+		}
+		
 		if (owner != null)
 		{
 			ParsedScript.interp.variables.set("owner", owner);

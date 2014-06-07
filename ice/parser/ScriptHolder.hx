@@ -40,7 +40,14 @@ class ScriptHolder
 	{
 		for (s in scripts)
 		{
-			s.Update();
+			if (s.doClean)
+			{
+				s = null;
+			}
+			else if (s != null)
+			{
+				s.Update();
+			}
 		}
 	}
 	
