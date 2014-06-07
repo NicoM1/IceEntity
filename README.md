@@ -8,6 +8,12 @@ A simple framework for managing gameobjects and components in haxeflixel
 **Changes:**
 ----------
 
+  **[NEW v0.8.0]**
+  
+  Added "noreload" option for script elements
+  
+  Made scripts remove after calling init, unless they have update or destroy logic
+
   **[NEW v0.7.0]**
   Allow access to instance via a property
 
@@ -168,7 +174,17 @@ As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading syste
 	
 **[3]** The files you edit while making use of live reloading **are not your main files**. The files you want to edit are in: yourProject\export\windows\ (neko or cpp)\bin\assets\data. **If you wish to use the logic you've created, copy these files back into your main folder when you are done**.
 
-**[4]** As of v0.6.1, there are now two ways of initiating live-reloading, for easier (and more helpful) usage, I recommend the first option:
+**[4]** Reloading can be costly; you may not wish to reload every script when you only want to tweak a couple. To stop certain scripts from reloading, a "noreload" attribute has been added for script elements:
+
+    <script noreload="true">
+	
+Also, you may wish to do setup on an entity after the game begins, but not run any actual update logic. This means a script object is created, and updated every frame for no reason. To combat this, automatic script "cleaning" has been added, meaning that if only an "init" function is specified, the script will be deleted after running said "init" function. It is possible that during live-scripting, this behaviour may be annoying, if you wish to add other functions while running. In that case, you can specify:
+
+    <script noclean="true">
+	
+Note that cleaning **only happens** if the script only had an "init" function at startup, the noclean option is only meant to be used if you really have a need for it, in normal use you should **never** specify this option.
+
+**[5]** As of v0.6.1, there are now two ways of initiating live-reloading, for easier (and more helpful) usage, I recommend the first option:
 
 **[Option 1]** Fully Automatic Live-Scripting:
 
@@ -180,7 +196,7 @@ If you want control over the exact time between reloads, you can add a ```reload
 
 Here is the less user friendly version: Once you've built and opened your game, open a console window and navigate to your main project folder. Now, whenever you wish to see the effect of a change you've made, simply type "lime update [neko/windows]" (where [neko/windows] is whatever target your running your project in). Hint: after you've done this once, you can just press the [up arrow] and then enter to update it again.
 
-**[5] Important Notes**: 
+**[6] Important Notes**: 
 
 **This doesn't work for scripts specified in the "text" elements of your xml file**
 

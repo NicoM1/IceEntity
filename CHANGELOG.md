@@ -1,3 +1,8 @@
+0.8.0
+------------------------------
+* add noreload option
+* make scripts delete if they only have init logic (unless noclean is specified)
+
 0.7.0
 ------------------------------
 * allow access to instance via a property

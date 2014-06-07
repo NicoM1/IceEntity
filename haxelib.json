@@ -4,8 +4,8 @@
   "license": "MIT",
   "tags": ["game", "openfl", "flixel", "haxeflixel", "flash", "neko", "cpp", "android", "ios", "cross"],
   "description": "Simple entity and component management for haxeflixel",
-  "version": "0.7.0",
-  "releasenote": "Allow access to instance via a property",
+  "version": "0.8.0",
+  "releasenote": "",
   "contributors": ["NicoM1"],
   "dependencies": { "lime": "", "openfl": "", "flixel": "", "hscript": ""}
 }
