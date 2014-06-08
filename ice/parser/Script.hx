@@ -24,9 +24,8 @@ class Script
 		this.path = path;
 		
 		interp = new Interp();
-		interp.variables.set("init", false);
 		
-		updateScript = ScriptHandler.Parse("update",script);
+		updateScript = ScriptHandler.Parse("update", script);
 		destroyScript = ScriptHandler.Parse("destroy", script);
 	}
 	
@@ -37,7 +36,6 @@ class Script
 		{
 			interp.execute(initS);
 		}
-		interp.variables.set("init", true);
 		
 		script = null;
 		
@@ -90,7 +88,7 @@ class Script
 			#else
 			script = Assets.getText(path);
 			#end
-			updateScript = ScriptHandler.Parse("update",script);
+			updateScript = ScriptHandler.Parse("update", script);
 			destroyScript = ScriptHandler.Parse("destroy", script);
 			var reloadS = ScriptHandler.Parse("reload", script);
 			if (reloadS != null)
