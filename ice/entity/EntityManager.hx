@@ -168,8 +168,8 @@ class EntityManager extends FlxGroup
 						}
 					}
 				}
-			
-				for (component in entity.elementsNamed("component"))
+			}
+			for (component in entity.elementsNamed("component"))
 				{		
 					var params:Array<Dynamic>;
 					params = new Array<Dynamic>();
@@ -232,7 +232,6 @@ class EntityManager extends FlxGroup
 				}
 				
 				AddEntity(ent);
-			}
 		}
 		
 		for (script in Root.elementsNamed("script"))
