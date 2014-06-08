@@ -1,3 +1,11 @@
+0.8.2
+------------------------------
+* fix parsing mistake causing scripts to only load if the entity had an art element
+
+0.8.1
+------------------------------
+* make sure to check that entities aren't null
+
 0.8.0
 ------------------------------
 * add noreload option
