@@ -47,7 +47,7 @@ class ScriptHandler extends FlxBasic
 		#end
 	}
 	
-	static private function ReloadAll()
+	static public function ReloadAll()
 	{
 		for (e in EntityManager.getInstance().entities)
 		{
@@ -115,6 +115,7 @@ class ScriptHandler extends FlxBasic
 		if (!init)
 		{
 			Assets.addEventListener(Event.CHANGE, ReloadAll);
+			init = true;
 		}
 		#if ICE_LIVE_RELOAD
 		timer += FlxG.elapsed;
