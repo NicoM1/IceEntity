@@ -51,7 +51,10 @@ class ScriptHandler extends FlxBasic
 	{
 		for (e in EntityManager.getInstance().entities)
 		{
-			e.scripts.ReloadScripts();
+			if (e != null)
+			{
+				e.scripts.ReloadScripts();
+			}
 		}
 	}
 	

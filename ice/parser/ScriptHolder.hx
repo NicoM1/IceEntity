@@ -42,7 +42,7 @@ class ScriptHolder
 		{
 			if (s.doClean)
 			{
-				s = null;
+				scripts.remove(s);
 			}
 			else if (s != null)
 			{
@@ -64,7 +64,10 @@ class ScriptHolder
 	{
 		for (s in scripts)
 		{
-			s.ReloadScript();
+			if (s != null)
+			{
+				s.ReloadScript();
+			}
 		}
 	}
 }

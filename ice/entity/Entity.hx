@@ -15,7 +15,7 @@ class Entity extends FlxSprite
 	///A general identifier, for grouping objects, Ex: "Enemy"
 	public var Tag:String;
 	
-	public var scripts:ScriptHolder;
+	public var scripts(default,null):ScriptHolder;
 	
 	public var Parent(default, null):Int;
 	
