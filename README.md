@@ -98,7 +98,7 @@ Allowed types for parameters are: **"int" "float" and "bool" anything else will 
 **HScript Integration:**
 ----------
 
-As of v0.5.0, IceEntity has integrated the hscript scripting engine into its entity parser, and entity classes. Note this is a brand new feature, relativly untested, and may not be as efficient as standard components. If you find an issue, or are confused, tweet to me at: [@nico_m__](https://twitter.com/nico_m__), or email me: nico(dot)may99(at)gmail(dot)com. This allows you, the developer, to program without recompiling, or do many other cool things. I'll let you think of the possibilities:). It also means, that with little or no work, modding can be inegrated into your game! Here are the steps to getting this to work in you game:
+As of v0.5.0, IceEntity has integrated the hscript scripting engine into its entity parser, and entity classes. Note this is a brand new feature, relativly untested, and may not be as efficient as standard components. If you find an issue, or are confused, tweet to me at: [@nico_m__](https://twitter.com/nico_m__), or email me: nico(dot)may99(at)gmail(dot)com. This allows you, the developer, to program without recompiling, or do many other cool things. I'll let you think of the possibilities:). It also means, that with little or no work, modding can be integrated into your game! Here are the steps to getting this to work in you game:
 
 **[1]** In you entity xml file (described above), there are two places you can put scripts. One being inside of an entity declaration, like so:
 
@@ -150,17 +150,17 @@ Before I describe how to actually write a script, let me make sure you know the 
 	
 As you can see, the "expose" tag allows the script to gain access to a static class, and reference it as whatever is in the "name" attribute. The "request" tag allows the script to get access to a class instance (or, truthfully, a static class will also work), from the ```ScriptHandler```s global pool. You can add to the pool in your code with ```ScriptHandler.AddModule(name, value);``` Note that this must be done BEFORE you parse the entity file, or you will get a nasty error message.
 
-**[3]** You can think of the lines with "@" as functions, although their variables are **global scope**. Currently, the above 4 are the only possible "functions", you can think of them as: "at(@) (function) do whatever is in these brackets." **Do not add comments between the function name and first curly-bracket**, elsewhere, comments are great. Close these "functions" with the "}" chararacter followed immediatly by the "|" character, like so: "}|".
+**[3]** You can think of the lines with "@" as functions, although their variables are **global scope**. Currently, the above 4 are the only possible "functions", you can think of them as: "at(@) (function) do whatever is in these brackets." **Do not add comments between the function name and first curly-bracket**, elsewhere, comments are great. Close these "functions" with the "}" character followed immediately by the "|" character, like so: "}|".
 
-**[4]** The scripting system relies on hscript, which is basically interpreted haxe. Unfortunatly, I do not know enough about hscript yet to explain what you can and can't do, but two things to note are: do not use the "var" keyword, just pretend the variables already exist, and do not specify variable types. If you are more experienced in hscript, please submit a pull request with a fuller description:)
+**[4]** The scripting system relies on hscript, which is basically interpreted haxe. Unfortunately, I do not know enough about hscript yet to explain what you can and can't do, but two things to note are: do not use the "var" keyword, just pretend the variables already exist, and do not specify variable types. If you are more experienced in hscript, please submit a pull request with a fuller description:)
 
-**[5]** As a developer, you may not want scripts, specificly mods, to have access to sensitive areas of your game. There are two ways to achieve this. The broad stroke way is to completely disallow access to the expose tag, ensuring scripts have no access to anything unless you specificly add it to the ```ScriptHandler```s modules list. This can be done with: ```ScriptHandler.allowExpose = false;```. The second, more specific way is to "blacklist" classes with ```ScriptHandler.Blacklist("path.to.Class");```, this will warn the user they can not access this package.
+**[5]** As a developer, you may not want scripts, specificity mods, to have access to sensitive areas of your game. There are two ways to achieve this. The broad stroke way is to completely disallow access to the expose tag, ensuring scripts have no access to anything unless you specificity add it to the ```ScriptHandler```s modules list. This can be done with: ```ScriptHandler.allowExpose = false;```. The second, more specific way is to "blacklist" classes with ```ScriptHandler.Blacklist("path.to.Class");```, this will warn the user they can not access this package.
 
 **Live Scripting**
 ----------
 
 ![Live-Scripting Demo](http://i.imgur.com/CkyiKeF.gif)
-As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading system, to allow you to literally code your game **while it is running**. This currently only works for Windows and Neko builds [edit: I think Linux and Mac as well, all I meant was cpp or neko], and only for external script files (ie scripts created inside of your entities.xml file will not be editable at runtime). Here is what you need to do to make use of this new feature:
+As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading system, to allow you to literally code your game **while it is running**. This currently only works for CPP and Neko builds, and only for external script files (ie scripts created inside of your entities.xml file will not be editable at runtime). Here is what you need to do to make use of this new feature:
 
 **[1]** Any scripts you want to be able to edit at runtime must be taken out of your xml file, placed in their own file, and then declared in your script element's "path" attribute.
 
@@ -200,7 +200,7 @@ Here is the less user friendly version: Once you've built and opened your game, 
 
 **This doesn't work for scripts specified in the "text" elements of your xml file**
 
-**If using full-auto scripting, make sure to remove ```<haxedef name="ICE_LIVE_RELOAD"/>``` before releasing your game, it is a performace waster, and has no use in a final build.**
+**If using full-auto scripting, make sure to remove ```<haxedef name="ICE_LIVE_RELOAD"/>``` before releasing your game, it is a performance waster, and has no use in a final build.**
 
 For more responsive use I recommend adding ```<haxedef name="FLX_NO_FOCUS_LOST_SCREEN"/>``` to your project.xml, and setting ```FlxG.autoPause``` to ```false```. This way, you do not need to give the game focus to see your changes in action.
 
