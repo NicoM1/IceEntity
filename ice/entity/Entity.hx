@@ -210,7 +210,7 @@ class Entity extends FlxSprite
 	 * @param	?b	Second object, defaults to this entity
 	 * @return
 	 */
-	public function GetDistance(a:FlxObject = null, ?b:FlxObject):Float
+	public function GetDistance(a:FlxObject, ?b:FlxObject = null):Float
 	{
 		if (b == null)
 		{
