@@ -40,7 +40,7 @@ A simple framework for managing gameobjects and components in haxeflixel
   
   **Earlier:**
   
-  [See Changelog](https://github.com/NicoM1/IceEntity/blob/master/CHANGELOG.md)
+  [See Changelog](https://github.com/NicoM1/IceEntity/blob/dev/CHANGELOG.md)
   
 **Installation**
 ----------
