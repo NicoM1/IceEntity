@@ -156,6 +156,10 @@ As you can see, the "expose" tag allows the script to gain access to a static cl
 
 **[5]** As a developer, you may not want scripts, specificity mods, to have access to sensitive areas of your game. There are two ways to achieve this. The broad stroke way is to completely disallow access to the expose tag, ensuring scripts have no access to anything unless you specificity add it to the ```ScriptHandler```s modules list. This can be done with: ```ScriptHandler.allowExpose = false;```. The second, more specific way is to "blacklist" classes with ```ScriptHandler.Blacklist("path.to.Class");```, this will warn the user they can not access this package.
 
+**Important:**
+
+Neko, while a nice target for quick testing, does have some quirks. If you are having strange issues with scripts, you may wish to try moving to a CPP build. (One issue that I have found is that checking input via FlxG.keys.pressed.* will not work in scripts running in Neko). I'm sorry if this is an annoyance, but the main point of the live-scripting system is to eliminate constant rebuilds, so the extra build time should not be too bad.
+
 **Live Scripting**
 ----------
 
