@@ -8,6 +8,10 @@ A simple framework for managing gameobjects and components in haxeflixel
 **Changes:**
 ----------
 
+  **[NEW v0.9.0]**
+  
+  Added simple FSM system
+
   **[NEW v0.8.0]**
   
   Added "noreload" option for script elements

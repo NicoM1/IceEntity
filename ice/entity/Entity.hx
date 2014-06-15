@@ -5,6 +5,7 @@ import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.FlxObject;
 import ice.parser.ScriptHolder;
+import ice.fsm.FSM;
 
 class Entity extends FlxSprite
 {
@@ -18,6 +19,18 @@ class Entity extends FlxSprite
 	public var scripts(default,null):ScriptHolder;
 	
 	public var Parent(default, null):Int;
+	
+	private var FSMs:Array<FSM>;
+	public var FSM(get, null):FSM;
+	
+	inline function get_FSM():FSM
+	{
+		if (FSMs[0] == null)
+		{
+			FSMs[0] = new FSM();
+		}
+		return FSMs[0];
+	}
 	
 	///The key is a unique identifer, used to acces individual components
 	private var components:Array<Component>; //used to be a map, but individual access is not needed, and this saves on garbage. Just don't try to add multiples of a type of component
@@ -52,6 +65,7 @@ class Entity extends FlxSprite
 		components = new Array<Component>();
 		children = new Array<Int>();	
 		scripts = new ScriptHolder();
+		FSMs = new Array<FSM>();
 	}
 	
 	public function AddChild(childGID:Int)
@@ -150,6 +164,11 @@ class Entity extends FlxSprite
 		}
 		
 		scripts.Update();
+		
+		for (fsm in FSMs)
+		{
+			fsm.Update();
+		}
 	}
 	
 	public function IsAgainst(surface:FlxBasic, direction:Int) : Bool
