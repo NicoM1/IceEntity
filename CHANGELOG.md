@@ -1,3 +1,7 @@
+0.9.0
+------------------------------
+* add simple fsm system
+
 0.8.2
 ------------------------------
 * fix parsing mistake causing scripts to only load if the entity had an art element
