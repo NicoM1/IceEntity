@@ -268,14 +268,8 @@ class EntityManager extends FlxGroup
 		for (request in script.elementsNamed("request"))
 		{
 			var module = ScriptHandler.GetModule(request.get("name"));
-			if (module != null)
-			{
-				ParsedScript.interp.variables.set(request.get("name"), module);
-			}
-			else
-			{
-				throw "module not available";
-			}
+			
+			ParsedScript.interp.variables.set(request.get("name"), module);
 		}
 		
 		for (expose in script.elementsNamed("expose"))
@@ -289,15 +283,9 @@ class EntityManager extends FlxGroup
 				}
 				else
 				{
-					var module = Type.resolveClass(path);
-					if (module != null)
-					{
-						ParsedScript.interp.variables.set(expose.get("name"), module);
-					}
-					else
-					{
-						throw "expose attempt failed";
-					}
+					var module = ScriptHandler.GetClass(path);
+
+					ParsedScript.interp.variables.set(expose.get("name"), module);
 				}
 			}
 			else

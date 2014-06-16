@@ -7,41 +7,33 @@ A simple framework for managing gameobjects and components in haxeflixel
 
 **Changes:**
 ----------
+  
+  **[NEW v0.10.0]**
+  
+  Added syntax for exposing and requesting classes inside of scripts
 
   **[NEW v0.9.0]**
   
-  Added simple FSM system
+  Added simple FSM system (sorry no write-up yet)
 
-  **[NEW v0.8.0]**
+  **[v0.8.0]**
   
   Added "noreload" option for script elements
   
   Made scripts remove after calling init, unless they have update or destroy logic
 
-  **[NEW v0.7.0]**
+  **[v0.7.0]**
   Allow access to instance via a property
 
-  **[NEW v0.6.1]**
+  **[v0.6.1]**
   Made live-reloading fully automatic
 
-  **[NEW v0.6.0]**
+  **[v0.6.0]**
   Added live-reloading of scripts
 
-  **[NEW v0.5.0]**
+  **[v0.5.0]**
   Added hscript integration
-   
-  **[v0.4.0]**
-  
-  Changed group storage and behavior
-  
-  Split AddEntity() into separate methods
 
-  **[v0.3.1]**
-  Allowed hyphens when parsing animations
-  
-  **[v0.3.0]**
-  Added an xml parser for building entities
-  
   **Earlier:**
   
   [See Changelog](https://github.com/NicoM1/IceEntity/blob/dev/CHANGELOG.md)
@@ -130,6 +122,10 @@ Before I describe how to actually write a script, let me make sure you know the 
 		<expose name="FlxG" path="flixel.FlxG"/> <!--Gets a static class-->
 		<request name="Player"/>	<!--requests a class instance from a global pool-->
 		<text>
+			//As of v0.10.0, you may now use this syntax instead of the above if you wish
+			expose flixel.FlxG;
+			request Player;
+			
 			@init
 			{
 				i = 10;
@@ -172,7 +168,23 @@ As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading syste
 
 **[1]** Any scripts you want to be able to edit at runtime must be taken out of your xml file, placed in their own file, and then declared in your script element's "path" attribute.
 
-**[2]** To help with testing, a new scripting function has been added:
+**[2]** As of v0.10.0, you can expose and request classes inside your scripts, similar to how it is done in regular haxe:
+
+    expose flixel.FlxG; //this is identical to the expose tag in xml, except you do not control the name of the class, the last section is used, in this case: "FlxG".
+	request MyClass; //this is identical using a request tag in your xml
+	
+	@init
+	{
+	
+	}|
+
+This also means the live-reloader will update your imports, so you can add things as you need them. This, however, may slow the reloader, if you find that to be the case, you can add:
+
+    ```<haxedef name="ICE_NO_RELOAD_IMPORTS"/>```
+
+to your project.xml file.
+
+**[3]** To help with testing, a new scripting function has been added:
 
     @reload
 	{
@@ -180,9 +192,9 @@ As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading syste
 		//Note that it is ONLY for testing, you should not use this for any real game code, just for playing with values for speed and so on. THIS NEVER RUNS IN A FINAL BUILD
 	}|
 	
-**[3]** The files you edit while making use of live reloading **are not your main files**. The files you want to edit are in: yourProject\export\windows\ (neko or cpp)\bin\assets\data. **If you wish to use the logic you've created, copy these files back into your main folder when you are done**.
+**[4]** The files you edit while making use of live reloading **are not your main files**. The files you want to edit are in: yourProject\export\windows\ (neko or cpp)\bin\assets\data. **If you wish to use the logic you've created, copy these files back into your main folder when you are done**.
 
-**[4]** Reloading can be costly; you may not wish to reload every script when you only want to tweak a couple. To stop certain scripts from reloading, a "noreload" attribute has been added for script elements:
+**[5]** Reloading can be costly; you may not wish to reload every script when you only want to tweak a couple. To stop certain scripts from reloading, a "noreload" attribute has been added for script elements:
 
     <script noreload="true">
 	
@@ -192,7 +204,7 @@ Also, you may wish to do setup on an entity after the game begins, but not run a
 	
 Note that cleaning **only happens** if the script only had an "init" function at startup, the noclean option is only meant to be used if you really have a need for it, in normal use you should **never** specify this option.
 
-**[5]** As of v0.6.1, there are now two ways of initiating live-reloading, for easier (and more helpful) usage, I recommend the first option:
+**[6]** As of v0.6.1, there are now two ways of initiating live-reloading, for easier (and more helpful) usage, I recommend the first option:
 
 **[Option 1]** Fully Automatic Live-Scripting:
 

@@ -8,6 +8,8 @@ import ice.entity.EntityManager;
 import openfl.Assets;
 import openfl.events.Event;
 
+using StringTools;
+
 class ScriptHandler extends FlxBasic
 {
 	static var parser:Parser;
@@ -75,7 +77,40 @@ class ScriptHandler extends FlxBasic
 	 */
 	static public function GetModule(name:String):Dynamic
 	{
-		return modules.get(name);
+		if (modules.exists(name))
+		{
+			return modules.get(name);
+		}
+		else
+		{
+			throw "Could not find the module specified";
+		}
+	}
+	
+	/**
+	 * Gets or creates an instance of a class
+	 * @param	path
+	 * @return
+	 */
+	static public function GetClass(path:String):Dynamic
+	{
+		if (modules.exists(path))
+		{
+			return modules.get(path);
+		}
+		else
+		{
+			var myClass:Dynamic = Type.resolveClass(path);
+			if (myClass != null)
+			{
+				modules.set(path, myClass);
+				return(modules.get(path));
+			}
+			else
+			{
+				throw "expose attempt failed";
+			}
+		}
 	}
 	
 	/**
@@ -108,6 +143,28 @@ class ScriptHandler extends FlxBasic
 		var endIndex:Int = script.indexOf("}|", startIndex);
 		
 		return script.substring(startIndex, endIndex);
+	}
+	
+	static public function ParseImports(script:String, interp:Interp)
+	{
+		var imports:String = script.substring(0, script.indexOf("@"));
+		imports.replace("\n", "");
+		var importLines:Array<String> = imports.split(";");
+		
+		for (i in importLines)
+		{
+			var parts:Array<String> = i.split(" ");
+			
+			if (~/ *expose */.match(parts[0]))
+			{
+				var name = parts[1].split(".").pop();
+				interp.variables.set(name, GetClass(parts[1]));
+			}
+			else if (~/ *request */.match(parts[0]))
+			{
+				interp.variables.set(parts[1], GetModule(parts[1]));
+			}
+		}
 	}
 	
 	static public function Update()

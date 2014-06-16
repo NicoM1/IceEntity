@@ -25,6 +25,7 @@ class Script
 		
 		interp = new Interp();
 		
+		ScriptHandler.ParseImports(script, interp);
 		updateScript = ScriptHandler.Parse("update", script);
 		destroyScript = ScriptHandler.Parse("destroy", script);
 	}
@@ -88,6 +89,11 @@ class Script
 			#else
 			script = Assets.getText(path);
 			#end
+			
+			#if !ICE_NO_RELOAD_IMPORTS
+			ScriptHandler.ParseImports(script, interp);
+			#end
+			
 			updateScript = ScriptHandler.Parse("update", script);
 			destroyScript = ScriptHandler.Parse("destroy", script);
 			var reloadS = ScriptHandler.Parse("reload", script);
