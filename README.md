@@ -168,7 +168,7 @@ As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading syste
 
 **[1]** Any scripts you want to be able to edit at runtime must be taken out of your xml file, placed in their own file, and then declared in your script element's "path" attribute.
 
-**[2]** As of v0.10.0, you can expose and request classes inside your scripts, similar to how it is done in regular haxe:
+**[2]** As of v0.10.0, you can expose and request classes inside your scripts, similar to how imports are handled in regular haxe:
 
     expose flixel.FlxG; //this is identical to the expose tag in xml, except you do not control the name of the class, the last section is used, in this case: "FlxG".
 	request MyClass; //this is identical using a request tag in your xml
