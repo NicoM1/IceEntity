@@ -180,7 +180,7 @@ As of v0.6.0, IceEntity makes use of Openfl 2.0's new live asset reloading syste
 
 This also means the live-reloader will update your imports, so you can add things as you need them. This, however, may slow the reloader, if you find that to be the case, you can add:
 
-    ```<haxedef name="ICE_NO_RELOAD_IMPORTS"/>```
+    <haxedef name="ICE_NO_RELOAD_IMPORTS"/>
 
 to your project.xml file.
 
