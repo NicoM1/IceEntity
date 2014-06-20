@@ -1,3 +1,7 @@
+0.10.1
+------------------------------
+* extend interp to allow property access on objects
+
 0.10.0
 ------------------------------
 * add syntax for exposing and requesting classes inside of scripts
