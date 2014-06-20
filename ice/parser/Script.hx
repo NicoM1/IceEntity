@@ -7,7 +7,7 @@ import openfl.Assets;
 
 class Script
 {
-	public var interp:Interp;
+	public var interp:IceInterp;
 	var updateScript:Expr;
 	var destroyScript:Expr;
 	var script:String;
@@ -23,7 +23,7 @@ class Script
 		this.script = script;
 		this.path = path;
 		
-		interp = new Interp();
+		interp = new IceInterp();
 		
 		ScriptHandler.ParseImports(script, interp);
 		updateScript = ScriptHandler.Parse("update", script);

@@ -156,8 +156,7 @@ class Entity extends FlxSprite
 			init();
 			initialized = true;
 		}
-		super.update();
-		
+
 		for (c in components)
 		{
 			c.Update();
@@ -169,6 +168,8 @@ class Entity extends FlxSprite
 		{
 			fsm.Update();
 		}
+		
+		super.update();
 	}
 	
 	public function IsAgainst(surface:FlxBasic, direction:Int) : Bool
