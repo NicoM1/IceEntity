@@ -158,7 +158,7 @@ As you can see, the "expose" tag allows the script to gain access to a static cl
 
 **Important:**
 
-Neko, while a nice target for quick testing, does have some quirks. If you are having strange issues with scripts, you may wish to try moving to a CPP build. (One issue that I have found is that checking input via FlxG.keys.pressed.* will not work in scripts running in Neko). I'm sorry if this is an annoyance, but the main point of the live-scripting system is to eliminate constant rebuilds, so the extra build time should not be too bad.
+Neko, while a nice target for quick testing, does have some quirks. If you are having strange issues with scripts, you may wish to try moving to a CPP build. I'm sorry if this is an annoyance, but the main point of the live-scripting system is to eliminate constant rebuilds, so the extra build time should not be too bad. **Note:** I fixed the main issue I had found with neko, so it appears to work fine now, but I'm leaving the above advice, as other situations may still be affected.
 
 **Live Scripting**
 ----------
