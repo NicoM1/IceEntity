@@ -132,37 +132,107 @@ class ScriptHandler extends FlxBasic
 		return null;
 	}
 	
+	static private function GetFunctionLine(offset:Int, func:String, script:String):Int
+	{
+		while (true)
+		{
+			var startLine:Int = script.indexOf("function", offset);
+			if (startLine < 0)
+			{
+				return -1;
+			}
+			var endLine:Int = script.indexOf("\n", startLine);
+			if (endLine < 0)
+			{
+				endLine = script.indexOf("\r");
+			}
+			var line:String = script.substring(startLine, endLine);
+			
+			if (line.indexOf(func) >= 0)
+			{
+				return endLine;
+			}
+			offset = endLine;
+		}
+		return -1;
+	}
+	
 	static public function ParseString(func:String, script:String):String
-	{		
-		var startIndex:Int = script.indexOf("@" + func);
-		if (startIndex < 0)
+	{
+		var startIndex = GetFunctionLine(0, func, script);
+		
+		if (startIndex == -1)
 		{
 			return null;
 		}
-		startIndex = script.indexOf("{", startIndex) + 1;		
-		var endIndex:Int = script.indexOf("}|", startIndex);
 		
-		return script.substring(startIndex, endIndex);
+		var braces:Int = 0;
+		var startCheck:Bool = false;
+		var charIndex:Int = startIndex;
+		
+		while ((charIndex < script.length) && !(startCheck && (braces == 0)))
+		{
+			var char:String = script.charAt(charIndex);
+			
+			if (char == "{")
+			{
+				if (!startCheck)
+				{
+					startIndex = charIndex;
+					startCheck = true;
+				}
+				
+				braces++;
+			}
+			
+			if (char == "}")
+			{			
+				braces--;
+			}
+			
+			charIndex++;
+		}
+		
+		var ret:String = script.substring(startIndex, charIndex);
+		
+		return ret;
 	}
 	
 	static public function ParseImports(script:String, interp:Interp)
 	{
-		var imports:String = script.substring(0, script.indexOf("@"));
-		imports.replace("\n", "");
-		var importLines:Array<String> = imports.split(";");
-		
-		for (i in importLines)
+		var imports:String;
+		var endIndex = script.indexOf("class");
+		if (endIndex < 0)
 		{
-			var parts:Array<String> = i.split(" ");
+			endIndex = script.indexOf("function");
+		}
+		
+		imports = script.substring(0, endIndex);
+		
+		var lines:Array<String> = imports.split(";");
+		
+		for (l in lines)
+		{
+			l = l.trim();
 			
-			if (~/ *expose */.match(parts[0]))
+			if (l == "")
 			{
-				var name = parts[1].split(".").pop();
-				interp.variables.set(name, GetClass(parts[1]));
+				continue;
 			}
-			else if (~/ *request */.match(parts[0]))
+			
+			var sections:Array<String> = ~/ +/.split(l);
+			
+			if (sections[0] == "import")
 			{
-				interp.variables.set(parts[1], GetModule(parts[1]));
+				var className:String = sections[1];
+				var name = className.split(".").pop();
+				var c:Dynamic = GetClass(className);
+				interp.variables.set(name, c);
+			}
+			else if (sections[0] == "request")
+			{
+				l = sections[1];
+				interp.variables.set(l, GetModule(l));
 			}
 		}
 	}
