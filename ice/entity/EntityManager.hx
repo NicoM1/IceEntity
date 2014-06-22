@@ -1,7 +1,6 @@
 package ice.entity;
 
 import flash.geom.Point;
-import flixel.FlxG;
 import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -13,6 +12,7 @@ import ice.parser.Script;
 import ice.parser.ScriptHandler;
 import openfl.Assets;
 import openfl.events.Event;
+import flixel.group.FlxTypedGroup;
 
 class EntityManager extends FlxGroup
 {
@@ -22,7 +22,7 @@ class EntityManager extends FlxGroup
 	
 	///Int corresponds to GID of entity, for faster access
 	public var entities(default, null) : Array<Entity>;
-	private var groups : Map<String, FlxTypedGroup<Entity>>; 
+	private var groups : Map<String, FlxTypedGroup<Entity>>;
 	
 	///simple var for storing a single map
 	public static var map(default, null) : FlxTilemap;
@@ -169,6 +169,7 @@ class EntityManager extends FlxGroup
 					}
 				}
 			}
+			
 			for (component in entity.elementsNamed("component"))
 				{		
 					var params:Array<Dynamic>;

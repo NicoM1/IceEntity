@@ -32,7 +32,7 @@ class Script
 	
 	function Init() 
 	{		
-		var initS = ScriptHandler.Parse("init", script);
+		var initS = ScriptHandler.Parse("new", script);
 		if (initS != null)
 		{
 			interp.execute(initS);
