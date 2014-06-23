@@ -15,11 +15,6 @@ import sys.io.FileInput;
  */
 class IceUtil
 {
-	public function new()
-	{
-		
-	}
-	
 	/**
 	 * Loads a text file from disk
 	 * @param	path		relative path to the text file
@@ -46,7 +41,7 @@ class IceUtil
 				var fileIn = File.read(path, false);
 				while (true)
 				{
-					string += fileIn.readLine();
+					string += fileIn.readLine() + "\n";
 				}
 				fileIn.close();
 			}

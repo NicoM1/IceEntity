@@ -58,6 +58,7 @@ class ScriptHandler extends FlxBasic
 				e.scripts.ReloadScripts();
 			}
 		}
+		scripts.ReloadScripts();
 	}
 	
 	/**
@@ -137,6 +138,7 @@ class ScriptHandler extends FlxBasic
 		while (true)
 		{
 			var startLine:Int = script.indexOf("function", offset);
+			trace("start " + startLine);
 			if (startLine < 0)
 			{
 				return -1;
@@ -146,7 +148,10 @@ class ScriptHandler extends FlxBasic
 			{
 				endLine = script.indexOf("\r");
 			}
+			trace("end " + endLine);
+			
 			var line:String = script.substring(startLine, endLine);
+			trace(line);
 			
 			if (line.indexOf(func) >= 0)
 			{
@@ -201,11 +206,7 @@ class ScriptHandler extends FlxBasic
 	static public function ParseImports(script:String, interp:Interp)
 	{
 		var imports:String;
-		var endIndex = script.indexOf("class");
-		if (endIndex < 0)
-		{
-			endIndex = script.indexOf("function");
-		}
+		var endIndex = script.indexOf("function");
 		
 		imports = script.substring(0, endIndex);
 		
@@ -239,11 +240,6 @@ class ScriptHandler extends FlxBasic
 	
 	static public function Update()
 	{
-		if (!init)
-		{
-			Assets.addEventListener(Event.CHANGE, ReloadAll);
-			init = true;
-		}
 		#if ICE_LIVE_RELOAD
 		timer += FlxG.elapsed;
 		if (timer > reloadDelay)

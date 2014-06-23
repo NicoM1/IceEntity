@@ -67,7 +67,10 @@ class EntityManager extends FlxGroup
 		var Root:Xml = Xml.parse(IceUtil.LoadString(path, useAssets));
 		Root = Root.firstElement();
 		
-		ScriptHandler.SetReloadDelay(Std.parseFloat(Root.get("reloaddelay")));
+		if (Root.exists("reloaddelay"))
+		{
+			ScriptHandler.SetReloadDelay(Std.parseFloat(Root.get("reloaddelay")));
+		}
 		
 		for (entity in Root.elementsNamed("entity"))
 		{
@@ -253,7 +256,11 @@ class EntityManager extends FlxGroup
 		
 		if (path != "")
 		{
+			#if !ICE_LIVE_RELOAD
 			file = IceUtil.LoadString(path, true);
+			#else
+			file = IceUtil.LoadString(path, false);
+			#end
 		}
 		else
 		{

@@ -38,8 +38,6 @@ class Script
 			interp.execute(initS);
 		}
 		
-		script = null;
-		
 		if (!noClean && updateScript == null && destroyScript == null)
 		{
 			doClean = true;
@@ -86,8 +84,6 @@ class Script
 				return;
 			}
 			script = newScript;
-			#else
-			script = Assets.getText(path);
 			#end
 			
 			#if !ICE_NO_RELOAD_IMPORTS
