@@ -138,7 +138,6 @@ class ScriptHandler extends FlxBasic
 		while (true)
 		{
 			var startLine:Int = script.indexOf("function", offset);
-			trace("start " + startLine);
 			if (startLine < 0)
 			{
 				return -1;
@@ -148,10 +147,8 @@ class ScriptHandler extends FlxBasic
 			{
 				endLine = script.indexOf("\r");
 			}
-			trace("end " + endLine);
 			
 			var line:String = script.substring(startLine, endLine);
-			trace(line);
 			
 			if (line.indexOf(func) >= 0)
 			{
