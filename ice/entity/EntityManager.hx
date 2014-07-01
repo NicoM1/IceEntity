@@ -83,7 +83,7 @@ class EntityManager extends FlxGroup
 			pos.y = Std.parseInt(entity.get("y"));
 			
 			//build entity
-			var ent:Entity = new Entity(-1, tag, pos);
+			var ent:Entity = new Entity(tag, pos);
 			
 			//load in art/animation
 			for (art in entity.elementsNamed("art"))

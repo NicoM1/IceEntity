@@ -197,6 +197,12 @@ class ScriptHandler extends FlxBasic
 		
 		var ret:String = script.substring(startIndex, charIndex);
 		
+		//add variable declarations into init
+		if (func == "init")
+		{
+			ret = ParseVars(script) + ret;
+		}
+		
 		return ret;
 	}
 	
@@ -233,6 +239,32 @@ class ScriptHandler extends FlxBasic
 				interp.variables.set(l, GetModule(l));
 			}
 		}
+	}
+	
+	static public function ParseVars(script:String):String
+	{
+		var startIndex = script.indexOf("class ");
+		
+		if (startIndex < 0)
+		{
+			return "";
+		}
+		
+		startIndex = script.indexOf("{", startIndex) + 1;
+		
+		var endIndex = script.indexOf("function ", startIndex);
+		
+		var vars:String = script.substring(startIndex, endIndex);
+		
+		vars = vars.substring(0, vars.lastIndexOf("\n"));
+		
+		vars = vars.replace("var ", " ");
+		
+		var types:EReg = ~/: *[a-z]+/i;
+		
+		vars = types.replace(vars, " ");
+		
+		return vars;
 	}
 	
 	static public function Update()
