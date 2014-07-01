@@ -40,7 +40,7 @@ class Entity extends FlxSprite
 	private var initialized = false;
 	
 	///GID Can't Be 0, 0 will switch to -1, if left -1, GID will be auto asigned
-	public function new(?GID:Int = -1, ?Tag:String, ?Positon:Point, ?Parent:Int = -1) 
+	public function new(?Tag:String, ?Positon:Point, ?GID:Int = -1, ?Parent:Int = -1) 
 	{
 		if (Positon == null)
 		{
