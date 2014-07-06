@@ -1,3 +1,7 @@
+1.0.0
+------------------------------
+* rewrite scripting system, allow for real haxe files
+
 0.10.1
 ------------------------------
 * extend interp to allow property access on objects
