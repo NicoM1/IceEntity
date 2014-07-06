@@ -203,8 +203,7 @@ class ScriptHandler extends FlxBasic
 			ret = ParseVars(script) + ret;
 		}
 		
-		var types:EReg = ~/: *[a-z0-9_]+/ig;
-		
+		var types:EReg = ~/: *[a-z0-9_]+/ig; //remove types from declarations
 		ret = types.replace(ret, "");
 		
 		return ret;
@@ -245,9 +244,9 @@ class ScriptHandler extends FlxBasic
 		}
 	}
 	
-	static public function ParseVars(script:String):String
+	static private function ParseVars(script:String):String
 	{
-		var startIndex = script.indexOf("class ");
+		var startIndex:Int = script.indexOf("class ");
 		
 		if (startIndex < 0)
 		{
@@ -262,17 +261,21 @@ class ScriptHandler extends FlxBasic
 		var endIndex = script.indexOf("function ", startIndex);
 		
 		var vars:String = script.substring(startIndex, endIndex);		
-		vars = vars.substring(0, vars.lastIndexOf("\n"));
+		vars = vars.substring(0, vars.lastIndexOf("\n")); //cut vars to end of last line
 		
-		var redundant:EReg = ~/[a-z]* *[a-z]* *var +[a-z0-9_]+ *: *[a-z0-9_]+ *; *(\n)?/ig;
+		var startNonCompile:Int = vars.indexOf("//#");
+		var endNonCompile:Int = vars.indexOf("//#", startNonCompile);
+		vars = vars.substring(0, startNonCompile) + vars.substring(endNonCompile); //remove the non-compile section
+		
+		var redundant:EReg = ~/[a-z]* *[a-z]* *var +[a-z0-9_]+ *: *[a-z0-9_]+ *; *(\n)?/ig; //remove declarations that do not assign a value
 		vars = redundant.replace(vars, "");
 		
-		var types:EReg = ~/: *[a-z0-9_]+/ig;
+		var types:EReg = ~/: *[a-z0-9_]+/ig; //remove types from variable declarations
 		vars = types.replace(vars, "");
 		
-		var modifiers:EReg = ~/(static)? *(private|public) *(static)?/g;
+		var modifiers:EReg = ~/(static)? *(private|public) *(static)?/g; //remove modifiers from variable declarations
 		vars = modifiers.replace(vars, "");
-		
+	
 		return vars;
 	}
 	
