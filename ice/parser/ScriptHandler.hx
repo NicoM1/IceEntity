@@ -258,11 +258,17 @@ class ScriptHandler extends FlxBasic
 		
 		vars = vars.substring(0, vars.lastIndexOf("\n"));
 		
+		var redundant:EReg = ~/var +[a-z0-9_]+ *: *[a-z0-9_]+ *; *(\n)?/ig;//~/(var +)?[a-z0-9]+ *: *[a-z0-9]+ *; *(\n)?/i;
+		
+		vars = redundant.replace(vars, "");
+				
 		vars = vars.replace("var ", " ");
 		
-		var types:EReg = ~/: *[a-z]+/i;
+		var types:EReg = ~/: *[a-z0-9_]+/ig;
 		
 		vars = types.replace(vars, " ");
+		
+		trace(vars);
 		
 		return vars;
 	}
