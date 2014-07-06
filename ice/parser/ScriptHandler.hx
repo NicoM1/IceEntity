@@ -270,10 +270,8 @@ class ScriptHandler extends FlxBasic
 		var types:EReg = ~/: *[a-z0-9_]+/ig;
 		vars = types.replace(vars, "");
 		
-		var modifiers:EReg = ~/(static)? *(public|private) *(static)?/;
+		var modifiers:EReg = ~/(static)? *(private|public) *(static)?/g;
 		vars = modifiers.replace(vars, "");
-		
-		trace(vars);
 		
 		return vars;
 	}
