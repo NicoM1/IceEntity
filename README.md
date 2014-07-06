@@ -41,11 +41,13 @@ A simple framework for managing gameobjects and components in haxeflixel
 **Installation**
 ----------
 
-  **[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity``` in a terminal with access to git
-  
-  **[2]** Add ```<haxelib name="iceentity"/>``` to your ```Project.xml``` file, directly under ```<haxelib name="flixel"/>```
-  
-  **[3]** Get annoyed with missing features, give up;)
+**[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity dev``` in a terminal with access to git
+ 
+Note: I recommend using the dev branch, as I can't guarantee the master branch will always be up to date, but in order to use the dev branch, you must be on the dev version of HaxeFlixel
+
+**[2]** Add ```<haxelib name="iceentity"/>``` to your Project.xml file, directly under ```<haxelib name="flixel"/>```
+
+**[3]** That's all:)
 
 **Usage:**
 ----------
