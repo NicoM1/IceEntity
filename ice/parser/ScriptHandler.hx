@@ -261,17 +261,17 @@ class ScriptHandler extends FlxBasic
 		
 		var endIndex = script.indexOf("function ", startIndex);
 		
-		var vars:String = script.substring(startIndex, endIndex);
-		
+		var vars:String = script.substring(startIndex, endIndex);		
 		vars = vars.substring(0, vars.lastIndexOf("\n"));
 		
-		var redundant:EReg = ~/var +[a-z0-9_]+ *: *[a-z0-9_]+ *; *(\n)?/ig;//~/(var +)?[a-z0-9]+ *: *[a-z0-9]+ *; *(\n)?/i;
-		
+		var redundant:EReg = ~/[a-z]* *[a-z]* *var +[a-z0-9_]+ *: *[a-z0-9_]+ *; *(\n)?/ig;
 		vars = redundant.replace(vars, "");
 		
 		var types:EReg = ~/: *[a-z0-9_]+/ig;
+		vars = types.replace(vars, "");
 		
-		vars = types.replace(vars, " ");
+		var modifiers:EReg = ~/(static)? *(public|private) *(static)?/;
+		vars = modifiers.replace(vars, "");
 		
 		trace(vars);
 		
