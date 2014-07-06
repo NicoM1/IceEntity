@@ -203,6 +203,10 @@ class ScriptHandler extends FlxBasic
 			ret = ParseVars(script) + ret;
 		}
 		
+		var types:EReg = ~/: *[a-z0-9_]+/ig;
+		
+		ret = types.replace(ret, "");
+		
 		return ret;
 	}
 	
@@ -247,10 +251,13 @@ class ScriptHandler extends FlxBasic
 		
 		if (startIndex < 0)
 		{
-			return "";
+			startIndex = script.lastIndexOf("import ");
+			startIndex = script.indexOf("\n", startIndex);
 		}
-		
-		startIndex = script.indexOf("{", startIndex) + 1;
+		else
+		{
+			startIndex = script.indexOf("{", startIndex) + 1;
+		}
 		
 		var endIndex = script.indexOf("function ", startIndex);
 		
@@ -261,8 +268,6 @@ class ScriptHandler extends FlxBasic
 		var redundant:EReg = ~/var +[a-z0-9_]+ *: *[a-z0-9_]+ *; *(\n)?/ig;//~/(var +)?[a-z0-9]+ *: *[a-z0-9]+ *; *(\n)?/i;
 		
 		vars = redundant.replace(vars, "");
-				
-		vars = vars.replace("var ", " ");
 		
 		var types:EReg = ~/: *[a-z0-9_]+/ig;
 		
