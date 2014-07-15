@@ -13,6 +13,9 @@ import ice.parser.ScriptHandler;
 import openfl.Assets;
 import openfl.events.Event;
 import flixel.group.FlxTypedGroup;
+import tjson.TJSON;
+
+import flixel.FlxG;
 
 class EntityManager extends FlxGroup
 {
@@ -241,6 +244,237 @@ class EntityManager extends FlxGroup
 		}
 	}
 	
+	//{ Entity Parser
+	/**
+	 * Builds entities from an xml file Important: any components needed MUST be imported somewhere in your code
+	 * @param	path		path to the xml
+	 * @param	useAssets	whether to use openfl.assets, required for flash
+	 */
+	public function BuildFromJSON(path:String, ?useAssets:Bool = true)
+	{
+		//var Root:Xml = Xml.parse(IceUtil.LoadString(path, useAssets));
+		var Root:Dynamic = TJSON.parse(IceUtil.LoadString(path, useAssets));
+		//Root = Root.firstElement();
+		
+		//ScriptHandler.SetReloadDelay(Std.parseFloat(Root.get("reloaddelay")));
+		ScriptHandler.SetReloadDelay(Root.reloaddelay);
+		
+		//for (entity in Root.elementsNamed("entity"))
+		var arrEntity:Array<Dynamic> = cast Root.entity;
+		for (entity in arrEntity)
+		{
+			//Get entity's tag
+			//var tag:String = entity.get("tag");
+			var tag:String = entity.tag;
+
+			//Get entity's position
+			var pos:Point = new Point();
+			//pos.x = Std.parseInt(entity.get("x"));
+			pos.x = entity.x;
+			//pos.y = Std.parseInt(entity.get("y"));
+			pos.y = entity.y;
+			
+			//build entity
+			var ent:Entity = new Entity(-1, tag, pos);
+			
+			//load in art/animation
+			//for (art in entity.elementsNamed("art"))
+			var arrArt:Array<Dynamic> = cast entity.art;
+			if (arrArt != null)
+			{
+				for (art in arrArt)
+				{
+					var width:Int; 
+					//width = Std.parseInt(art.get("width"));
+					width = art.width;
+					
+					var height:Int;
+					//height = Std.parseInt(art.get("height"));
+					height = art.height;
+					
+					var path:String;
+					//path = art.get("path");
+					path = art.path;
+					
+					ent.loadGraphic(path, true, width, height);
+					
+					//if (art.firstChild() != null)
+					var arrAnimation:Array<Dynamic> = cast art.animation;
+					if (arrAnimation != null)
+					{
+						//for (animation in art.elementsNamed("animation"))
+						for (animation in arrAnimation)
+						{
+							var name:String;
+							//name = animation.get("name");
+							name = animation.name;
+							
+							var framerate:Int;
+							//framerate = Std.parseInt(animation.get("framerate"));
+							framerate = animation.framerate;
+							
+							//var looped:Bool;
+							//if (animation.get("looped") == "true")
+							//{
+								//looped = true;
+							//}
+							//else
+							//{
+								//looped = false;
+							//}
+							var looped:Bool = animation.looped;
+							
+							var framesS:String;
+							//framesS = animation.get("frames");
+							framesS = animation.frames;
+							
+							var framesSA:Array<String>;
+							framesSA = framesS.split(",");
+							
+							var framesIA:Array<Int>;
+							framesIA = new Array<Int>();
+							
+							for (frame in framesSA)
+							{
+								var frameList:Array<String> = frame.split("-");
+								if (frameList.length == 2)
+								{
+									var start:Int = Std.parseInt(frameList[0]);
+									var end:Int = Std.parseInt(frameList[1]);
+									var index:Int;
+									
+									if (start < end)
+									{
+										index = start;
+										while (index <= end)
+										{
+											framesIA.push(index++);
+										}
+									}
+									else if (start > end)
+									{
+										index = start;
+										while (index >= end)
+										{
+											framesIA.push(index--);
+										}
+									}
+								}
+								else
+								{
+									framesIA.push(Std.parseInt(frame));
+								}
+							}
+							
+							ent.animation.add(name, framesIA, framerate, looped);
+							
+							//if (animation.exists("autorun"))
+							if (Reflect.hasField(animation, "autorun"))
+							{
+								if (animation.autorun)
+								{
+									ent.animation.play(animation.name);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			//for (component in entity.elementsNamed("component"))
+			var arrComponent:Array<Dynamic> = cast entity.component;
+			if (arrComponent != null)
+			{
+				for (component in arrComponent)
+				{		
+					var params:Array<Dynamic>;
+					params = new Array<Dynamic>();
+					params.push(ent.GID);
+					
+					//if (component.firstChild() != null)
+					//{
+					//for (param in component.elementsNamed("param"))
+					var arrParam:Array<Dynamic> = cast component.param;
+					if (arrParam != null)
+					{
+						for (param in arrParam)
+						{
+							var type:String;
+							type = param.type.toLowerCase();
+							
+							var value:String;
+							value = param.value;
+							
+							switch(type)
+							{
+								case ("int"):
+								{
+									params.push(Std.parseInt(value));
+								}
+								case ("float"):
+								{
+									params.push(Std.parseFloat(value));
+								}
+								case ("bool"):
+								{
+									if (value == "true" || value == "True")
+									{
+										params.push(true);
+									}
+									else
+									{
+										params.push(false);
+									}
+								}
+								default:
+								{
+									params.push(value);
+								}
+							}
+						}
+					}
+					//}
+					
+					try 
+					{
+						var classType = Type.resolveClass(component.type);
+						var newComponent = Type.createInstance(classType, params);
+						ent.AddComponent(newComponent);
+					}
+					catch (msg:Dynamic)
+					{
+						throw ("Unable to resolve class from xml: " + msg);
+					}
+				}
+			}
+				
+				//for (script in entity.elementsNamed("script"))
+				var arrScript:Array<Dynamic> = cast entity.script;
+				if (arrScript != null)
+				{
+					for (script in arrScript)
+					{
+						//ParseScript(script, ent);
+						ParseScriptJSON(script, ent);
+					}
+				}
+				
+				
+				AddEntity(ent);
+		}
+		
+		//for (script in Root.elementsNamed("script"))
+		var arrScript:Array<Dynamic> = cast Root.script;
+		if (arrScript != null)
+		{
+			for (script in arrScript)
+			{
+				//ParseScript(script, null);
+				ParseScriptJSON(script, null);
+			}
+		}
+	}
+	
 	private function ParseScript(script:Xml, ?owner:Entity)
 	{
 		var file:String = "";
@@ -319,6 +553,106 @@ class EntityManager extends FlxGroup
 		else
 		{
 			ScriptHandler.scripts.Add(ParsedScript, Std.parseInt(script.get("id")));
+		}
+	}
+	
+	private function ParseScriptJSON(script:Dynamic, ?owner:Entity)
+	{
+		var file:String = "";
+		
+		var path:String = "";
+		//path = script.get("path");
+		path = script.path;
+		if (path == null)
+		{
+			path = "";
+		}
+		
+		if (path != "")
+		{
+			file = IceUtil.LoadString(path, true);
+		}
+		else
+		{
+			//for (text in script.elementsNamed("text"))
+			var arrText:Array<Dynamic> = cast script.text;
+			if (arrText != null)
+			{
+				for (text in arrText)
+				{
+					file = text;
+				}
+			}
+		}
+		
+		var ParsedScript:Script = new Script(file, path);
+		
+		//for (request in script.elementsNamed("request"))
+		var arrRequest:Array<Dynamic> = cast script.request;
+		if (arrRequest != null)
+		{
+			for (request in arrRequest)
+			{
+				var module = ScriptHandler.GetModule(request.name);
+				
+				ParsedScript.interp.variables.set(request.name, module);
+			}
+		}
+		
+		//for (expose in script.elementsNamed("expose"))
+		var arrExpose:Array<Dynamic> = cast script.expose;
+		if (arrExpose != null)
+		{
+			for (expose in arrExpose)
+			{
+				if (ScriptHandler.allowExpose)
+				{
+					//var path = expose.get("path");
+					var path = expose.path;
+					if (ScriptHandler.blacklist.exists(path))
+					{
+						throw "access to this class is blacklisted: " + path;
+					}
+					else
+					{
+						var module = ScriptHandler.GetClass(path);
+
+						ParsedScript.interp.variables.set(expose.name, module);
+					}
+				}
+				else
+				{
+					throw "access to expose is restricted";
+				}
+			}
+		}
+		
+		//if (script.exists("noreload"))
+		if (Reflect.hasField(script, "noreload"))
+		{
+			if (script.noreload)
+			{
+				ParsedScript.noReload = true;
+			}
+		}
+		
+		//if (script.exists("noclean"))
+		if (Reflect.hasField(script, "noclean"))
+		{
+			if (script.noclean)
+			{
+				ParsedScript.noClean = true;
+			}
+		}
+		
+		if (owner != null)
+		{
+			ParsedScript.interp.variables.set("owner", owner);
+			owner.scripts.Add(ParsedScript, script.id);
+		}
+		else
+		{
+			ScriptHandler.scripts.Add(ParsedScript, script.id);
 		}
 	}
 	
