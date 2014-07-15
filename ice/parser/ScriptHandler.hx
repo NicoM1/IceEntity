@@ -133,36 +133,64 @@ class ScriptHandler extends FlxBasic
 	}
 	
 	static public function ParseString(func:String, script:String):String
-	{		
-		var startIndex:Int = script.indexOf("@" + func);
-		if (startIndex < 0)
-		{
-			return null;
-		}
-		startIndex = script.indexOf("{", startIndex) + 1;		
-		var endIndex:Int = script.indexOf("}|", startIndex);
+	{
+		var startindex:Int = script.indexOf("public function " + func) + 16 + func.length;
 		
-		return script.substring(startIndex, endIndex);
+		var braces:Int = 0;
+		var startcheck:Bool = false;
+		var char_index:Int = startindex;
+		
+		while ((char_index < script.length) && !(startcheck && (braces == 0)))
+		{
+			var char:String = script.charAt(char_index);
+			
+			if (char == "{")
+			{
+				if (!startcheck)
+				{
+					startindex = char_index;
+				}
+				
+				startcheck = true;
+				
+				braces++;
+			}
+			
+			if (char == "}")
+			{
+				startcheck = true;
+				
+				braces--;
+			}
+			
+			char_index++;
+		}
+		
+		var ret:String = script.substring(startindex, char_index);
+		
+		return ret;
 	}
 	
 	static public function ParseImports(script:String, interp:Interp)
 	{
-		var imports:String = script.substring(0, script.indexOf("@"));
-		imports.replace("\n", "");
-		var importLines:Array<String> = imports.split(";");
+		var lines:Array<String> = script.split(";");
 		
-		for (i in importLines)
+		for (l in lines)
 		{
-			var parts:Array<String> = i.split(" ");
+			l = StringTools.trim(l);
 			
-			if (~/ *expose */.match(parts[0]))
+			if (l.substr(0, 6) == "import")
 			{
-				var name = parts[1].split(".").pop();
-				interp.variables.set(name, GetClass(parts[1]));
+				var className:String = l.substring(7, l.length);
+				var name = className.split(".").pop();
+				var c:Dynamic = GetClass(className);
+				interp.variables.set(name, c);
 			}
-			else if (~/ *request */.match(parts[0]))
+			
+			if (l.substr(0, 9) == "//request")
 			{
-				interp.variables.set(parts[1], GetModule(parts[1]));
+				l = l.split(" ").pop();
+				interp.variables.set(l, GetModule(l));
 			}
 		}
 	}
