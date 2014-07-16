@@ -92,7 +92,7 @@ class Script
 			
 			updateScript = ScriptHandler.Parse("update", script);
 			destroyScript = ScriptHandler.Parse("destroy", script);
-			var reloadS = ScriptHandler.Parse("reload", script);
+			var reloadS = ScriptHandler.Parse("reload", script, interp);
 			if (reloadS != null)
 			{
 				interp.execute(reloadS);
