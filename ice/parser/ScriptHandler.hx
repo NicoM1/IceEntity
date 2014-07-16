@@ -95,11 +95,16 @@ class ScriptHandler extends FlxBasic
 	 */
 	static public function GetClass(path:String):Dynamic
 	{
+		if (ScriptHandler.blacklist.exists(path))
+		{
+			throw "access to this class is blacklisted: " + path;
+		}
+		
 		if (modules.exists(path))
 		{
 			return modules.get(path);
 		}
-		else
+		else if (ScriptHandler.allowExpose)
 		{
 			var myClass:Dynamic = Type.resolveClass(path);
 			if (myClass != null)
@@ -111,6 +116,10 @@ class ScriptHandler extends FlxBasic
 			{
 				throw "expose attempt failed";
 			}
+		}
+		else
+		{
+			throw "access to expose is restricted";
 		}
 	}
 	

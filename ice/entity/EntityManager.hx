@@ -281,24 +281,11 @@ class EntityManager extends FlxGroup
 		
 		for (expose in script.elementsNamed("expose"))
 		{
-			if (ScriptHandler.allowExpose)
-			{
-				var path = expose.get("path");
-				if (ScriptHandler.blacklist.exists(path))
-				{
-					throw "access to this class is blacklisted: " + path;
-				}
-				else
-				{
-					var module = ScriptHandler.GetClass(path);
+			var path = expose.get("path");
 
-					ParsedScript.interp.variables.set(expose.get("name"), module);
-				}
-			}
-			else
-			{
-				throw "access to expose is restricted";
-			}
+			var module = ScriptHandler.GetClass(path);
+
+			ParsedScript.interp.variables.set(expose.get("name"), module);
 		}
 		
 		if (script.exists("noreload"))
