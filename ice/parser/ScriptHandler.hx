@@ -40,6 +40,7 @@ class ScriptHandler extends FlxBasic
 		modules = new Map<String,Dynamic>();
 		scripts = new ScriptHolder();
 		blacklist = new Map<String,Bool>();
+		blacklist.set("ice.parser.ScriptHandler", true);
 	}
 	
 	static public function SetReloadDelay(delay:Float)
