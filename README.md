@@ -168,7 +168,7 @@ As you can see, the "expose" tag allows the script to gain access to a static cl
     	//#
     	var owner:Entity;
 				/*
-				This is the only non-standard Haxe syntax used in scripts.
+				This is a special syntax used in scripts.
 				It allows you to create variables that are not compiled when the script is parsed.
 				Why?
 				This way, if you have used a request tag, or wish to have completion for the scripts owner, 
@@ -177,7 +177,12 @@ As you can see, the "expose" tag allows the script to gain access to a static cl
 				You may only use one of these blocks per script, simply open with "//#" and repeat to close.
 				*/
     	//#
-    	public static var testEntity = new Entity("myTag");
+    	public static var testEntity = new Entity("myTag"); /*
+															These variable are live-reloaded only if they
+															did not previously exist, changing a value will not
+															reload the variable, however if you add a new
+															variable, it will be detected.
+															*/
     	
     	public function init() 
     	{
@@ -186,13 +191,24 @@ As you can see, the "expose" tag allows the script to gain access to a static cl
     
     	public function update()
     	{
-    		
+    		test("hello world");
     	}
     
     	public function reload()
     	{
     
     	}
+
+		//@
+		function test(t)
+		{
+			trace(t);
+		}
+			/*
+			This is another special syntax, any function placed inside of this block (one per script),
+			acts how you would expect a standard haxe function to act, and is live-reloaded.
+			*/
+		//@
     }
 
 **[4]** The scripting system relies on hscript, which is basically interpreted Haxe. Unfortunately, I do not know enough about hscript yet to explain everything you can and can't do, but an important item to note is to not use properties in scripts, you must instead just use methods (as far as I can tell...). If you are more experienced in hscript, please submit a pull request with a fuller description:)
