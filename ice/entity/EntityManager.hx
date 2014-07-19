@@ -16,18 +16,17 @@ import openfl.events.Event;
 class EntityManager extends FlxGroup
 {
 	///a singleton instance of this class
-	public static var instance(get, null) : EntityManager;
-	private static var _instance : EntityManager;
+	public static var instance(get, null):EntityManager;
+	private static var _instance:EntityManager;
 	
 	///Int corresponds to GID of entity, for faster access
-	public var entities(default, null) : Array<Entity>;
-	private var groups : Map<String, FlxTypedGroup<Entity>>;
+	public var entities(default, null):Array<Entity>;
+	private var groups:Map<String, FlxTypedGroup<Entity>>;
 	
-	///simple var for storing a single map
-	public static var map(default, null) : FlxTilemap;
+	private var templates:Map<String,Xml>;
 	
 	///highest current GID of any entity, used for autoasigning GIDs
-	public var highestGID(default, default) : Int = 0;
+	public var highestGID(default, default):Int = 0;
 	
 	//{ Constructor and Instance
 	private function new()
@@ -35,9 +34,8 @@ class EntityManager extends FlxGroup
 		super();
 		entities = new Array<Entity>();
 		groups = new Map<String, FlxTypedGroup<Entity>>();
-		highestGID = 0;
-		map = null;
-		
+		templates = new Map<String, Xml>();
+		highestGID = 0;		
 	} 
 	
 	///gets the static instance of the manager
@@ -74,173 +72,227 @@ class EntityManager extends FlxGroup
 		
 		for (entity in Root.elementsNamed("entity"))
 		{
-			//Get entity's tag
-			var tag:String = entity.get("tag");
-
-			//Get entity's position
-			var pos:Point = new Point();
-			pos.x = Std.parseInt(entity.get("x"));
-			pos.y = Std.parseInt(entity.get("y"));
-			
-			//build entity
-			var ent:Entity = new Entity(tag, pos);
-			
-			//load in art/animation
-			for (art in entity.elementsNamed("art"))
-			{
-				var width:Int; 
-				width = Std.parseInt(art.get("width"));
-				
-				var height:Int;
-				height = Std.parseInt(art.get("height"));
-				
-				var path:String;
-				path = art.get("path");
-				
-				ent.loadGraphic(path, true, width, height);
-				
-				if (art.firstChild() != null)
-				{
-					for (animation in art.elementsNamed("animation"))
-					{
-						var name:String;
-						name = animation.get("name");
-						
-						var framerate:Int;
-						framerate = Std.parseInt(animation.get("framerate"));
-						
-						var looped:Bool;
-						if (animation.get("looped") == "true")
-						{
-							looped = true;
-						}
-						else
-						{
-							looped = false;
-						}
-						
-						var framesS:String;
-						framesS = animation.get("frames");
-						
-						var framesSA:Array<String>;
-						framesSA = framesS.split(",");
-						
-						var framesIA:Array<Int>;
-						framesIA = new Array<Int>();
-						
-						for (frame in framesSA)
-						{
-							var frameList:Array<String> = frame.split("-");
-							if (frameList.length == 2)
-							{
-								var start:Int = Std.parseInt(frameList[0]);
-								var end:Int = Std.parseInt(frameList[1]);
-								var index:Int;
-								
-								if (start < end)
-								{
-									index = start;
-									while (index <= end)
-									{
-										framesIA.push(index++);
-									}
-								}
-								else if (start > end)
-								{
-									index = start;
-									while (index >= end)
-									{
-										framesIA.push(index--);
-									}
-								}
-							}
-							else
-							{
-								framesIA.push(Std.parseInt(frame));
-							}
-						}
-						
-						ent.animation.add(name, framesIA, framerate, looped);
-						if (animation.exists("autorun"))
-						{
-							if (animation.get("autorun") == "true" || animation.get("autorun") == "True")
-							{
-								ent.animation.play(animation.get("name"));
-							}
-						}
-					}
-				}
-			}
-			
-			for (component in entity.elementsNamed("component"))
-				{		
-					var params:Array<Dynamic>;
-					params = new Array<Dynamic>();
-					params.push(ent.GID);
-					
-					if (component.firstChild() != null)
-					{
-						for (param in component.elementsNamed("param"))
-						{
-							var type:String;
-							type = param.get("type").toLowerCase();
-							
-							var value:String;
-							value = param.get("value");
-							
-							switch(type)
-							{
-								case ("int"):
-								{
-									params.push(Std.parseInt(value));
-								}
-								case ("float"):
-								{
-									params.push(Std.parseFloat(value));
-								}
-								case ("bool"):
-								{
-									if (value == "true" || value == "True")
-									{
-										params.push(true);
-									}
-									else
-									{
-										params.push(false);
-									}
-								}
-								default:
-								{
-									params.push(value);
-								}
-							}
-						}
-					}
-					
-					try 
-					{
-						var classType = Type.resolveClass(component.get("type"));
-						var newComponent = Type.createInstance(classType, params);
-						ent.AddComponent(newComponent);
-					}
-					catch (msg:Dynamic)
-					{
-						throw ("Unable to resolve class from xml: " + msg);
-					}
-				}
-				
-				for (script in entity.elementsNamed("script"))
-				{
-					ParseScript(script, ent);
-				}
-				
-				AddEntity(ent);
+			ParseEntity(entity);
+		}
+		
+		for (instance in Root.elementsNamed("instance"))
+		{
+			ParseInstance(instance);
 		}
 		
 		for (script in Root.elementsNamed("script"))
 		{
 			ParseScript(script, null);
 		}
+	}
+	
+	private function ParseInstance(instance:Xml)
+	{
+		if (!instance.exists("template"))
+		{
+			throw "template not specified";
+		}
+		if (!templates.exists(instance.get("template")))
+		{
+			throw "template not found";
+		}
+		
+		var template:String = instance.get("template");
+		var entityXML:Xml = templates.get(template);
+		
+		var entity:Entity = ParseEntity(entityXML);
+		
+		if (instance.exists("tag"))
+		{
+			entity.Tag = instance.get("tag");
+		}
+		if (instance.exists("x"))
+		{
+			entity.x = Std.parseInt(instance.get("x"));
+		}
+		if (instance.exists("y"))
+		{
+			entity.y = Std.parseInt(instance.get("y"));
+		}
+	}
+	
+	private function ParseEntity(entity:Xml):Entity
+	{
+		//Get entity's tag
+		var tag:String = entity.get("tag");
+
+		//Get entity's position
+		var pos:Point = new Point();
+		pos.x = Std.parseInt(entity.get("x"));
+		pos.y = Std.parseInt(entity.get("y"));
+		
+		//build entity
+		var ent:Entity = new Entity(tag, pos);
+		
+		if (entity.exists("template"))
+		{
+			if (!templates.exists(entity.get("template")))
+			{
+				templates.set(entity.get("template"), entity);
+				
+				if (entity.get("instance") != "true" && entity.get("instance") != "True")
+				{
+					return null;
+				}
+			}
+		}
+		
+		//load in art/animation
+		for (art in entity.elementsNamed("art"))
+		{
+			var width:Int; 
+			width = Std.parseInt(art.get("width"));
+			
+			var height:Int;
+			height = Std.parseInt(art.get("height"));
+			
+			var path:String;
+			path = art.get("path");
+			
+			ent.loadGraphic(path, true, width, height);
+			
+			if (art.firstChild() != null)
+			{
+				for (animation in art.elementsNamed("animation"))
+				{
+					var name:String;
+					name = animation.get("name");
+					
+					var framerate:Int;
+					framerate = Std.parseInt(animation.get("framerate"));
+					
+					var looped:Bool;
+					if (animation.get("looped") == "true")
+					{
+						looped = true;
+					}
+					else
+					{
+						looped = false;
+					}
+					
+					var framesS:String;
+					framesS = animation.get("frames");
+					
+					var framesSA:Array<String>;
+					framesSA = framesS.split(",");
+					
+					var framesIA:Array<Int>;
+					framesIA = new Array<Int>();
+					
+					for (frame in framesSA)
+					{
+						var frameList:Array<String> = frame.split("-");
+						if (frameList.length == 2)
+						{
+							var start:Int = Std.parseInt(frameList[0]);
+							var end:Int = Std.parseInt(frameList[1]);
+							var index:Int;
+							
+							if (start < end)
+							{
+								index = start;
+								while (index <= end)
+								{
+									framesIA.push(index++);
+								}
+							}
+							else if (start > end)
+							{
+								index = start;
+								while (index >= end)
+								{
+									framesIA.push(index--);
+								}
+							}
+						}
+						else
+						{
+							framesIA.push(Std.parseInt(frame));
+						}
+					}
+					
+					ent.animation.add(name, framesIA, framerate, looped);
+					if (animation.exists("autorun"))
+					{
+						if (animation.get("autorun") == "true" || animation.get("autorun") == "True")
+						{
+							ent.animation.play(animation.get("name"));
+						}
+					}
+				}
+			}
+		}
+		
+		for (component in entity.elementsNamed("component"))
+		{		
+			var params:Array<Dynamic>;
+			params = new Array<Dynamic>();
+			params.push(ent.GID);
+			
+			if (component.firstChild() != null)
+			{
+				for (param in component.elementsNamed("param"))
+				{
+					var type:String;
+					type = param.get("type").toLowerCase();
+					
+					var value:String;
+					value = param.get("value");
+					
+					switch(type)
+					{
+						case ("int"):
+						{
+							params.push(Std.parseInt(value));
+						}
+						case ("float"):
+						{
+							params.push(Std.parseFloat(value));
+						}
+						case ("bool"):
+						{
+							if (value == "true" || value == "True")
+							{
+								params.push(true);
+							}
+							else
+							{
+								params.push(false);
+							}
+						}
+						default:
+						{
+							params.push(value);
+						}
+					}
+				}
+			}
+			
+			try 
+			{
+				var classType = Type.resolveClass(component.get("type"));
+				var newComponent = Type.createInstance(classType, params);
+				ent.AddComponent(newComponent);
+			}
+			catch (msg:Dynamic)
+			{
+				throw ("Unable to resolve class from xml: " + msg);
+			}
+		}
+		
+		for (script in entity.elementsNamed("script"))
+		{
+			ParseScript(script, ent);
+		}
+		
+		AddEntity(ent);
+		return ent;
 	}
 	
 	private function ParseScript(script:Xml, ?owner:Entity)

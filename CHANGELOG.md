@@ -1,6 +1,8 @@
 1.0.0
 ------------------------------
 * rewrite scripting system, allow for real haxe files
+* remove map property on EntityManager
+* add instance and template creation for entity xml files
 
 0.10.1
 ------------------------------
