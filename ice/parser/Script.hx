@@ -38,8 +38,6 @@ class Script
 			interp.execute(initS);
 		}
 		
-		script = null;
-		
 		if (!noClean && updateScript == null && destroyScript == null)
 		{
 			doClean = true;
@@ -86,8 +84,6 @@ class Script
 				return;
 			}
 			script = newScript;
-			#else
-			script = Assets.getText(path);
 			#end
 			
 			#if !ICE_NO_RELOAD_IMPORTS
@@ -96,7 +92,7 @@ class Script
 			
 			updateScript = ScriptHandler.Parse("update", script);
 			destroyScript = ScriptHandler.Parse("destroy", script);
-			var reloadS = ScriptHandler.Parse("reload", script);
+			var reloadS = ScriptHandler.Parse("reload", script, interp);
 			if (reloadS != null)
 			{
 				interp.execute(reloadS);

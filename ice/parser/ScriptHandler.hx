@@ -40,6 +40,7 @@ class ScriptHandler extends FlxBasic
 		modules = new Map<String,Dynamic>();
 		scripts = new ScriptHolder();
 		blacklist = new Map<String,Bool>();
+		blacklist.set("ice.parser.ScriptHandler", true);
 	}
 	
 	static public function SetReloadDelay(delay:Float)
@@ -58,6 +59,7 @@ class ScriptHandler extends FlxBasic
 				e.scripts.ReloadScripts();
 			}
 		}
+		scripts.ReloadScripts();
 	}
 	
 	/**
@@ -94,11 +96,16 @@ class ScriptHandler extends FlxBasic
 	 */
 	static public function GetClass(path:String):Dynamic
 	{
+		if (ScriptHandler.blacklist.exists(path))
+		{
+			throw "access to this class is blacklisted: " + path;
+		}
+		
 		if (modules.exists(path))
 		{
 			return modules.get(path);
 		}
-		else
+		else if (ScriptHandler.allowExpose)
 		{
 			var myClass:Dynamic = Type.resolveClass(path);
 			if (myClass != null)
@@ -111,6 +118,10 @@ class ScriptHandler extends FlxBasic
 				throw "expose attempt failed";
 			}
 		}
+		else
+		{
+			throw "access to expose is restricted";
+		}
 	}
 	
 	/**
@@ -122,9 +133,9 @@ class ScriptHandler extends FlxBasic
 		blacklist.set(path, false);
 	}
 	
-	static public function Parse(func:String, script:String):Expr
+	static public function Parse(func:String, script:String, ?interp:Interp):Expr
 	{		
-		var returnScript = ParseString(func, script);
+		var returnScript = ParseString(func, script, interp);
 		if (returnScript != null)
 		{
 			return parser.parseString(returnScript);
@@ -132,48 +143,183 @@ class ScriptHandler extends FlxBasic
 		return null;
 	}
 	
-	static public function ParseString(func:String, script:String):String
-	{		
-		var startIndex:Int = script.indexOf("@" + func);
-		if (startIndex < 0)
+	static private function GetFunctionLine(offset:Int, func:String, script:String):Int
+	{
+		while (true)
+		{
+			var startLine:Int = script.indexOf("function", offset);
+			if (startLine < 0)
+			{
+				return -1;
+			}
+			var endLine:Int = script.indexOf("\n", startLine);
+			if (endLine < 0)
+			{
+				endLine = script.indexOf("\r");
+			}
+			
+			var line:String = script.substring(startLine, endLine);
+			
+			if (line.indexOf(func) >= 0)
+			{
+				return endLine;
+			}
+			offset = endLine;
+		}
+		return -1;
+	}
+	
+	static public function ParseString(func:String, script:String, ?interp:Interp):String
+	{
+		var startIndex = GetFunctionLine(0, func, script);
+		
+		if (startIndex == -1)
 		{
 			return null;
 		}
-		startIndex = script.indexOf("{", startIndex) + 1;		
-		var endIndex:Int = script.indexOf("}|", startIndex);
 		
-		return script.substring(startIndex, endIndex);
+		var braces:Int = 0;
+		var startCheck:Bool = false;
+		var charIndex:Int = startIndex;
+		
+		while ((charIndex < script.length) && !(startCheck && (braces == 0)))
+		{
+			var char:String = script.charAt(charIndex);
+			
+			if (char == "{")
+			{
+				if (!startCheck)
+				{
+					startIndex = charIndex;
+					startCheck = true;
+				}
+				
+				braces++;
+			}
+			
+			if (char == "}")
+			{			
+				braces--;
+			}
+			
+			charIndex++;
+		}
+		
+		var ret:String = script.substring(startIndex, charIndex);
+		
+		var types:EReg = ~/: *[a-z0-9_]+/ig; //remove types from declarations
+		ret = types.replace(ret, "");
+		
+		//add variable declarations into init
+		if (func == "init")
+		{
+			ret = ParseVars(script) + ret;
+		}
+		else if (func == "reload")
+		{
+			ret = ParseVars(script, interp) + ret;
+		}
+		
+		ret = ~/var /g.replace(ret, "");
+		
+		return ret;
 	}
 	
 	static public function ParseImports(script:String, interp:Interp)
 	{
-		var imports:String = script.substring(0, script.indexOf("@"));
-		imports.replace("\n", "");
-		var importLines:Array<String> = imports.split(";");
+		var imports:String;
+		var endIndex = script.indexOf("function");
 		
-		for (i in importLines)
+		imports = script.substring(0, endIndex);
+		
+		var lines:Array<String> = imports.split(";");
+		
+		for (l in lines)
 		{
-			var parts:Array<String> = i.split(" ");
+			l = l.trim();
 			
-			if (~/ *expose */.match(parts[0]))
+			if (l == "")
 			{
-				var name = parts[1].split(".").pop();
-				interp.variables.set(name, GetClass(parts[1]));
+				continue;
 			}
-			else if (~/ *request */.match(parts[0]))
+			
+			var sections:Array<String> = ~/ +/.split(l);
+			
+			if (sections[0] == "import")
 			{
-				interp.variables.set(parts[1], GetModule(parts[1]));
+				var className:String = sections[1];
+				var name = className.split(".").pop();
+				var c:Dynamic = GetClass(className);
+				interp.variables.set(name, c);
+			}
+			else if (sections[0] == "request")
+			{
+				l = sections[1];
+				interp.variables.set(l, GetModule(l));
 			}
 		}
 	}
 	
+	static private function ParseVars(script:String, ?interp:Interp):String
+	{
+		var startIndex:Int = script.indexOf("class ");
+		
+		if (startIndex < 0)
+		{
+			startIndex = script.lastIndexOf("import ");
+			startIndex = script.indexOf("\n", startIndex);
+		}
+		else
+		{
+			startIndex = script.indexOf("{", startIndex) + 1;
+		}
+		
+		var endIndex = script.indexOf("function ", startIndex);
+		
+		var vars:String = script.substring(startIndex, endIndex);		
+		vars = vars.substring(0, vars.lastIndexOf("\n")); //cut vars to end of last line
+		
+		var startNonCompile:Int = vars.indexOf("//#");
+		var endNonCompile:Int = vars.indexOf("//#", startNonCompile + 3);
+		vars = vars.substring(0, startNonCompile) + vars.substring(endNonCompile); //remove the non-compile section
+		
+		var redundant:EReg = ~/[a-z]* *[a-z]* *var +[a-z0-9_]+ *: *[a-z0-9_]+ *; *(\n)?/ig; //remove declarations that do not assign a value
+		vars = redundant.replace(vars, "");
+		
+		var types:EReg = ~/: *[a-z0-9_]+/ig; //remove types from variable declarations
+		vars = types.replace(vars, "");
+		
+		var modifiers:EReg = ~/(static)? *(private|public) *(static)?/g; //remove modifiers from variable declarations
+		vars = modifiers.replace(vars, "");
+		
+		if (interp != null)
+		{
+			var reloadVars:String = "";
+			
+			var varDecl:EReg = ~/var +([a-z0-9_]+)/ig; //find variable names
+			while (varDecl.match(vars))
+			{
+				if (!interp.variables.exists(varDecl.matched(1)))
+				{
+					reloadVars += vars.substring(varDecl.matchedPos().pos, vars.indexOf(";",varDecl.matchedPos().pos) + 1);
+				}
+				vars = varDecl.matchedRight();
+			}
+			vars = reloadVars;
+		}
+		
+		var helperStart:Int = script.indexOf("//@");
+		var helperEnd:Int = script.indexOf("//@", helperStart + 3);
+		if (helperStart >= 0)
+		{
+			vars += script.substring(helperStart, helperEnd);
+		}
+		
+		return vars;
+	}
+	
 	static public function Update()
 	{
-		if (!init)
-		{
-			Assets.addEventListener(Event.CHANGE, ReloadAll);
-			init = true;
-		}
 		#if ICE_LIVE_RELOAD
 		timer += FlxG.elapsed;
 		if (timer > reloadDelay)
