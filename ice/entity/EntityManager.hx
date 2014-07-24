@@ -4,7 +4,6 @@ import flash.geom.Point;
 import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.FlxG;
 import flixel.group.FlxGroup;
 import flixel.group.FlxTypedGroup;
 import flixel.tile.FlxTilemap;
@@ -18,17 +17,17 @@ import openfl.events.Event;
 class EntityManager extends FlxGroup
 {
 	///a singleton instance of this class
-	static var instance : EntityManager;
+	public static var instance(get, null):EntityManager;
+	private static var _instance:EntityManager;
 	
 	///Int corresponds to GID of entity, for faster access
-	public var entities(default, null) : Array<Entity>;
-	private var groups : Map<String, FlxTypedGroup<Entity>>;
+	public var entities(default, null):Array<Entity>;
+	private var groups:Map<String, FlxTypedGroup<Entity>>;
 	
-	///simple var for storing a single map
-	static public var map(default, null) : FlxTilemap;
+	private var templates:Map<String,Xml>;
 	
 	///highest current GID of any entity, used for autoasigning GIDs
-	public var highestGID(default, default) : Int = 0;
+	public var highestGID(default, default):Int = 0;
 	
 	//{ Constructor and Instance
 	private function new()
@@ -36,20 +35,23 @@ class EntityManager extends FlxGroup
 		super();
 		entities = new Array<Entity>();
 		groups = new Map<String, FlxTypedGroup<Entity>>();
-		highestGID = 0;
-		map = null;
-		
+		templates = new Map<String, Xml>();
+		highestGID = 0;		
 	} 
 	
 	///gets the static instance of the manager
 	public static function getInstance() : EntityManager
 	{
-		if (instance == null)
+		if (_instance == null)
 		{
-			instance = new EntityManager();
+			_instance = new EntityManager();
 		}
 		
-		return instance;
+		return _instance;
+	}
+	public static inline function get_instance() : EntityManager
+	{
+		return getInstance();
 	}
 	//}
 
@@ -64,171 +66,19 @@ class EntityManager extends FlxGroup
 		var Root:Xml = Xml.parse(IceUtil.LoadString(path, useAssets));
 		Root = Root.firstElement();
 		
-		ScriptHandler.SetReloadDelay(Std.parseFloat(Root.get("reloaddelay")));
+		if (Root.exists("reloaddelay"))
+		{
+			ScriptHandler.SetReloadDelay(Std.parseFloat(Root.get("reloaddelay")));
+		}
 		
 		for (entity in Root.elementsNamed("entity"))
 		{
-			//Get entity's tag
-			var tag:String = entity.get("tag");
-
-			//Get entity's position
-			var pos:Point = new Point();
-			pos.x = Std.parseInt(entity.get("x"));
-			pos.y = Std.parseInt(entity.get("y"));
-			
-			//build entity
-			var ent:Entity = new Entity(-1, tag, pos);
-			
-			//load in art/animation
-			for (art in entity.elementsNamed("art"))
-			{
-				var width:Int; 
-				width = Std.parseInt(art.get("width"));
-				
-				var height:Int;
-				height = Std.parseInt(art.get("height"));
-				
-				var path:String;
-				path = art.get("path");
-				
-				ent.loadGraphic(path, true, width, height);
-				
-				if (art.firstChild() != null)
-				{
-					for (animation in art.elementsNamed("animation"))
-					{
-						var name:String;
-						name = animation.get("name");
-						
-						var framerate:Int;
-						framerate = Std.parseInt(animation.get("framerate"));
-						
-						var looped:Bool;
-						if (animation.get("looped") == "true")
-						{
-							looped = true;
-						}
-						else
-						{
-							looped = false;
-						}
-						
-						var framesS:String;
-						framesS = animation.get("frames");
-						
-						var framesSA:Array<String>;
-						framesSA = framesS.split(",");
-						
-						var framesIA:Array<Int>;
-						framesIA = new Array<Int>();
-						
-						for (frame in framesSA)
-						{
-							var frameList:Array<String> = frame.split("-");
-							if (frameList.length == 2)
-							{
-								var start:Int = Std.parseInt(frameList[0]);
-								var end:Int = Std.parseInt(frameList[1]);
-								var index:Int;
-								
-								if (start < end)
-								{
-									index = start;
-									while (index <= end)
-									{
-										framesIA.push(index++);
-									}
-								}
-								else if (start > end)
-								{
-									index = start;
-									while (index >= end)
-									{
-										framesIA.push(index--);
-									}
-								}
-							}
-							else
-							{
-								framesIA.push(Std.parseInt(frame));
-							}
-						}
-						
-						ent.animation.add(name, framesIA, framerate, looped);
-						if (animation.exists("autorun"))
-						{
-							if (animation.get("autorun") == "true" || animation.get("autorun") == "True")
-							{
-								ent.animation.play(animation.get("name"));
-							}
-						}
-					}
-				}
-			
-				for (component in entity.elementsNamed("component"))
-				{		
-					var params:Array<Dynamic>;
-					params = new Array<Dynamic>();
-					params.push(ent.GID);
-					
-					if (component.firstChild() != null)
-					{
-						for (param in component.elementsNamed("param"))
-						{
-							var type:String;
-							type = param.get("type").toLowerCase();
-							
-							var value:String;
-							value = param.get("value");
-							
-							switch(type)
-							{
-								case ("int"):
-								{
-									params.push(Std.parseInt(value));
-								}
-								case ("float"):
-								{
-									params.push(Std.parseFloat(value));
-								}
-								case ("bool"):
-								{
-									if (value == "true" || value == "True")
-									{
-										params.push(true);
-									}
-									else
-									{
-										params.push(false);
-									}
-								}
-								default:
-								{
-									params.push(value);
-								}
-							}
-						}
-					}
-					
-					try 
-					{
-						var classType = Type.resolveClass(component.get("type"));
-						var newComponent = Type.createInstance(classType, params);
-						ent.AddComponent(newComponent);
-					}
-					catch (msg:Dynamic)
-					{
-						throw ("Unable to resolve class from xml: " + msg);
-					}
-				}
-				
-				for (script in entity.elementsNamed("script"))
-				{
-					ParseScript(script, ent);
-				}
-				
-				AddEntity(ent);
-			}
+			ParseEntity(entity);
+		}
+		
+		for (instance in Root.elementsNamed("instance"))
+		{
+			ParseInstance(instance);
 		}
 		
 		for (script in Root.elementsNamed("script"))
@@ -237,7 +87,216 @@ class EntityManager extends FlxGroup
 		}
 	}
 	
-	static private function ParseScript(script:Xml, ?owner:Entity)
+	private function ParseInstance(instance:Xml)
+	{
+		if (!instance.exists("template"))
+		{
+			throw "template not specified";
+		}
+		if (!templates.exists(instance.get("template")))
+		{
+			throw "template not found";
+		}
+		
+		var template:String = instance.get("template");
+		var entityXML:Xml = templates.get(template);
+		
+		var entity:Entity = ParseEntity(entityXML);
+		
+		if (instance.exists("tag"))
+		{
+			entity.Tag = instance.get("tag");
+		}
+		if (instance.exists("x"))
+		{
+			entity.x = Std.parseInt(instance.get("x"));
+		}
+		if (instance.exists("y"))
+		{
+			entity.y = Std.parseInt(instance.get("y"));
+		}
+	}
+	
+	private function ParseEntity(entity:Xml):Entity
+	{
+		//Get entity's tag
+		var tag:String = entity.get("tag");
+
+		//Get entity's position
+		var pos:Point = new Point();
+		pos.x = Std.parseInt(entity.get("x"));
+		pos.y = Std.parseInt(entity.get("y"));
+		
+		//build entity
+		var ent:Entity = new Entity(tag, pos);
+		
+		if (entity.exists("template"))
+		{
+			if (!templates.exists(entity.get("template")))
+			{
+				templates.set(entity.get("template"), entity);
+				
+				if (entity.get("instance") != "true" && entity.get("instance") != "True")
+				{
+					return null;
+				}
+			}
+		}
+		
+		//load in art/animation
+		for (art in entity.elementsNamed("art"))
+		{
+			var width:Int; 
+			width = Std.parseInt(art.get("width"));
+			
+			var height:Int;
+			height = Std.parseInt(art.get("height"));
+			
+			var path:String;
+			path = art.get("path");
+			
+			ent.loadGraphic(path, true, width, height);
+			
+			if (art.firstChild() != null)
+			{
+				for (animation in art.elementsNamed("animation"))
+				{
+					var name:String;
+					name = animation.get("name");
+					
+					var framerate:Int;
+					framerate = Std.parseInt(animation.get("framerate"));
+					
+					var looped:Bool;
+					if (animation.get("looped") == "true")
+					{
+						looped = true;
+					}
+					else
+					{
+						looped = false;
+					}
+					
+					var framesS:String;
+					framesS = animation.get("frames");
+					
+					var framesSA:Array<String>;
+					framesSA = framesS.split(",");
+					
+					var framesIA:Array<Int>;
+					framesIA = new Array<Int>();
+					
+					for (frame in framesSA)
+					{
+						var frameList:Array<String> = frame.split("-");
+						if (frameList.length == 2)
+						{
+							var start:Int = Std.parseInt(frameList[0]);
+							var end:Int = Std.parseInt(frameList[1]);
+							var index:Int;
+							
+							if (start < end)
+							{
+								index = start;
+								while (index <= end)
+								{
+									framesIA.push(index++);
+								}
+							}
+							else if (start > end)
+							{
+								index = start;
+								while (index >= end)
+								{
+									framesIA.push(index--);
+								}
+							}
+						}
+						else
+						{
+							framesIA.push(Std.parseInt(frame));
+						}
+					}
+					
+					ent.animation.add(name, framesIA, framerate, looped);
+					if (animation.exists("autorun"))
+					{
+						if (animation.get("autorun") == "true" || animation.get("autorun") == "True")
+						{
+							ent.animation.play(animation.get("name"));
+						}
+					}
+				}
+			}
+		}
+		
+		for (component in entity.elementsNamed("component"))
+		{		
+			var params:Array<Dynamic>;
+			params = new Array<Dynamic>();
+			params.push(ent.GID);
+			
+			if (component.firstChild() != null)
+			{
+				for (param in component.elementsNamed("param"))
+				{
+					var type:String;
+					type = param.get("type").toLowerCase();
+					
+					var value:String;
+					value = param.get("value");
+					
+					switch(type)
+					{
+						case ("int"):
+						{
+							params.push(Std.parseInt(value));
+						}
+						case ("float"):
+						{
+							params.push(Std.parseFloat(value));
+						}
+						case ("bool"):
+						{
+							if (value == "true" || value == "True")
+							{
+								params.push(true);
+							}
+							else
+							{
+								params.push(false);
+							}
+						}
+						default:
+						{
+							params.push(value);
+						}
+					}
+				}
+			}
+			
+			try 
+			{
+				var classType = Type.resolveClass(component.get("type"));
+				var newComponent = Type.createInstance(classType, params);
+				ent.AddComponent(newComponent);
+			}
+			catch (msg:Dynamic)
+			{
+				throw ("Unable to resolve class from xml: " + msg);
+			}
+		}
+		
+		for (script in entity.elementsNamed("script"))
+		{
+			ParseScript(script, ent);
+		}
+		
+		AddEntity(ent);
+		return ent;
+	}
+	
+	private function ParseScript(script:Xml, ?owner:Entity)
 	{
 		var file:String = "";
 		
@@ -250,7 +309,11 @@ class EntityManager extends FlxGroup
 		
 		if (path != "")
 		{
+			#if !ICE_LIVE_RELOAD
 			file = IceUtil.LoadString(path, true);
+			#else
+			file = IceUtil.LoadString(path, false);
+			#end
 		}
 		else
 		{
@@ -265,41 +328,32 @@ class EntityManager extends FlxGroup
 		for (request in script.elementsNamed("request"))
 		{
 			var module = ScriptHandler.GetModule(request.get("name"));
-			if (module != null)
-			{
-				ParsedScript.interp.variables.set(request.get("name"), module);
-			}
-			else
-			{
-				throw "module not available";
-			}
+			
+			ParsedScript.interp.variables.set(request.get("name"), module);
 		}
 		
 		for (expose in script.elementsNamed("expose"))
 		{
-			if (ScriptHandler.allowExpose)
+			var path = expose.get("path");
+
+			var module = ScriptHandler.GetClass(path);
+
+			ParsedScript.interp.variables.set(expose.get("name"), module);
+		}
+		
+		if (script.exists("noreload"))
+		{
+			if (script.get("noreload") == "true")
 			{
-				var path = expose.get("path");
-				if (ScriptHandler.blacklist.exists(path))
-				{
-					throw "access to this class is blacklisted: " + path;
-				}
-				else
-				{
-					var module = Type.resolveClass(path);
-					if (module != null)
-					{
-						ParsedScript.interp.variables.set(expose.get("name"), module);
-					}
-					else
-					{
-						throw "expose attempt failed";
-					}
-				}
+				ParsedScript.noReload = true;
 			}
-			else
+		}
+		
+		if (script.exists("noclean"))
+		{
+			if (script.get("noclean") == "true")
 			{
-				throw "access to expose is restricted";
+				ParsedScript.noClean = true;
 			}
 		}
 		
@@ -416,7 +470,7 @@ class EntityManager extends FlxGroup
 	
 	//{ Get Items
 	///Returns the entity with the specified GID
-    public function GetEntity(GID : Int) : Entity
+    	public function GetEntity(GID : Int) : Entity
 	{
 		return entities[GID];
 	}

@@ -1,3 +1,38 @@
+1.0.0
+------------------------------
+* rewrite scripting system, allow for real haxe files
+* remove map property on EntityManager
+* add instance and template creation for entity xml files
+
+0.10.1
+------------------------------
+* extend interp to allow property access on objects
+
+0.10.0
+------------------------------
+* add syntax for exposing and requesting classes inside of scripts
+
+0.9.0
+------------------------------
+* add simple fsm system
+
+0.8.2
+------------------------------
+* fix parsing mistake causing scripts to only load if the entity had an art element
+
+0.8.1
+------------------------------
+* make sure to check that entities aren't null
+
+0.8.0
+------------------------------
+* add noreload option
+* make scripts delete if they only have init logic (unless noclean is specified)
+
+0.7.0
+------------------------------
+* allow access to instance via a property
+
 0.6.3
 ------------------------------
 * fix backward conditionals that broke string loading

@@ -7,23 +7,26 @@ import openfl.Assets;
 
 class Script
 {
-	public var interp:Interp;
+	public var interp:IceInterp;
 	var updateScript:Expr;
 	var destroyScript:Expr;
 	var script:String;
 	var newScript:String;
 	var init:Bool = false;
 	var path:String = "";
+	public var noReload = false;
+	public var doClean(default,null):Bool = false;
+	public var noClean:Bool = false;
 	
 	public function new(script:String, ?path:String = "") 
 	{		
 		this.script = script;
 		this.path = path;
 		
-		interp = new Interp();
-		interp.variables.set("init", false);
+		interp = new IceInterp();
 		
-		updateScript = ScriptHandler.Parse("update",script);
+		ScriptHandler.ParseImports(script, interp);
+		updateScript = ScriptHandler.Parse("update", script);
 		destroyScript = ScriptHandler.Parse("destroy", script);
 	}
 	
@@ -34,9 +37,11 @@ class Script
 		{
 			interp.execute(initS);
 		}
-		interp.variables.set("init", true);
 		
-		script = null;
+		if (!noClean && updateScript == null && destroyScript == null)
+		{
+			doClean = true;
+		}
 	}
 	
 	public function Update() 
@@ -66,7 +71,7 @@ class Script
 	
 	public function ReloadScript()
 	{
-		if (path != "")
+		if (!noReload && path != "")
 		{
 			#if ICE_LIVE_RELOAD
 			newScript = IceUtil.LoadString(path, false);
@@ -79,12 +84,15 @@ class Script
 				return;
 			}
 			script = newScript;
-			#else
-			script = Assets.getText(path);
 			#end
-			updateScript = ScriptHandler.Parse("update",script);
+			
+			#if !ICE_NO_RELOAD_IMPORTS
+			ScriptHandler.ParseImports(script, interp);
+			#end
+			
+			updateScript = ScriptHandler.Parse("update", script);
 			destroyScript = ScriptHandler.Parse("destroy", script);
-			var reloadS = ScriptHandler.Parse("reload", script);
+			var reloadS = ScriptHandler.Parse("reload", script, interp);
 			if (reloadS != null)
 			{
 				interp.execute(reloadS);

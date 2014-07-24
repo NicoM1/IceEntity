@@ -2,7 +2,7 @@ package ice.parser;
 
 class ScriptHolder
 {
-	var scripts:Array<Script>;
+	public var scripts(default,null):Array<Script>;
 	
 	public function new() 
 	{
@@ -40,7 +40,14 @@ class ScriptHolder
 	{
 		for (s in scripts)
 		{
-			s.Update();
+			if (s.doClean)
+			{
+				scripts.remove(s);
+			}
+			else if (s != null)
+			{
+				s.Update();
+			}
 		}
 	}
 	
@@ -57,7 +64,10 @@ class ScriptHolder
 	{
 		for (s in scripts)
 		{
-			s.ReloadScript();
+			if (s != null)
+			{
+				s.ReloadScript();
+			}
 		}
 	}
 }

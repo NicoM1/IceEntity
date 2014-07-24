@@ -5,6 +5,7 @@ import flixel.FlxBasic;
 import flixel.FlxSprite;
 import flixel.FlxObject;
 import ice.parser.ScriptHolder;
+import ice.fsm.FSM;
 
 class Entity extends FlxSprite
 {
@@ -15,9 +16,21 @@ class Entity extends FlxSprite
 	///A general identifier, for grouping objects, Ex: "Enemy"
 	public var Tag:String;
 	
-	public var scripts:ScriptHolder;
+	public var scripts(default,null):ScriptHolder;
 	
 	public var Parent(default, null):Int;
+	
+	private var FSMs:Array<FSM>;
+	public var FSM(get, null):FSM;
+	
+	inline function get_FSM():FSM
+	{
+		if (FSMs[0] == null)
+		{
+			FSMs[0] = new FSM();
+		}
+		return FSMs[0];
+	}
 	
 	///The key is a unique identifer, used to acces individual components
 	private var components:Array<Component>; //used to be a map, but individual access is not needed, and this saves on garbage. Just don't try to add multiples of a type of component
@@ -27,7 +40,7 @@ class Entity extends FlxSprite
 	private var initialized = false;
 	
 	///GID Can't Be 0, 0 will switch to -1, if left -1, GID will be auto asigned
-	public function new(?GID:Int = -1, ?Tag:String, ?Positon:Point, ?Parent:Int = -1) 
+	public function new(?Tag:String, ?Positon:Point, ?GID:Int = -1, ?Parent:Int = -1) 
 	{
 		if (Positon == null)
 		{
@@ -52,6 +65,7 @@ class Entity extends FlxSprite
 		components = new Array<Component>();
 		children = new Array<Int>();	
 		scripts = new ScriptHolder();
+		FSMs = new Array<FSM>();
 	}
 	
 	public function AddChild(childGID:Int)
@@ -142,14 +156,20 @@ class Entity extends FlxSprite
 			init();
 			initialized = true;
 		}
-		super.update();
-		
+
 		for (c in components)
 		{
 			c.Update();
 		}
 		
 		scripts.Update();
+		
+		for (fsm in FSMs)
+		{
+			fsm.Update();
+		}
+		
+		super.update();
 	}
 	
 	public function IsAgainst(surface:FlxBasic, direction:Int) : Bool
@@ -191,7 +211,7 @@ class Entity extends FlxSprite
 	 * @param	?b	Second object, defaults to this entity
 	 * @return
 	 */
-	public function GetDistance(a:FlxObject = null, ?b:FlxObject):Float
+	public function GetDistance(a:FlxObject, ?b:FlxObject = null):Float
 	{
 		if (b == null)
 		{
