@@ -47,7 +47,9 @@ A simple framework for managing entities and components in HaxeFlixel
 **Installation**
 ----------
 
-  **[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity``` in a terminal with access to git
+  **[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity master``` in a terminal with access to git
+  
+  **Note: If you use the development version of HaxeFlixel (as I do), please replace ```master``` with ```dev```, this will make sure that IceEntity works properly with your prefered version of HaxeFlixel.**
   
   **[2]** Add ```<haxelib name="iceentity"/>``` to your ```Project.xml``` file, directly under ```<haxelib name="flixel"/>```
   
