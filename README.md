@@ -11,6 +11,8 @@ A simple framework for managing entities and components in HaxeFlixel
   **[NEW v1.0.0]**
   
   Rewrote entire scripting system, allowing proper Haxe classes to be parsed as scripts
+
+  Added templates and instance creation to XML parser
   
   **[v0.10.0]**
   
@@ -45,7 +47,7 @@ A simple framework for managing entities and components in HaxeFlixel
 **Installation**
 ----------
 
-  **[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity dev``` in a terminal with access to git
+  **[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity``` in a terminal with access to git
   
   **[2]** Add ```<haxelib name="iceentity"/>``` to your ```Project.xml``` file, directly under ```<haxelib name="flixel"/>```
   
@@ -64,7 +66,7 @@ A simple framework for managing entities and components in HaxeFlixel
   
  **Entity Parser:**
 ----------
-As of v0.3.0, IceEntity includes an xml parser, which can build entities from simple xml files. Do note, this is a new feature, and may have bugs (not like the rest of IceEntity doesn't;)). In order to use this system, you must:
+IceEntity includes an xml parser, which can build entities from simple xml files. In order to use this system, you must:
 
 **[1]** Create an xml file with this structure:
 
@@ -81,6 +83,19 @@ As of v0.3.0, IceEntity includes an xml parser, which can build entities from si
 		    </component>
 			//CHECK NEXT SECTION FOR SCRIPTING INFORMATION (yes, you can write code here!!)
 	    </entity>
+
+		<entity tag="templateTest" template="test" x="0" y="0"/> [NEW as of 1.0.0]
+		/*This is a "template" it can be used to create many instances of a premade entity, 
+		simply declare the entity as usual, and add an identifier: template="identifier".
+		Note that by default, entities with a template attribute are not built at startup,
+		however you can do so by adding instance="true" to the declaration.
+		Note this is a single line for clarity, but this "template" would in practice look
+		the same as the above entity declaration, with art and all*/
+
+		<instance template="test" tag="overwrittenTag" x="10" y="15"/>
+		/*This is an "instance", you can instantiate a template as many times as you wish, 
+		while altering tag and position.*/
+
     </data>
 	
 **Important information:** 
