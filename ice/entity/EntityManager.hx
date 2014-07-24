@@ -5,6 +5,7 @@ import flixel.FlxBasic;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
+import flixel.group.FlxTypedGroup;
 import flixel.tile.FlxTilemap;
 import haxe.zip.Entry.ExtraField;
 import hscript.Expr;
