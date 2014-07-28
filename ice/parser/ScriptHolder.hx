@@ -1,12 +1,16 @@
 package ice.parser;
+import ice.entity.Entity;
+import ice.entity.EntityManager;
 
 class ScriptHolder
 {
 	public var scripts(default,null):Array<Script>;
+	private var owner:Entity;
 	
-	public function new() 
+	public function new(?owner:Entity) 
 	{
 		scripts = new Array<Script>();
+		this.owner = owner;
 	}
 	
 	/**
@@ -24,6 +28,11 @@ class ScriptHolder
 		{
 			scripts.insert(scripts.length, script);
 		}
+	}
+	
+	public function ParseScript(path:String)
+	{
+		EntityManager.instance.ParseScript(null, owner, path);
 	}
 	
 	/**

@@ -64,7 +64,7 @@ class Entity extends FlxSprite
 		
 		components = new Array<Component>();
 		children = new Array<Int>();	
-		scripts = new ScriptHolder();
+		scripts = new ScriptHolder(this);
 		FSMs = new Array<FSM>();
 	}
 	

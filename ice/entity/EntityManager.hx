@@ -296,15 +296,23 @@ class EntityManager extends FlxGroup
 		return ent;
 	}
 	
-	private function ParseScript(script:Xml, ?owner:Entity)
+	public function ParseScript(?script:Xml, ?owner:Entity, ?scriptPath:String)
 	{
 		var file:String = "";
 		
 		var path:String = "";
-		path = script.get("path");
-		if (path == null)
+		
+		if (script != null)
 		{
-			path = "";
+			path = script.get("path");
+			if (path == null)
+			{
+				path = "";
+			}
+		}
+		else
+		{
+			path = scriptPath;
 		}
 		
 		if (path != "")
@@ -315,7 +323,7 @@ class EntityManager extends FlxGroup
 			file = IceUtil.LoadString(path, false);
 			#end
 		}
-		else
+		else if (script != null)
 		{
 			for (text in script.elementsNamed("text"))
 			{
@@ -325,46 +333,63 @@ class EntityManager extends FlxGroup
 		
 		var ParsedScript:Script = new Script(file, path);
 		
-		for (request in script.elementsNamed("request"))
+		if (script != null)
 		{
-			var module = ScriptHandler.GetModule(request.get("name"));
-			
-			ParsedScript.interp.variables.set(request.get("name"), module);
-		}
-		
-		for (expose in script.elementsNamed("expose"))
-		{
-			var path = expose.get("path");
-
-			var module = ScriptHandler.GetClass(path);
-
-			ParsedScript.interp.variables.set(expose.get("name"), module);
-		}
-		
-		if (script.exists("noreload"))
-		{
-			if (script.get("noreload") == "true")
+			for (request in script.elementsNamed("request"))
 			{
-				ParsedScript.noReload = true;
+				var module = ScriptHandler.GetModule(request.get("name"));
+				
+				ParsedScript.interp.variables.set(request.get("name"), module);
 			}
-		}
-		
-		if (script.exists("noclean"))
-		{
-			if (script.get("noclean") == "true")
+			
+			for (expose in script.elementsNamed("expose"))
 			{
-				ParsedScript.noClean = true;
+				var path = expose.get("path");
+
+				var module = ScriptHandler.GetClass(path);
+
+				ParsedScript.interp.variables.set(expose.get("name"), module);
+			}
+			
+			if (script.exists("noreload"))
+			{
+				if (script.get("noreload") == "true")
+				{
+					ParsedScript.noReload = true;
+				}
+			}
+			
+			if (script.exists("noclean"))
+			{
+				if (script.get("noclean") == "true")
+				{
+					ParsedScript.noClean = true;
+				}
 			}
 		}
 		
 		if (owner != null)
 		{
 			ParsedScript.interp.variables.set("owner", owner);
-			owner.scripts.Add(ParsedScript, Std.parseInt(script.get("id")));
+			if (script != null)
+			{
+				owner.scripts.Add(ParsedScript, Std.parseInt(script.get("id")));
+			}
+			else
+			{
+				owner.scripts.Add(ParsedScript);
+			}
 		}
 		else
 		{
-			ScriptHandler.scripts.Add(ParsedScript, Std.parseInt(script.get("id")));
+			if (script != null)
+			{
+				ScriptHandler.scripts.Add(ParsedScript, Std.parseInt(script.get("id")));
+			}
+			else
+			{
+				ScriptHandler.scripts.Add(ParsedScript);
+			}
 		}
 	}
 	

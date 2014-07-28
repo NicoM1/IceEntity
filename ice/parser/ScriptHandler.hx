@@ -207,7 +207,7 @@ class ScriptHandler extends FlxBasic
 		
 		var ret:String = script.substring(startIndex, charIndex);
 		
-		var types:EReg = ~/: *[a-z0-9_]+/ig; //remove types from declarations
+		var types:EReg = ~/: *[a-z0-9_<>]+/ig; //remove types from declarations
 		ret = types.replace(ret, "");
 		
 		//add variable declarations into init
@@ -283,10 +283,10 @@ class ScriptHandler extends FlxBasic
 		var endNonCompile:Int = vars.indexOf("//#", startNonCompile + 3);
 		vars = vars.substring(0, startNonCompile) + vars.substring(endNonCompile); //remove the non-compile section
 		
-		var redundant:EReg = ~/[a-z]* *[a-z]* *var +[a-z0-9_]+ *: *[a-z0-9_]+ *; *(\n)?/ig; //remove declarations that do not assign a value
+		var redundant:EReg = ~/[a-z]* *[a-z]* *var +[a-z0-9_<>]+ *: *[a-z0-9_<>]+ *; *(\n)?/ig; //remove declarations that do not assign a value
 		vars = redundant.replace(vars, "");
 		
-		var types:EReg = ~/: *[a-z0-9_]+/ig; //remove types from variable declarations
+		var types:EReg = ~/: *[a-z0-9_<>]+/ig; //remove types from variable declarations
 		vars = types.replace(vars, "");
 		
 		var modifiers:EReg = ~/(static)? *(private|public) *(static)?/g; //remove modifiers from variable declarations
