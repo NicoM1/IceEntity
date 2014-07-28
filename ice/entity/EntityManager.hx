@@ -422,10 +422,7 @@ class EntityManager extends FlxGroup
 	 */
 	public function AddGroup(group:FlxTypedGroup<Entity>, name:String):Void 
 	{
-		for (e in group.members)
-		{
-			AddEntity(e);
-		}
+		add(group);
 		groups.set(name, group);
 	}
 	//}
