@@ -6,6 +6,6 @@
   "description": "Simple entity and component management for haxeflixel",
   "version": "1.0.0",
   "releasenote": "Version 1.0.0, first major release",
-  "contributors": ["NicoM1", "Ohmnivore"],
+  "contributors": ["NicoM1"],
   "dependencies": { "lime": "", "openfl": "", "flixel": "", "hscript": ""}
 }
