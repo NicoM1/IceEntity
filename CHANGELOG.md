@@ -1,3 +1,9 @@
+1.0.1
+------------------------------
+* allow adding scripts to an entity via entity.scripts.ParseScript(path)
+* fix new entities in groups not being drawn
+* allow type declarations in callable functions
+
 1.0.0
 ------------------------------
 * rewrite scripting system, allow for real haxe files
