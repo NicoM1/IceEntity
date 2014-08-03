@@ -172,6 +172,49 @@ class Entity extends FlxSprite
 		super.update();
 	}
 	
+	public function loadAnimation(name:String, frames:String, frameRate:Int = 10, looped:Bool = false)
+	{	
+		var framesSA:Array<String>;
+		framesA = frames.split(",");
+		
+		var framesIA:Array<Int>;
+		framesIA = new Array<Int>();
+		
+		for (frame in framesSA)
+		{
+			var frameList:Array<String> = frame.split("-");
+			if (frameList.length == 2)
+			{
+				var start:Int = Std.parseInt(frameList[0]);
+				var end:Int = Std.parseInt(frameList[1]);
+				var index:Int;
+				
+				if (start < end)
+				{
+					index = start;
+					while (index <= end)
+					{
+						framesIA.push(index++);
+					}
+				}
+				else if (start > end)
+				{
+					index = start;
+					while (index >= end)
+					{
+						framesIA.push(index--);
+					}
+				}
+			}
+			else
+			{
+				framesIA.push(Std.parseInt(frame));
+			}
+		}
+		
+		animation.add(name, framesIA, framerate, looped);
+	}
+	
 	public function IsAgainst(surface:FlxBasic, direction:Int) : Bool
 	{
 		switch (direction)

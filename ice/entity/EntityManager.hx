@@ -180,45 +180,8 @@ class EntityManager extends FlxGroup
 					var framesS:String;
 					framesS = animation.get("frames");
 					
-					var framesSA:Array<String>;
-					framesSA = framesS.split(",");
+					ent.loadAnimation(name, framesS, framerate, looped);
 					
-					var framesIA:Array<Int>;
-					framesIA = new Array<Int>();
-					
-					for (frame in framesSA)
-					{
-						var frameList:Array<String> = frame.split("-");
-						if (frameList.length == 2)
-						{
-							var start:Int = Std.parseInt(frameList[0]);
-							var end:Int = Std.parseInt(frameList[1]);
-							var index:Int;
-							
-							if (start < end)
-							{
-								index = start;
-								while (index <= end)
-								{
-									framesIA.push(index++);
-								}
-							}
-							else if (start > end)
-							{
-								index = start;
-								while (index >= end)
-								{
-									framesIA.push(index--);
-								}
-							}
-						}
-						else
-						{
-							framesIA.push(Std.parseInt(frame));
-						}
-					}
-					
-					ent.animation.add(name, framesIA, framerate, looped);
 					if (animation.exists("autorun"))
 					{
 						if (animation.get("autorun") == "true" || animation.get("autorun") == "True")
