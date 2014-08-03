@@ -1,3 +1,7 @@
+1.0.2
+------------------------------
+* allow animation addition using entity.loadAnimation() (lets you use fancy frame declarations)
+
 1.0.1
 ------------------------------
 * allow adding scripts to an entity via entity.scripts.ParseScript(path)
