@@ -175,7 +175,7 @@ class Entity extends FlxSprite
 	public function loadAnimation(name:String, frames:String, frameRate:Int = 10, looped:Bool = false)
 	{	
 		var framesSA:Array<String>;
-		framesA = frames.split(",");
+		framesSA = frames.split(",");
 		
 		var framesIA:Array<Int>;
 		framesIA = new Array<Int>();
@@ -212,7 +212,7 @@ class Entity extends FlxSprite
 			}
 		}
 		
-		animation.add(name, framesIA, framerate, looped);
+		animation.add(name, framesIA, frameRate, looped);
 	}
 	
 	public function IsAgainst(surface:FlxBasic, direction:Int) : Bool
