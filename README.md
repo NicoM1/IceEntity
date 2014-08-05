@@ -5,6 +5,10 @@ IceEntity
 
 A simple framework for managing entities and components in HaxeFlixel
 
+**[NEW] [sample project here](https://github.com/NicoM1/IceEntity-Sample) [NEW]**
+
+(The above may be a much simpler way to learn much of what is included in this readme, as well as some smaller, but still useful features)
+
 **Changes:**
 ----------
 
