@@ -8,6 +8,10 @@ A simple framework for managing entities and components in HaxeFlixel
 **Changes:**
 ----------
 
+  **[NEW v1.1.0]**
+
+  Allow use of % in entity declarations, referring to game width or height
+
   **[NEW v1.0.0]**
   
   Rewrote entire scripting system, allowing proper Haxe classes to be parsed as scripts
@@ -73,7 +77,7 @@ IceEntity includes an xml parser, which can build entities from simple xml files
 
     <?xml version="1.0" encoding="utf-8" ?>
     <data>
-	    <entity tag="myTag" x="0" y="0">
+	    <entity tag="myTag" x="50%" y="100"> //"%" is new as of V1.1.0, it allows you to specify a percentage of game width or height, instead of an exact value
 		    <art width="32" height="32" path="assets/images/myimage.png">
 			    <animation name="idle" frames="0,1,2,3-6,6-0" framerate="10" looped="true" autorun="true"/>
 				//ANIMATIONS: all parameters must be supplied, except "autorun" which mearly starts the animation as soon as it is loaded

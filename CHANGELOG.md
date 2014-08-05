@@ -1,3 +1,7 @@
+1.1.0
+------------------------------
+* allow use of % in entity declarations, referring to game width or height
+
 1.0.2
 ------------------------------
 * allow animation addition using entity.loadAnimation() (lets you use fancy frame declarations)

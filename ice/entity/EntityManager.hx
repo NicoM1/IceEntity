@@ -2,6 +2,7 @@ package ice.entity;
 
 import flash.geom.Point;
 import flixel.FlxBasic;
+import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
@@ -109,11 +110,11 @@ class EntityManager extends FlxGroup
 		}
 		if (instance.exists("x"))
 		{
-			entity.x = Std.parseInt(instance.get("x"));
+			entity.x = getPixel(instance.get("x"), true);
 		}
 		if (instance.exists("y"))
 		{
-			entity.y = Std.parseInt(instance.get("y"));
+			entity.y = getPixel(instance.get("y"), false);
 		}
 	}
 	
@@ -124,8 +125,8 @@ class EntityManager extends FlxGroup
 
 		//Get entity's position
 		var pos:Point = new Point();
-		pos.x = Std.parseInt(entity.get("x"));
-		pos.y = Std.parseInt(entity.get("y"));
+		pos.x = getPixel(entity.get("x"), true);
+		pos.y = getPixel(entity.get("y"), false);
 		
 		//build entity
 		var ent:Entity = new Entity(tag, pos);
@@ -356,6 +357,25 @@ class EntityManager extends FlxGroup
 		}
 	}
 	
+	private function getPixel(input:String, x:Bool):Int
+	{
+		if (input == null)
+		{
+			return 0;
+		}
+		
+		var percent:Int = input.indexOf("%");
+		if (percent < 0)
+		{
+			return Std.parseInt(input);
+		}
+		
+		input = input.substring(0, percent);
+		
+		var of:Int = x? FlxG.width : FlxG.height;
+		
+		return Std.int(Std.parseInt(input) / 100 * of);
+	}
 	//}
 	
 	//{ Add Items

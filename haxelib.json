@@ -4,8 +4,8 @@
   "license": "MIT",
   "tags": ["game", "openfl", "flixel", "haxeflixel", "flash", "neko", "cpp", "android", "ios", "cross"],
   "description": "Simple entity and component management for haxeflixel",
-  "version": "1.0.2",
-  "releasenote": "allow frame parsing outside of xml",
+  "version": "1.1.0",
+  "releasenote": "percentages in entity x/y declarations",
   "contributors": ["NicoM1"],
   "dependencies": { "lime": "", "openfl": "", "flixel": "", "hscript": ""}
 }
