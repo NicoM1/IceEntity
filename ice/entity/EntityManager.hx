@@ -463,13 +463,13 @@ class EntityManager extends FlxGroup
 	{
 		super.destroy();
 		ScriptHandler.scripts.Destroy();
-		for (e in entities)
-		{
-			e.destroy();
-		}
 		entities = null;
+		for (g in groups)
+		{
+			g.destroy();
+		}
 		groups = null;
-		instance = null;
+		_instance = null;
 	}
 	//}
 	

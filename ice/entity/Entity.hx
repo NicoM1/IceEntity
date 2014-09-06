@@ -301,9 +301,12 @@ class Entity extends FlxSprite
 			{
 				c.destroy();
 			}
+		}	
+		if (scripts != null)
+		{
+			scripts.Destroy();
+			scripts = null;
 		}
-		scripts.Destroy();
-		scripts = null;
 		components = null;
 		children = null;
 		super.destroy();

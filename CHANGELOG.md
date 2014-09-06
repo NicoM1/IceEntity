@@ -1,3 +1,7 @@
+1.1.1
+------------------------------
+* fixed multiple destroy() functions, so state switching, etc. work properly
+
 1.1.0
 ------------------------------
 * allow use of % in entity declarations, referring to game width or height
