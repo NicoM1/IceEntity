@@ -12,6 +12,10 @@ A simple framework for managing entities and components in HaxeFlixel
 **Changes:**
 ----------
 
+  **[NEW v1.2.0]
+  
+  Added an api for accesing variables on scripts, while retaining type-safety (`Entity.getVar()`)
+
   **[NEW v1.1.0]**
 
   Allow use of % in entity declarations, referring to game width or height

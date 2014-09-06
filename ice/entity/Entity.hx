@@ -311,4 +311,26 @@ class Entity extends FlxSprite
 		children = null;
 		super.destroy();
 	}
+	
+	/**
+	 * Get a variable or function from a script on this object as a dynamic variable
+	 * @param	varName		name of the variable or function
+	 * @param	script		id of script variable is specified in
+	 * @return
+	 */
+	public inline function getVarAsDynamic(varName:String, script:Int = 0):Dynamic
+	{
+		return scripts.scripts[script].getVarAsDynamic(varName);
+	}
+	
+	/**
+	 * Get a variable (not a function) from a script on this object as a typed variable
+	 * @param	varName		name of the variable
+	 * @param	script		id of script variable is specified in
+	 * @return
+	 */
+	public function getVar<T>(varName:String, type:Class<T>, script:Int = 0):T
+	{
+		return scripts.scripts[script].getVar(varName, type);
+	}
 }

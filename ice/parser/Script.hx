@@ -99,4 +99,14 @@ class Script
 			}
 		}
 	}
+	
+	public inline function getVarAsDynamic(varName:String):Dynamic
+	{
+		return interp.variables.get(varName);
+	}
+	
+	public function getVar<T>(varName:String, type:Class<T>):T
+	{
+		return cast getVarAsDynamic(varName);
+	}
 }

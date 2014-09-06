@@ -1,3 +1,7 @@
+1.2.0
+------------------------------
+* added an api for accesing variables on scripts, while retaining type-safety
+
 1.1.1
 ------------------------------
 * fixed multiple destroy() functions, so state switching, etc. work properly
