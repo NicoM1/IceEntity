@@ -6,7 +6,6 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
-import flixel.group.FlxTypedGroup;
 import flixel.tile.FlxTilemap;
 import haxe.zip.Entry.ExtraField;
 import hscript.Expr;
@@ -542,10 +541,10 @@ class EntityManager extends FlxGroup
 	//}
 	
 	//{ Update
-	override public function update():Void 
+	override public function update(elapsed:Float):Void 
 	{
 		ScriptHandler.Update();
-		super.update();
+		super.update(elapsed);
 	}
 	//}
 }

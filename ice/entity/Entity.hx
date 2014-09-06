@@ -149,7 +149,7 @@ class Entity extends FlxSprite
 		return EntityManager.getInstance().GetEntity(Parent);
 	}
 	
-	override public function update():Void 
+	override public function update(elapsed:Float):Void 
 	{
 		if (!initialized)
 		{
@@ -169,7 +169,7 @@ class Entity extends FlxSprite
 			fsm.Update();
 		}
 		
-		super.update();
+		super.update(elapsed);
 	}
 	
 	public function loadAnimation(name:String, frames:String, frameRate:Int = 10, looped:Bool = false)
