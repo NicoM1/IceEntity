@@ -500,9 +500,12 @@ class EntityManager extends FlxGroup
 	{		
 		for (g in entities)
 		{
-			if (g.Tag == tag)
+			if (g != null)
 			{
-				return g;
+				if (g.Tag == tag)
+				{
+					return g;
+				}
 			}
 		}
 		
