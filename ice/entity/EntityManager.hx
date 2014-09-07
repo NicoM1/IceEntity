@@ -8,12 +8,14 @@ import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.group.FlxTypedGroup;
 import flixel.tile.FlxTilemap;
+import haxe.Json;
 import haxe.zip.Entry.ExtraField;
 import hscript.Expr;
 import ice.parser.Script;
 import ice.parser.ScriptHandler;
 import openfl.Assets;
 import openfl.events.Event;
+import tjson.TJSON;
 
 class EntityManager extends FlxGroup
 {
@@ -375,6 +377,173 @@ class EntityManager extends FlxGroup
 		var of:Int = x? FlxG.width : FlxG.height;
 		
 		return Std.int(Std.parseInt(input) / 100 * of);
+	}
+	
+	
+	/**
+	 * Builds entities from an xml file Important: any components needed MUST be imported somewhere in your code
+	 * @param	path		path to the xml
+	 * @param	useAssets	whether to use openfl.assets, required for flash
+	 */
+	public function BuildFromJSON(path:String, ?useAssets:Bool = true)
+	{
+		var Root:Dynamic = TJSON.parse(IceUtil.LoadString(path, useAssets));
+		
+		if (Root.reloaddelay != null)
+		{
+			ScriptHandler.SetReloadDelay(Std.parseFloat(Root.reloaddelay));
+		}
+		
+		if (Root.entities != null)
+		{
+			for (entity in cast(Root.entities, Array<Dynamic>))
+			{
+				ParseEntityJSON(entity);
+			}
+		}
+		
+		if (Root.scripts != null)
+		{
+			for (script in cast(Root.scripts, Array<Dynamic>))
+			{
+				ParseScriptJSON(script, null);
+			}
+		}
+	}
+	
+	private function ParseEntityJSON(entity:Dynamic):Entity
+	{
+		//Get entity's tag
+		var tag:String = entity.tag;
+
+		//Get entity's position
+		var pos:Point = new Point();
+		pos.x = entity.x;//getPixel(entity.x, true);
+		pos.y = entity.y;//getPixel(entity.y, false);
+		
+		//build entity
+		var ent:Entity = new Entity(tag, pos);
+		
+		if (entity.art != null)
+		{
+			//load in art/animation
+			for (art in cast(entity.art, Array<Dynamic>))
+			{
+				var width:Int; 
+				width = Std.parseInt(art.width);
+				
+				var height:Int;
+				height = Std.parseInt(art.height);
+				
+				var path:String;
+				path = art.path;
+				
+				ent.loadGraphic(path, true, width, height);
+				
+
+				for (animation in cast(art.animation, Array<Dynamic>))
+				{
+					var name:String;
+					name = animation.name;
+					
+					var framerate:Int;
+					framerate = Std.parseInt(animation.framerate);
+					
+					var looped:Bool;
+					if (animation.looped == "true")
+					{
+						looped = true;
+					}
+					else
+					{
+						looped = false;
+					}
+					
+					var framesS:String;
+					framesS = animation.frames;
+					
+					ent.loadAnimation(name, framesS, framerate, looped);
+					
+					if (animation.autorun != null)
+					{
+						if (animation.autorun == "true")
+						{
+							ent.animation.play(animation.name);
+						}
+					}
+				}
+			}
+		}
+		
+		if (entity.scripts != null)
+		{
+			for (script in cast(entity.scripts, Array<Dynamic>))
+			{
+				ParseScriptJSON(script, ent);
+			}
+		}
+		
+		AddEntity(ent);
+		return ent;
+	}
+	
+	public function ParseScriptJSON(?script:Dynamic, ?owner:Entity, ?scriptPath:String)
+	{
+		var file:String = "";
+		
+		var path:String = "";
+		
+		if (script != null)
+		{
+			path = script.path;
+			if (path == null)
+			{
+				path = "";
+			}
+		}
+		else
+		{
+			path = scriptPath;
+		}
+		
+		if (path != "")
+		{
+			#if !ICE_LIVE_RELOAD
+			file = IceUtil.LoadString(path, true);
+			#else
+			file = IceUtil.LoadString(path, false);
+			#end
+		}
+		else if (script != null)
+		{
+			file = script.text;
+		}
+		
+		var ParsedScript:Script = new Script(file, path);
+		
+		if (owner != null)
+		{
+			ParsedScript.interp.variables.set("owner", owner);
+			if (script != null)
+			{
+				owner.scripts.Add(ParsedScript, Std.parseInt(script.id));
+			}
+			else
+			{
+				owner.scripts.Add(ParsedScript);
+			}
+		}
+		else
+		{
+			if (script != null)
+			{
+				ScriptHandler.scripts.Add(ParsedScript, Std.parseInt(script.id));
+			}
+			else
+			{
+				ScriptHandler.scripts.Add(ParsedScript);
+			}
+		}
 	}
 	//}
 	
