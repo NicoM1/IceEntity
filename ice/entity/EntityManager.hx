@@ -56,6 +56,15 @@ class EntityManager extends FlxGroup
 	//}
 
 	//{ Entity Parser
+	public static function switchScene(XMLs:Array<String>)
+	{
+		EntityManager.empty();
+		for (s in XMLs)
+		{
+			EntityManager.instance.BuildFromXML(s, true);
+		}
+	}
+	
 	/**
 	 * Builds entities from an xml file Important: any components needed MUST be imported somewhere in your code
 	 * @param	path		path to the xml
@@ -460,7 +469,22 @@ class EntityManager extends FlxGroup
 	
 	override public function destroy():Void 
 	{
-		super.destroy();
+		//super.destroy();
+		
+		if (members != null)
+		{
+			var i:Int = 0;
+			var basic:FlxBasic = null;
+			
+			while (i < length)
+			{
+				basic = members[i++];
+				
+				if (basic != null)
+					basic.destroy();
+			}
+		}
+		
 		ScriptHandler.scripts.Destroy();
 		entities = null;
 		for (g in groups)
@@ -468,13 +492,24 @@ class EntityManager extends FlxGroup
 			g.destroy();
 		}
 		groups = null;
-		_instance = null;
+		templates = null;
+		//_instance = null;
+		reset();
+	}
+	
+	private function reset()
+	{
+		members = [];
+		entities = new Array<Entity>();
+		groups = new Map<String, FlxTypedGroup<Entity>>();
+		templates = new Map<String, Xml>();
+		highestGID = 0;	
 	}
 	//}
 	
 	//{ Get Items
 	///Returns the entity with the specified GID
-    	public function GetEntity(GID : Int) : Entity
+    public function GetEntity(GID : Int) : Entity
 	{
 		return entities[GID];
 	}
