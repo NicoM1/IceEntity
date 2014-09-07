@@ -94,6 +94,11 @@ class EntityManager extends FlxGroup
 		{
 			ParseScript(script, null);
 		}
+		
+		for (xml in Root.elementsNamed("load"))
+		{
+			BuildFromXML(xml.get("path"));
+		}
 	}
 	
 	private function ParseInstance(instance:Xml)
