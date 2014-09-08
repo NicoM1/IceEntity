@@ -5,6 +5,7 @@
 !ice/entity/*
 !ice/parser/*
 !ice/fsm/*
+!ice/wrappers/*
 !haxelib.json
 !CHANGELOG.md
 !LICENSE.md
