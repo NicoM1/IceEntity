@@ -24,6 +24,9 @@ class Script
 		this.path = path;
 		
 		interp = new IceInterp();
+		interp.variables.set("newObject", function():Dynamic{ 
+			return {}; 
+		}); 
 		
 		ScriptHandler.ParseImports(script, interp);
 		updateScript = ScriptHandler.Parse("update", script);
