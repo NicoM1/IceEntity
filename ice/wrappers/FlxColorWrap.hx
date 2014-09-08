@@ -1,4 +1,4 @@
-package ;
+package ice.wrappers;
 
 import flixel.util.FlxColor;
 
