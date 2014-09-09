@@ -107,27 +107,50 @@ class EntityManager extends FlxGroup
 		{
 			throw "template not specified";
 		}
-		if (!templates.exists(instance.get("template")))
+		
+		var template:String = instance.get("template");
+		
+		var newTag:String = null;
+		var newX:String = null;
+		var newY:String = null;
+		
+		if (instance.exists("tag"))
+		{
+			newTag = instance.get("tag");
+		}
+		if (instance.exists("x"))
+		{
+			newX = instance.get("x");
+		}
+		if (instance.exists("y"))
+		{
+			newY = instance.get("y");
+		}
+		instantiate(template, newTag, newX, newY);
+	}
+	
+	public function instantiate(template:String, ?newTag:String, ?newX:String, ?newY:String)
+	{
+		if (!templates.exists(template))
 		{
 			throw "template not found";
 		}
 		
-		var template:String = instance.get("template");
 		var entityXML:Xml = templates.get(template);
 		
 		var entity:Entity = ParseEntity(entityXML);
 		
-		if (instance.exists("tag"))
+		if (newTag != null)
 		{
-			entity.Tag = instance.get("tag");
+			entity.Tag = newTag;
 		}
-		if (instance.exists("x"))
+		if (newX != null)
 		{
-			entity.x = getPixel(instance.get("x"), true);
+			entity.x = getPixel(newX, true);
 		}
-		if (instance.exists("y"))
+		if (newY != null)
 		{
-			entity.y = getPixel(instance.get("y"), false);
+			entity.y = getPixel(newY, false);
 		}
 	}
 	
