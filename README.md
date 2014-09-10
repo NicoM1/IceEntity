@@ -5,6 +5,8 @@ IceEntity
 
 A simple framework for managing entities and components in HaxeFlixel
 
+**[ATTENTION ANY/ALL USERS]** Please move to the development branch (relies on dev flixel), as I can no longer guarantee updates to anything else, sorry.
+
 **[NEW] [sample project here](https://github.com/NicoM1/IceEntity-Sample) [NEW]**
 
 (The above may be a much simpler way to learn much of what is included in this readme, as well as some smaller, but still useful features)
@@ -59,7 +61,7 @@ A simple framework for managing entities and components in HaxeFlixel
 **Installation**
 ----------
 
-  **[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity``` in a terminal with access to git
+  **[1]** Run ```haxelib git iceentity https://github.com/NicoM1/IceEntity dev``` in a terminal with access to git
   
   **[2]** Add ```<haxelib name="iceentity"/>``` to your ```Project.xml``` file, directly under ```<haxelib name="flixel"/>```
   
