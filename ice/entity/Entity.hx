@@ -20,7 +20,7 @@ class Entity extends FlxSprite
 	
 	public var Parent(default, null):Int;
 	
-	private var FSMs:Array<FSM>;
+	public var FSMs:Array<FSM>;
 	public var FSM(get, null):FSM;
 	
 	inline function get_FSM():FSM

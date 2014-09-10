@@ -26,12 +26,20 @@ class IceUtil
 		#if (flash || js)
 		if (!useAssets)
 		{
-			throw "run time file loading is not supported on flash";
+			throw "run time file loading is not supported on web";
 		}
 		#end
 		if (useAssets)
 		{
-			return Assets.getText(path);
+			var ret = Assets.getText(path);
+			if (ret != null)
+			{
+				return ret;
+			}
+			else 
+			{
+				throw "unable to load: " + path;
+			}
 		}
 		else
 		{
@@ -51,7 +59,7 @@ class IceUtil
 			}
 			catch (e:Dynamic)
 			{
-				return null;
+				throw "unable to load file from: " + path;
 			}
 			#end
 		}
