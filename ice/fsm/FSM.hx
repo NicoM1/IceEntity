@@ -44,4 +44,9 @@ class FSM
 		PushState(state);
 		return returnState;
 	}
+	
+	public function destroy()
+	{
+		stack = null;
+	}
 }

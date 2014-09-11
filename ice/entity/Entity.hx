@@ -309,6 +309,11 @@ class Entity extends FlxSprite
 		}
 		components = null;
 		children = null;
+		for (f in FSMs)
+		{
+			f.destroy();
+		}
+		FSMs = null;
 		super.destroy();
 	}
 	

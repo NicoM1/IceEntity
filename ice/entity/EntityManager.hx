@@ -82,7 +82,11 @@ class EntityManager extends FlxGroup
 		
 		for (entity in Root.elementsNamed("entity"))
 		{
-			ParseEntity(entity);
+			var e = ParseEntity(entity);
+			if (e != null)
+			{
+				AddEntity(e);
+			}
 		}
 		
 		for (instance in Root.elementsNamed("instance"))
@@ -126,10 +130,10 @@ class EntityManager extends FlxGroup
 		{
 			newY = instance.get("y");
 		}
-		instantiate(template, newTag, newX, newY);
+		AddEntity(instantiate(template, newTag, newX, newY));
 	}
 	
-	public function instantiate(template:String, ?newTag:String, ?newX:String, ?newY:String)
+	public function instantiate(template:String, ?newTag:String, ?newX:String, ?newY:String):Entity
 	{
 		if (!templates.exists(template))
 		{
@@ -152,6 +156,8 @@ class EntityManager extends FlxGroup
 		{
 			entity.y = getPixel(newY, false);
 		}
+		
+		return entity;
 	}
 	
 	private function ParseEntity(entity:Xml):Entity
@@ -292,7 +298,6 @@ class EntityManager extends FlxGroup
 			ParseScript(script, ent);
 		}
 		
-		AddEntity(ent);
 		return ent;
 	}
 	
