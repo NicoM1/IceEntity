@@ -320,7 +320,6 @@ class Entity extends FlxSprite
 				f.destroy();
 			}
 		}
-		trace("nulled");
 		FSMs = null;
 
 		super.destroy();
