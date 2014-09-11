@@ -115,7 +115,7 @@ class ScriptHandler extends FlxBasic
 			}
 			else
 			{
-				throw "expose attempt failed";
+				throw "expose attempt failed: " + path;
 			}
 		}
 		else
