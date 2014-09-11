@@ -164,8 +164,6 @@ class Entity extends FlxSprite
 		
 		scripts.Update();
 		
-		trace(FSMs);
-		
 		for (fsm in FSMs)
 		{
 			fsm.Update();
