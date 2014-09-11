@@ -164,9 +164,15 @@ class Entity extends FlxSprite
 		
 		scripts.Update();
 		
+		trace(FSMs);
+		
 		for (fsm in FSMs)
 		{
 			fsm.Update();
+			if (FSMs == null)
+			{
+				return;
+			}
 		}
 		
 		super.update(elapsed);
@@ -309,11 +315,16 @@ class Entity extends FlxSprite
 		}
 		components = null;
 		children = null;
-		for (f in FSMs)
+		if (FSMs != null)
 		{
-			f.destroy();
+			for (f in FSMs)
+			{
+				f.destroy();
+			}
 		}
+		trace("nulled");
 		FSMs = null;
+
 		super.destroy();
 	}
 	
