@@ -164,6 +164,12 @@ class Entity extends FlxSprite
 		
 		scripts.Update();
 		
+		if (FSMs == null)
+		{
+			//SAFETY CHECK IN CASE OF DESTRUCTION DURING UPDATE
+			return;
+		}
+		
 		for (fsm in FSMs)
 		{
 			fsm.Update();

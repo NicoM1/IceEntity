@@ -29,6 +29,8 @@ class EntityManager extends FlxGroup
 	///highest current GID of any entity, used for autoasigning GIDs
 	public var highestGID(default, default):Int = 0;
 	
+	var sceneSwitch:Bool = false;
+	
 	//{ Constructor and Instance
 	private function new()
 	{
@@ -59,10 +61,12 @@ class EntityManager extends FlxGroup
 	public static function switchScene(XMLs:Array<String>)
 	{
 		EntityManager.empty();
+
 		for (s in XMLs)
 		{
 			EntityManager.instance.BuildFromXML(s, true);
 		}
+		EntityManager.instance.sceneSwitch = true;
 	}
 	
 	/**
@@ -519,6 +523,14 @@ class EntityManager extends FlxGroup
 		}
 		
 		ScriptHandler.scripts.Destroy();
+		for (e in entities)
+		{
+			if (e != null)
+			{
+				e.destroy();
+			}
+		}
+		
 		entities = null;
 		for (g in groups)
 		{
@@ -614,8 +626,48 @@ class EntityManager extends FlxGroup
 	//{ Update
 	override public function update(elapsed:Float):Void 
 	{
-		ScriptHandler.Update();
-		super.update(elapsed);
+		do {
+			if (sceneSwitch = true)
+			{
+				sceneSwitch = false;
+			}
+			
+			ScriptHandler.Update();
+
+			if (sceneSwitch)
+			{
+				continue;
+			}
+			
+			var i:Int = 0;
+			var basic:FlxBasic = null;
+			
+			while (i < length)
+			{
+				basic = members[i++];
+				
+				if (basic != null && basic.exists && basic.active)
+				{
+					basic.update(elapsed);
+				}
+				if (sceneSwitch)
+				{
+					break;
+				}
+			}
+		}while (sceneSwitch == true);
 	}
+	
+	/*(override public function draw():Void 
+	{
+		if (!sceneSwitch)
+		{
+			super.draw();
+		}
+		else
+		{
+			sceneSwitch = false;
+		}
+	}*/
 	//}
 }
