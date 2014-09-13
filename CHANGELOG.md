@@ -1,3 +1,17 @@
+1.3.0
+------------------------------
+* many, many bugfixes and safety checks
+* `switchState()` added
+* `<load>` element added
+* `FlxKeyWrap` Added
+* `FlxColorWrap` Added
+* `newObject()` Added for scripts
+* create instances of template from code instead of XML
+* fix freezing on wrong asset path
+* `EntityGroup` added (just `FlxTypedGroup<Entity>`)
+* fix depth ordering for XML files
+* `prefab` element added
+
 1.2.0
 ------------------------------
 * added an api for accesing variables on scripts, while retaining type-safety
