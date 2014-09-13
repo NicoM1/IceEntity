@@ -84,28 +84,29 @@ class EntityManager extends FlxGroup
 			ScriptHandler.SetReloadDelay(Std.parseFloat(Root.get("reloaddelay")));
 		}
 		
-		for (entity in Root.elementsNamed("entity"))
+		for (e in Root.elements())
 		{
-			var e = ParseEntity(entity);
-			if (e != null)
+			switch(e.nodeName)
 			{
-				AddEntity(e);
+				case "entity":
+					var ent = ParseEntity(e);
+					if (ent != null)
+					{
+						AddEntity(ent);
+					}
+					
+				case "instance":
+					ParseInstance(e);
+					
+				case "script":
+					ParseScript(e, null);
+					
+				case "load":
+					BuildFromXML(e.get("path"));
+					
+				default:
+					throw "unrecognized element: " + e.nodeName;
 			}
-		}
-		
-		for (instance in Root.elementsNamed("instance"))
-		{
-			ParseInstance(instance);
-		}
-		
-		for (script in Root.elementsNamed("script"))
-		{
-			ParseScript(script, null);
-		}
-		
-		for (xml in Root.elementsNamed("load"))
-		{
-			BuildFromXML(xml.get("path"));
 		}
 	}
 	
