@@ -25,6 +25,7 @@ class EntityManager extends FlxGroup
 	private var groups:Map<String, FlxTypedGroup<Entity>>;
 	
 	private var templates:Map<String,Xml>;
+	private var prefabs:Map<String,Xml>;
 	
 	///highest current GID of any entity, used for autoasigning GIDs
 	public var highestGID(default, default):Int = 0;
@@ -38,6 +39,7 @@ class EntityManager extends FlxGroup
 		entities = new Array<Entity>();
 		groups = new Map<String, FlxTypedGroup<Entity>>();
 		templates = new Map<String, Xml>();
+		prefabs = new Map<String, Xml>();
 		highestGID = 0;		
 	} 
 	
@@ -58,6 +60,10 @@ class EntityManager extends FlxGroup
 	//}
 
 	//{ Entity Parser
+	/**
+	 * Empties the manager and then loads one or more xml scene files
+	 * @param	XMLs	array of paths to xml scenes
+	 */
 	public static function switchScene(XMLs:Array<String>)
 	{
 		EntityManager.empty();
@@ -76,7 +82,8 @@ class EntityManager extends FlxGroup
 	 */
 	public function BuildFromXML(path:String, ?useAssets:Bool = true)
 	{
-		var Root:Xml = Xml.parse(IceUtil.LoadString(path, useAssets));
+		var Root:Xml;
+		Root = Xml.parse(IceUtil.LoadString(path, useAssets));
 		Root = Root.firstElement();
 		
 		if (Root.exists("reloaddelay"))
@@ -103,21 +110,28 @@ class EntityManager extends FlxGroup
 					
 				case "load":
 					BuildFromXML(e.get("path"));
-					
+				case "prefab":
+					prefabs.set(e.get("name"), e);
 				default:
 					throw "unrecognized element: " + e.nodeName;
 			}
 		}
 	}
 	
-	private function ParseInstance(instance:Xml)
+	private function ParseInstance(instance:Xml):Entity
 	{
-		if (!instance.exists("template"))
+		if (!instance.exists("template") && !instance.exists("prefab"))
 		{
-			throw "template not specified";
+			throw "template or prefab not specified";
 		}
 		
 		var template:String = instance.get("template");
+		var prefab:String = null;
+		
+		if (template == null)
+		{
+			prefab = instance.get("prefab");
+		}
 		
 		var newTag:String = null;
 		var newX:String = null;
@@ -135,14 +149,79 @@ class EntityManager extends FlxGroup
 		{
 			newY = instance.get("y");
 		}
-		AddEntity(instantiate(template, newTag, newX, newY));
+		var e:Entity;
+		if (template != null)
+		{
+			e = instantiate(template, newTag, newX, newY);
+		}
+		else
+		{
+			instantiatePrefab(prefab, newX, newY);
+			return null;
+		}
+		AddEntity(e);
+		return e;
 	}
 	
+	/**
+	 * Creates an instance of a "prefab" as specified by a <prefab> declaration and adds it to the manager
+	 * @param	name	name of prefab to instantiate	
+	 * @param	offsetX x-offset to add to any entities contained in prefab (string to allow %'s of width/height: 90%)
+	 * @param	offsetY y-offset to add to any entities contained in prefab (string to allow %'s of width/height: 90%)
+	 */
+	public function instantiatePrefab(name:String, offsetX:String, offsetY:String)
+	{
+		if (!prefabs.exists(name))
+		{
+			throw "specified prefab not found: " + name;
+		}
+		for (e in prefabs.get(name).elements())
+		{
+			switch(e.nodeName)
+			{
+				case "entity":
+					var ent = ParseEntity(e);
+					if (ent != null)
+					{
+						ent.x += getPixel(offsetX, true);
+						ent.y += getPixel(offsetY, false);
+						AddEntity(ent);
+					}
+					
+				case "instance":
+					var ent = ParseInstance(e);
+					if (ent != null)
+					{
+						ent.x += getPixel(offsetX, true);
+						ent.y += getPixel(offsetY, false);
+					}
+					
+				case "script":
+					ParseScript(e, null);
+					
+				case "load":
+					throw "load element is not allowed in prefab declarations";
+				case "prefab":
+					throw "prefab element is not allowed in prefab declarations";
+				default:
+					throw "unrecognized element: " + e.nodeName;
+			}
+		}
+	}
+	
+	/**
+	 * Create an instance of a "template" as specified by a <template> declaration, NOT AUTOMATICALLY ADDED TO MANAGER
+	 * @param	template	name of template to instantiate
+	 * @param	newTag		tag to override original with
+	 * @param	newX		x-position to override original with (string to allow %'s of width/height: 90%)
+	 * @param	newY		y-position to override original with (string to allow %'s of width/height: 90%)
+	 * @return				use EntityManager.instance.AddEntity(result) to add this entity to the scene
+	 */
 	public function instantiate(template:String, ?newTag:String, ?newX:String, ?newY:String):Entity
 	{
 		if (!templates.exists(template))
 		{
-			throw "template not found";
+			throw "specified template not found: " + template;
 		}
 		
 		var entityXML:Xml = templates.get(template);
