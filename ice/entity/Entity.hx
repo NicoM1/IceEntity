@@ -352,4 +352,9 @@ class Entity extends FlxSprite
 	{
 		return scripts.scripts[script].getVar(varName, type);
 	}
+	
+	public inline function setVar(varName:String, value:Dynamic, script:Int = 0)
+	{
+		scripts.scripts[script].setVar(varName, value);
+	}
 }

@@ -112,4 +112,9 @@ class Script
 	{
 		return cast getVarAsDynamic(varName);
 	}
+	
+	public inline function setVar(varName:String, value:Dynamic)
+	{
+		interp.variables.set(varName, value);
+	}
 }
