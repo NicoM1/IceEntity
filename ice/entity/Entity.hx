@@ -20,6 +20,9 @@ class Entity extends FlxSprite
 	
 	public var Parent(default, null):Int;
 	
+	//used internally, changing this has no effect
+	public var depth:Int = 1;
+	
 	public var FSMs:Array<FSM>;
 	public var FSM(get, null):FSM;
 	

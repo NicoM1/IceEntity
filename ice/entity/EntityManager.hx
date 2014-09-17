@@ -30,9 +30,9 @@ class EntityManager extends FlxGroup
 	///highest current GID of any entity, used for autoasigning GIDs
 	public var highestGID(default, default):Int = 0;
 	
-	var bg:FlxGroup;
-	var mg:FlxGroup;
-	var fg:FlxGroup;
+	public var bg(default, null):FlxGroup;
+	public var mg(default, null):FlxGroup;
+	public var fg(default, null):FlxGroup;
 	
 	var sceneSwitch:Bool = false;
 	
@@ -128,7 +128,7 @@ class EntityManager extends FlxGroup
 					var ent = ParseEntity(e);
 					if (ent != null)
 					{
-						AddEntity(ent);
+						AddEntity(ent,ent.depth);
 					}
 					
 				case "instance":
@@ -188,7 +188,7 @@ class EntityManager extends FlxGroup
 			instantiatePrefab(prefab, newX, newY);
 			return null;
 		}
-		AddEntity(e);
+		AddEntity(e, e.depth);
 		return e;
 	}
 	
@@ -296,6 +296,19 @@ class EntityManager extends FlxGroup
 				{
 					return null;
 				}
+			}
+		}
+		
+		if (entity.exists("depth"))
+		{
+			switch(entity.get("depth"))
+			{
+				case "bg":
+					ent.depth = 0;
+				case "mg":
+					ent.depth = 1;
+				case "fg":
+					ent.depth = 2;
 			}
 		}
 		
