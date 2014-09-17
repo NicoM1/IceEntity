@@ -30,6 +30,10 @@ class EntityManager extends FlxGroup
 	///highest current GID of any entity, used for autoasigning GIDs
 	public var highestGID(default, default):Int = 0;
 	
+	var bg:FlxGroup;
+	var mg:FlxGroup;
+	var fg:FlxGroup;
+	
 	var sceneSwitch:Bool = false;
 	
 	//{ Constructor and Instance
@@ -41,7 +45,32 @@ class EntityManager extends FlxGroup
 		templates = new Map<String, Xml>();
 		prefabs = new Map<String, Xml>();
 		highestGID = 0;		
+		
+		bg = new FlxGroup();
+		add(bg);
+		mg = new FlxGroup();
+		add(mg);
+		fg = new FlxGroup();
+		add(fg);
 	} 
+	
+		
+	private function reset()
+	{
+		members = [];
+		entities = new Array<Entity>();
+		groups = new Map<String, FlxTypedGroup<Entity>>();
+		templates = new Map<String, Xml>();
+		prefabs = new Map<String, Xml>();
+		highestGID = 0;			
+				
+		bg = new FlxGroup();
+		add(bg);
+		mg = new FlxGroup();
+		add(mg);
+		fg = new FlxGroup();
+		add(fg);
+	}
 	
 	///gets the static instance of the manager
 	public static function getInstance() : EntityManager
@@ -507,30 +536,51 @@ class EntityManager extends FlxGroup
 	/**
 	 * Adds an entity to the manager
 	 * @param	entity		entity to be added.
+	 * @param	depth		0:bg,1:mg,2:fg. Defaults to just adding to main group (above fg).
 	 */
-	public function AddEntity(entity : Entity)
+	public function AddEntity(entity : Entity, depth:Int=-1)
 	{ 
 		entities[entity.GID] = entity;
-		add(entity);
+		switch(depth)
+		{
+			case 0: bg.add(entity);
+			case 1: mg.add(entity);
+			case 2:	fg.add(entity);
+			default: add(entity);
+		}
 	}
 	
 	/**
 	 * Adds a flixel object to the scene, just for easy rendering, no fancy referencing
 	 * @param	basic	whatever type of flixel object you want to add
+	 * @param	depth		0:bg,1:mg,2:fg. Defaults to just adding to main group (above fg).
 	 */
-	public function AddFlxBasic(basic:FlxBasic)
+	public function AddFlxBasic(basic:FlxBasic, depth:Int=-1)
 	{
-		add(basic);
+		switch(depth)
+		{
+			case 0: bg.add(basic);
+			case 1: mg.add(basic);
+			case 2:	fg.add(basic);
+			default: add(basic);
+		}
 	}
 	
 	/**
 	 * Adds a group to the manager
 	 * @param	group	group of entities to add
 	 * @param	name	name to reference this group
+	 * @param	depth		0:bg,1:mg,2:fg. Defaults to just adding to main group (above fg).
 	 */
-	public function AddGroup(group:FlxTypedGroup<Entity>, name:String):Void 
+	public function AddGroup(group:FlxTypedGroup<Entity>, name:String, depth:Int=-1):Void 
 	{
-		add(group);
+		switch(depth)
+		{
+			case 0: bg.add(group);
+			case 1: mg.add(group);
+			case 2:	fg.add(group);
+			default: add(group);
+		}
 		groups.set(name, group);
 	}
 	//}
@@ -620,15 +670,6 @@ class EntityManager extends FlxGroup
 		templates = null;
 		//_instance = null;
 		reset();
-	}
-	
-	private function reset()
-	{
-		members = [];
-		entities = new Array<Entity>();
-		groups = new Map<String, FlxTypedGroup<Entity>>();
-		templates = new Map<String, Xml>();
-		highestGID = 0;	
 	}
 	//}
 	
