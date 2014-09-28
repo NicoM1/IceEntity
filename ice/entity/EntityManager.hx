@@ -661,7 +661,10 @@ class EntityManager extends FlxGroup
 				basic = members[i++];
 				
 				if (basic != null)
+				{
 					basic.destroy();
+					members.remove(basic);
+				}	
 			}
 		}
 		
@@ -675,12 +678,16 @@ class EntityManager extends FlxGroup
 		}
 		
 		entities = null;
+		members = null;
 		for (g in groups)
 		{
 			g.destroy();
 		}
 		groups = null;
 		templates = null;
+		bg = null;
+		mg = null;
+		fg = null;
 		//_instance = null;
 		reset();
 	}
@@ -761,7 +768,7 @@ class EntityManager extends FlxGroup
 	override public function update(elapsed:Float):Void 
 	{
 		do {
-			if (sceneSwitch = true)
+			if (sceneSwitch)
 			{
 				sceneSwitch = false;
 			}
@@ -784,24 +791,13 @@ class EntityManager extends FlxGroup
 				{
 					basic.update(elapsed);
 				}
+				
 				if (sceneSwitch)
 				{
 					break;
 				}
 			}
-		}while (sceneSwitch == true);
+		}while (sceneSwitch);
 	}
-	
-	/*(override public function draw():Void 
-	{
-		if (!sceneSwitch)
-		{
-			super.draw();
-		}
-		else
-		{
-			sceneSwitch = false;
-		}
-	}*/
 	//}
 }
