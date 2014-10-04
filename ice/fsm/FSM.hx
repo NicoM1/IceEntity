@@ -23,7 +23,10 @@ class FSM
 	 */
 	public function Update()
 	{
-		stack[stack.length - 1]();
+		if (stack != null)
+		{
+			stack[stack.length - 1]();
+		}
 	}
 	
 	/**
